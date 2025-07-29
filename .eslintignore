@@ -1,0 +1,18 @@
+# 构建输出目录
+dist
+build
+out
+.output
+.nuxt
+
+# 依赖目录
+node_modules
+
+# 配置文件
+*.config.js
+*.config.ts
+
+# 其他不需要检查的文件
+*.min.js
+*.d.ts
+coverage

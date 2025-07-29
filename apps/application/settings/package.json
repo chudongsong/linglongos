@@ -1,0 +1,31 @@
+{
+  "name": "@linglongos/settings",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/settings.umd.js",
+  "module": "dist/settings.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/settings.es.js",
+      "require": "./dist/settings.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@linglongos/ui": "workspace:*",
+    "@linglongos/shared-types": "workspace:*",
+    "@linglongos/window": "workspace:*",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vue-tsc": "^1.8.5"
+  }
+}

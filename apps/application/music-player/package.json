@@ -1,0 +1,39 @@
+{
+  "name": "@linglongos/music-player",
+  "version": "1.0.0",
+  "description": "灵龙OS音乐播放器",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "music",
+    "player",
+    "audio",
+    "linglongos"
+  ],
+  "author": "LinglongOS Team",
+  "license": "MIT",
+  "dependencies": {
+    "@linglongos/ui": "workspace:*",
+    "@vueuse/core": "^10.7.0",
+    "axios": "^1.6.2",
+    "howler": "^2.2.4",
+    "pinia": "^2.1.7",
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.11",
+    "@types/node": "^20.10.4",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.7",
+    "vue-tsc": "^1.8.25"
+  }
+}
