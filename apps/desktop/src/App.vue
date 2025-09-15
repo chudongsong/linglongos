@@ -1,33 +1,20 @@
 <template>
-  <div id="app" class="h-screen w-screen overflow-hidden bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500">
-    <!-- 登录页面 -->
-    <LoginView v-if="!isAuthenticated" @login="handleLogin" />
-    
-    <!-- 主桌面 -->
-    <DesktopView v-else />
+  <div id="app" class="min-h-screen bg-background text-foreground">
+    <RouterView />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import LoginView from './views/LoginView.vue'
-import DesktopView from './views/DesktopView.vue'
-import { useAuthStore } from './stores/auth'
+import { RouterView } from 'vue-router'
 
-const authStore = useAuthStore()
-const isAuthenticated = ref(false)
-
-onMounted(() => {
-  // 检查是否已登录
-  isAuthenticated.value = authStore.checkAuth()
-})
-
-const handleLogin = (): void => {
-  isAuthenticated.value = true
-}
+/**
+ * 应用根组件
+ * @description 应用的主入口组件，包含路由视图
+ */
 </script>
 
 <style scoped>
+/* 应用根样式 */
 #app {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;

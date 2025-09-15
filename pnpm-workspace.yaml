@@ -2,3 +2,4 @@ packages:
   - 'apps/*'
   - 'apps/application/*'
   - 'packages/*'
+  - 'env/*'

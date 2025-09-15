@@ -1,282 +1,281 @@
 <template>
-  <div class="h-screen w-screen flex flex-col overflow-hidden">
-    <!-- 顶部信息栏 -->
-    <TopBar />
-    
-    <!-- 主桌面区域 -->
-    <div class="flex-1 relative desktop-grid" @contextmenu.prevent="handleDesktopRightClick">
-      <!-- 桌面图标和小组件 -->
-      <div
-        v-for="item in desktopItems"
-        :key="item.id"
-        :style="getItemStyle(item)"
-        class="absolute cursor-pointer"
-        @click="handleItemClick(item)"
-        @dblclick="handleItemDoubleClick(item)"
-        @contextmenu.prevent="handleItemRightClick(item, $event)"
-      >
-        <!-- 应用图标 -->
-        <DesktopIcon
-          v-if="item.type === 'app-icon'"
-          :app-id="item.appId!"
-          :selected="selectedItems.includes(item.id)"
-        />
-        
-        <!-- 小组件 -->
-        <DesktopWidget
-          v-else-if="item.type === 'widget'"
-          :widget-id="item.widgetId!"
-          :size="item.size"
-        />
-        
-        <!-- 文件夹 -->
-        <DesktopFolder
-          v-else-if="item.type === 'folder'"
-          :folder-id="item.folderId!"
-          :selected="selectedItems.includes(item.id)"
-        />
-      </div>
-      
-      <!-- 选择框 -->
-      <SelectionBox
-        v-if="isSelecting"
-        :start="selectionStart"
-        :end="selectionEnd"
-      />
-    </div>
-    
-    <!-- 底部任务栏 -->
-    <TaskBar />
-    
-    <!-- 窗口容器 -->
-    <WindowContainer />
-    
-    <!-- 右键菜单 -->
-    <ContextMenu
-      v-if="contextMenu.visible"
-      :x="contextMenu.x"
-      :y="contextMenu.y"
-      :items="contextMenu.items"
-      @close="closeContextMenu"
-      @select="handleContextMenuSelect"
-    />
-  </div>
+	<div class="desktop-container">
+		<!-- 桌面顶部栏 -->
+		<header class="desktop-header">
+			<div
+				class="flex items-center justify-between h-12 px-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
+			>
+				<!-- 左侧：系统信息 -->
+				<div class="flex items-center space-x-4">
+					<div class="flex items-center space-x-2">
+						<div
+							class="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center"
+						>
+							<span class="text-white text-xs font-bold">OS</span>
+						</div>
+						<span class="text-sm font-medium text-gray-700 dark:text-gray-300">玲珑OS</span>
+					</div>
+
+					<!-- 当前时间 -->
+					<div class="text-sm text-gray-600 dark:text-gray-400">
+						{{ currentTime }}
+					</div>
+				</div>
+
+				<!-- 右侧：用户信息和操作 -->
+				<div class="flex items-center space-x-4">
+					<!-- 用户信息 -->
+					<div class="flex items-center space-x-2">
+						<div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+							<UserIcon class="w-4 h-4 text-gray-600 dark:text-gray-300" />
+						</div>
+						<span class="text-sm text-gray-700 dark:text-gray-300">{{ userDisplayName }}</span>
+					</div>
+
+					<!-- 设置按钮 -->
+					<button
+						@click="openSettings"
+						class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+						title="设置"
+					>
+						<SettingsIcon class="w-4 h-4" />
+					</button>
+
+					<!-- 登出按钮 -->
+					<button
+						@click="handleLogout"
+						class="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+						title="登出"
+					>
+						<LogOutIcon class="w-4 h-4" />
+					</button>
+				</div>
+			</div>
+		</header>
+
+		<!-- 桌面主体区域 -->
+		<main class="desktop-main">
+			<div
+				class="h-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden"
+			>
+				<!-- 背景装饰 -->
+				<div class="absolute inset-0 opacity-30">
+					<div
+						class="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+					/>
+					<div
+						class="absolute top-1/3 right-1/4 w-64 h-64 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+						style="animation-delay: 2s"
+					/>
+					<div
+						class="absolute bottom-1/4 left-1/3 w-64 h-64 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+						style="animation-delay: 4s"
+					/>
+				</div>
+
+				<!-- 桌面内容区域 -->
+				<div class="relative z-10 h-full flex flex-col items-center justify-center p-8">
+					<!-- 欢迎信息 -->
+					<div class="text-center mb-12">
+						<h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">欢迎使用玲珑OS</h1>
+						<p class="text-lg text-gray-600 dark:text-gray-300 mb-8">您的个人桌面环境已准备就绪</p>
+
+						<!-- 快速操作卡片 -->
+						<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+							<!-- 文件管理器 -->
+							<div class="desktop-app-card" @click="openApp('file-manager')">
+								<div class="app-icon bg-blue-500">
+									<FolderIcon class="w-8 h-8 text-white" />
+								</div>
+								<h3 class="app-title">文件管理器</h3>
+								<p class="app-description">管理您的文件和文件夹</p>
+							</div>
+
+							<!-- 终端 -->
+							<div class="desktop-app-card" @click="openApp('terminal')">
+								<div class="app-icon bg-gray-800">
+									<TerminalIcon class="w-8 h-8 text-white" />
+								</div>
+								<h3 class="app-title">终端</h3>
+								<p class="app-description">命令行界面</p>
+							</div>
+
+							<!-- 设置 -->
+							<div class="desktop-app-card" @click="openApp('settings')">
+								<div class="app-icon bg-green-500">
+									<SettingsIcon class="w-8 h-8 text-white" />
+								</div>
+								<h3 class="app-title">系统设置</h3>
+								<p class="app-description">配置系统选项</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- 系统状态信息 -->
+					<div class="mt-auto">
+						<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+							<div class="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
+								<div class="flex items-center space-x-2">
+									<div class="w-2 h-2 bg-green-500 rounded-full"></div>
+									<span>系统运行正常</span>
+								</div>
+								<div>版本: 1.0.0</div>
+								<div>用户: {{ userDisplayName }}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import type { DesktopItem, Position } from '@linglongos/shared-types'
-import { useDesktopStore } from '../stores/desktop'
-import { useWindowStore } from '../stores/window'
-import TopBar from '../components/TopBar.vue'
-import TaskBar from '../components/TaskBar.vue'
-import DesktopIcon from '../components/DesktopIcon.vue'
-import DesktopWidget from '../components/DesktopWidget.vue'
-import DesktopFolder from '../components/DesktopFolder.vue'
-import SelectionBox from '../components/SelectionBox.vue'
-import WindowContainer from '../components/WindowContainer.vue'
-import ContextMenu from '../components/ContextMenu.vue'
+	import { ref, computed, onMounted, onUnmounted } from 'vue'
+	import { useRouter } from 'vue-router'
+	import { useAuthStore } from '@/stores/auth'
+	import { UserIcon, SettingsIcon, LogOutIcon, FolderIcon, TerminalIcon } from 'lucide-vue-next'
 
-const desktopStore = useDesktopStore()
-const windowStore = useWindowStore()
+	/**
+	 * 桌面主界面组件
+	 * @description 系统桌面环境，提供应用启动和系统管理功能
+	 */
 
-// 桌面项目
-const desktopItems = computed(() => desktopStore.desktopItems)
+	// 路由和状态管理
+	const router = useRouter()
+	const authStore = useAuthStore()
 
-// 选中的项目
-const selectedItems = ref<string[]>([])
+	// 响应式数据
+	const currentTime = ref('')
+	let timeInterval: NodeJS.Timeout | null = null
 
-// 选择框相关
-const isSelecting = ref(false)
-const selectionStart = ref<Position>({ x: 0, y: 0 })
-const selectionEnd = ref<Position>({ x: 0, y: 0 })
+	// 计算属性
+	const userDisplayName = computed(() => authStore.userDisplayName)
 
-// 右键菜单
-const contextMenu = ref({
-  visible: false,
-  x: 0,
-  y: 0,
-  items: [] as Array<{ id: string; label: string; icon?: string; action: () => void }>,
-})
+	// 方法
+	/**
+	 * 更新当前时间
+	 */
+	const updateTime = (): void => {
+		const now = new Date()
+		currentTime.value = now.toLocaleString('zh-CN', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+		})
+	}
 
-onMounted(() => {
-  // 加载桌面配置
-  desktopStore.loadDesktopConfig()
-  
-  // 添加全局事件监听
-  document.addEventListener('mousedown', handleGlobalMouseDown)
-  document.addEventListener('mousemove', handleGlobalMouseMove)
-  document.addEventListener('mouseup', handleGlobalMouseUp)
-  document.addEventListener('keydown', handleGlobalKeyDown)
-})
+	/**
+	 * 打开应用
+	 * @param appName 应用名称
+	 */
+	const openApp = (appName: string): void => {
+		console.log(`打开应用: ${appName}`)
+		// TODO: 实现应用启动逻辑
+		// 这里可以根据应用名称路由到不同的应用页面
+		// 或者打开模态窗口显示应用内容
+	}
 
-onUnmounted(() => {
-  // 移除全局事件监听
-  document.removeEventListener('mousedown', handleGlobalMouseDown)
-  document.removeEventListener('mousemove', handleGlobalMouseMove)
-  document.removeEventListener('mouseup', handleGlobalMouseUp)
-  document.removeEventListener('keydown', handleGlobalKeyDown)
-})
+	/**
+	 * 打开设置
+	 */
+	const openSettings = (): void => {
+		console.log('打开系统设置')
+		// TODO: 实现设置页面导航
+	}
 
-/**
- * 获取桌面项目的样式
- */
-const getItemStyle = (item: DesktopItem) => {
-  const gridSize = 80 // 网格大小
-  return {
-    left: `${item.position.x * gridSize}px`,
-    top: `${item.position.y * gridSize}px`,
-    width: item.size ? `${item.size.width * gridSize}px` : 'auto',
-    height: item.size ? `${item.size.height * gridSize}px` : 'auto',
-  }
-}
+	/**
+	 * 处理用户登出
+	 */
+	const handleLogout = async (): Promise<void> => {
+		try {
+			await authStore.logout()
+			router.push('/login')
+		} catch (error) {
+			console.error('登出失败:', error)
+		}
+	}
 
-/**
- * 处理项目点击
- */
-const handleItemClick = (item: DesktopItem): void => {
-  // 清除之前的选择
-  selectedItems.value = [item.id]
-}
+	// 生命周期钩子
+	onMounted(() => {
+		// 初始化时间显示
+		updateTime()
 
-/**
- * 处理项目双击
- */
-const handleItemDoubleClick = (item: DesktopItem): void => {
-  if (item.type === 'app-icon' && item.appId) {
-    // 打开应用
-    windowStore.openApp(item.appId)
-  } else if (item.type === 'folder' && item.folderId) {
-    // 打开文件夹
-    console.log('打开文件夹:', item.folderId)
-  }
-}
+		// 设置定时器更新时间
+		timeInterval = setInterval(updateTime, 1000)
 
-/**
- * 处理项目右键点击
- */
-const handleItemRightClick = (item: DesktopItem, event: MouseEvent): void => {
-  selectedItems.value = [item.id]
-  
-  const menuItems = [
-    { id: 'open', label: '打开', icon: 'open', action: () => handleItemDoubleClick(item) },
-    { id: 'rename', label: '重命名', icon: 'edit', action: () => console.log('重命名') },
-    { id: 'delete', label: '删除', icon: 'delete', action: () => console.log('删除') },
-  ]
-  
-  showContextMenu(event.clientX, event.clientY, menuItems)
-}
+		// 检查认证状态
+		if (!authStore.isAuthenticated) {
+			router.push('/login')
+		}
+	})
 
-/**
- * 处理桌面右键点击
- */
-const handleDesktopRightClick = (event: MouseEvent): void => {
-  selectedItems.value = []
-  
-  const menuItems = [
-    { id: 'refresh', label: '刷新', icon: 'refresh', action: () => location.reload() },
-    { id: 'new-folder', label: '新建文件夹', icon: 'folder', action: () => console.log('新建文件夹') },
-    { id: 'paste', label: '粘贴', icon: 'paste', action: () => console.log('粘贴') },
-    { id: 'settings', label: '个性化', icon: 'settings', action: () => console.log('个性化') },
-  ]
-  
-  showContextMenu(event.clientX, event.clientY, menuItems)
-}
-
-/**
- * 显示右键菜单
- */
-const showContextMenu = (x: number, y: number, items: typeof contextMenu.value.items): void => {
-  contextMenu.value = {
-    visible: true,
-    x,
-    y,
-    items,
-  }
-}
-
-/**
- * 关闭右键菜单
- */
-const closeContextMenu = (): void => {
-  contextMenu.value.visible = false
-}
-
-/**
- * 处理右键菜单选择
- */
-const handleContextMenuSelect = (itemId: string): void => {
-  const menuItem = contextMenu.value.items.find(item => item.id === itemId)
-  if (menuItem) {
-    menuItem.action()
-  }
-  closeContextMenu()
-}
-
-/**
- * 全局鼠标按下事件
- */
-const handleGlobalMouseDown = (event: MouseEvent): void => {
-  // 如果点击的是桌面空白区域，开始选择
-  if (event.target === event.currentTarget) {
-    isSelecting.value = true
-    selectionStart.value = { x: event.clientX, y: event.clientY }
-    selectionEnd.value = { x: event.clientX, y: event.clientY }
-    selectedItems.value = []
-  }
-  
-  // 关闭右键菜单
-  if (contextMenu.value.visible) {
-    closeContextMenu()
-  }
-}
-
-/**
- * 全局鼠标移动事件
- */
-const handleGlobalMouseMove = (event: MouseEvent): void => {
-  if (isSelecting.value) {
-    selectionEnd.value = { x: event.clientX, y: event.clientY }
-  }
-}
-
-/**
- * 全局鼠标释放事件
- */
-const handleGlobalMouseUp = (): void => {
-  if (isSelecting.value) {
-    isSelecting.value = false
-    // 这里可以添加选择框内项目的选择逻辑
-  }
-}
-
-/**
- * 全局键盘事件
- */
-const handleGlobalKeyDown = (event: KeyboardEvent): void => {
-  // ESC键关闭右键菜单
-  if (event.key === 'Escape' && contextMenu.value.visible) {
-    closeContextMenu()
-  }
-  
-  // Delete键删除选中项目
-  if (event.key === 'Delete' && selectedItems.value.length > 0) {
-    console.log('删除选中项目:', selectedItems.value)
-  }
-  
-  // Ctrl+A全选
-  if (event.ctrlKey && event.key === 'a') {
-    event.preventDefault()
-    selectedItems.value = desktopItems.value.map(item => item.id)
-  }
-}
+	onUnmounted(() => {
+		// 清理定时器
+		if (timeInterval) {
+			clearInterval(timeInterval)
+		}
+	})
 </script>
 
 <style scoped>
-.desktop-grid {
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 80px 80px;
-}
+	/* 桌面容器样式 */
+	.desktop-container {
+		@apply w-full h-screen flex flex-col overflow-hidden;
+	}
+
+	.desktop-header {
+		@apply flex-shrink-0;
+	}
+
+	.desktop-main {
+		@apply flex-1 overflow-hidden;
+	}
+
+	/* 应用卡片样式 */
+	.desktop-app-card {
+		@apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 border border-gray-200/50 dark:border-gray-700/50;
+	}
+
+	.desktop-app-card:hover {
+		@apply bg-white/90 dark:bg-gray-800/90;
+	}
+
+	.app-icon {
+		@apply w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg;
+	}
+
+	.app-title {
+		@apply text-lg font-semibold text-gray-800 dark:text-white mb-2;
+	}
+
+	.app-description {
+		@apply text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	/* 动画效果 */
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+
+	.desktop-app-card {
+		animation: float 6s ease-in-out infinite;
+	}
+
+	.desktop-app-card:nth-child(2) {
+		animation-delay: 2s;
+	}
+
+	.desktop-app-card:nth-child(3) {
+		animation-delay: 4s;
+	}
 </style>

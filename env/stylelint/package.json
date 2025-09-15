@@ -1,0 +1,23 @@
+{
+	"name": "@linglongos/stylelint",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "stylelint.config.js",
+	"files": [
+		"stylelint.config.js"
+	],
+	"dependencies": {},
+	"devDependencies": {
+		"stylelint": "^16.16.0",
+		"stylelint-config-standard": "^37.0.0",
+		"stylelint-config-tailwindcss": "^1.0.0",
+		"stylelint-order": "^6.0.4",
+		"@linglongos/typescript": "workspace:*",
+		"@linglongos/prettier": "workspace:*",
+		"@linglongos/eslint": "workspace:*"
+	},
+	"exports": {
+		".": "./stylelint.config.js",
+		"./rules": "./index.ts"
+	}
+}
