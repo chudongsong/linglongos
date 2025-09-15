@@ -1,6 +1,42 @@
-# @linglongos/utils 工具库文档
+# @linglongos/utils 工具库
 
-> 玲珑OS工具库 - 提供常用的工具方法，包括数据处理、文件操作、URL处理、正则验证、格式化等功能
+> 玲珑OS工具库 - 提供常用的工具方法，已优化目录结构，简化嵌套。
+
+## 📁 目录结构优化
+
+**之前的嵌套结构：**
+```
+src/
+├── data/
+│   └── index.ts
+├── string/
+│   └── index.ts  
+├── number/
+│   └── index.ts
+└── ... (8个嵌套目录)
+```
+
+**优化后的扁平结构：**
+```
+src/
+├── data.ts        # 数据处理工具
+├── string.ts      # 字符串工具
+├── number.ts      # 数字工具
+├── date.ts        # 日期工具
+├── file.ts        # 文件处理工具
+├── url.ts         # URL处理工具
+├── validator.ts   # 正则验证工具
+├── format.ts      # 格式化工具
+└── index.ts       # 主入口文件
+```
+
+## ✨ 优化优势
+
+1. **简化导入路径** - 所有工具函数直接从根模块导入
+2. **减少嵌套层级** - 从三层嵌套减少到二层
+3. **更好的可维护性** - 每个功能模块独立文件，易于维护
+4. **保持功能完整** - 所有原有功能保持不变
+5. **向后兼容** - 导入方式保持一致
 
 ## 📦 安装
 
@@ -31,456 +67,143 @@ if (Validator.isEmail('user@example.com')) {
 }
 ```
 
-## 📚 模块详解
+## 📚 主要模块
 
-### 🔍 数据处理工具 (Data)
+### 🔍 数据处理 (data.ts)
+- `DataType` - 数据类型判断
+- `deepClone` - 深拷贝
+- `deepMerge` - 深度合并
+- `uniqueArray` - 数组去重
+- `groupBy` - 数组分组
+- `sortBy` - 数组排序
+- `paginate` - 分页处理
+- `flattenTree` - 树形数据扁平化
+- `arrayToTree` - 数组转树形结构
 
-#### DataType - 数据类型判断
+### 🔤 字符串处理 (string.ts)
+- `truncate` - 字符串截断
+- `pad` - 字符串填充
+- `toCamelCase` - 驼峰命名转换
+- `toPascalCase` - 帕斯卡命名转换
+- `toKebabCase` - 短横线命名转换
+- `toSnakeCase` - 下划线命名转换
+- `removeWhitespace` - 空白字符处理
+- `template` - 模板字符串替换
+- `maskPhone` - 手机号脱敏
+- `maskEmail` - 邮箱脱敏
 
-提供全面的数据类型判断方法：
+### 🔢 数字处理 (number.ts)
+- `toThousands` - 千分位格式化
+- `formatFileSize` - 文件大小格式化
+- `toPercent` - 百分比格式化
+- `toCurrency` - 货币格式化
+- `toChineseNumber` - 数字转中文
+- `toRoman` - 数字转罗马数字
+- `randomInt` - 随机整数
+- `randomFloat` - 随机浮点数
+- `clamp` - 数值范围限制
 
-```typescript
-import { DataType } from '@linglongos/utils'
+### 📅 日期处理 (date.ts)
+- `formatDate` - 日期格式化
+- `getRelativeTime` - 相对时间
+- `formatDuration` - 持续时间格式化
+- `getFriendlyDate` - 友好日期描述
+- `getWeekday` - 获取星期几
+- `getDateRange` - 日期范围生成
+- `isLeapYear` - 闰年判断
+- `getDaysInMonth` - 获取月份天数
 
-// 基础类型判断
-DataType.isString('hello')           // true
-DataType.isNumber(123)               // true
-DataType.isBoolean(true)             // true
-DataType.isArray([1, 2, 3])          // true
-DataType.isObject({ key: 'value' })  // true
-DataType.isFunction(() => {})        // true
+### 📁 文件处理 (file.ts)
+- `FileUtils.getExtension` - 获取文件扩展名
+- `FileUtils.getBasename` - 获取文件名
+- `FileUtils.getDirname` - 获取目录路径
+- `FileUtils.getFileType` - 判断文件类型
+- `FileUtils.formatSize` - 格式化文件大小
+- `FileUtils.sanitizeFilename` - 生成安全文件名
+- `FileUtils.joinPath` - 路径连接
+- `getMimeType` - 获取MIME类型
 
-// 空值判断
-DataType.isNull(null)                // true
-DataType.isUndefined(undefined)      // true
-DataType.isNullOrUndefined(null)     // true
-DataType.isEmpty('')                 // true (空字符串)
-DataType.isEmpty([])                 // true (空数组)
-DataType.isEmpty({})                 // true (空对象)
+### 🌐 URL处理 (url.ts)
+- `parseUrlParams` - URL参数解析
+- `buildUrlParams` - 构建参数字符串
+- `addUrlParams` - 添加URL参数
+- `removeUrlParams` - 移除URL参数
+- `getDomain` - 获取域名
+- `getProtocol` - 获取协议
+- `formatUrl` - URL格式化
+- `buildApiUrl` - 构建API URL
 
-// 特殊类型判断
-DataType.isDate(new Date())          // true
-DataType.isRegExp(/pattern/)         // true
-DataType.isPromise(Promise.resolve()) // true
-DataType.isInteger(42)               // true
-DataType.isPositive(10)              // true
-DataType.isNegative(-5)              // true
+### ✅ 验证工具 (validator.ts)
+- `Validator.isEmail` - 邮箱验证
+- `Validator.isPhone` - 手机号验证
+- `Validator.isIdCard` - 身份证验证
+- `Validator.isUrl` - URL验证
+- `Validator.isIPv4` - IPv4验证
+- `RegexPatterns` - 常用正则表达式
+- `checkPasswordStrength` - 密码强度检测
+
+### 🎨 格式化工具 (format.ts)
+- `NumberFormat` - 数字格式化工具集
+- `DateFormat` - 日期格式化工具集
+- `StringFormat` - 字符串格式化工具集
+- `ColorFormat` - 颜色格式化工具集
+
+## 🧪 测试
+
+```bash
+# 运行测试
+pnpm test
+
+# 监听模式
+pnpm test:watch
+
+# 生成覆盖率报告
+pnpm test:coverage
 ```
 
-#### 数组和对象操作
+## 📦 构建
 
-```typescript
-import { deepClone, deepMerge, uniqueArray, groupBy, sortBy, paginate } from '@linglongos/utils'
+```bash
+# 开发模式（监听文件变化）
+pnpm dev
 
-// 深拷贝
-const original = { name: '张三', hobbies: ['读书', '游泳'] }
-const cloned = deepClone(original)
+# 构建生产版本
+pnpm build
 
-// 深度合并
-const merged = deepMerge(
-  { a: 1, b: { c: 2 } },
-  { b: { d: 3 }, e: 4 }
-) // { a: 1, b: { c: 2, d: 3 }, e: 4 }
+# 类型检查
+pnpm type-check
 
-// 数组去重
-const unique = uniqueArray([1, 2, 2, 3, 4, 4]) // [1, 2, 3, 4]
-
-// 按属性去重
-const users = [{ id: 1, name: '张三' }, { id: 1, name: '李四' }]
-const uniqueUsers = uniqueArray(users, 'id') // [{ id: 1, name: '张三' }]
-
-// 数组分组
-const grouped = groupBy(
-  [{ type: 'fruit', name: '苹果' }, { type: 'fruit', name: '香蕉' }],
-  'type'
-) // { fruit: [{ type: 'fruit', name: '苹果' }, { type: 'fruit', name: '香蕉' }] }
-
-// 数组排序
-const sorted = sortBy(
-  [{ age: 25 }, { age: 30 }, { age: 20 }],
-  'age',
-  'desc'
-) // [{ age: 30 }, { age: 25 }, { age: 20 }]
-
-// 分页
-const { data, total, page, pageSize, totalPages } = paginate(
-  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-  2, // 第2页
-  3  // 每页3条
-) // { data: [4, 5, 6], total: 10, page: 2, pageSize: 3, totalPages: 4 }
+# 代码检查
+pnpm lint
 ```
 
-#### 树形数据处理
+构建配置：
+- 使用 `tsup` 构建工具
+- 支持 CommonJS 和 ES Module 双格式输出
+- 自动生成 TypeScript 类型定义文件
+- 支持 Tree Shaking
+
+## 🔄 迁移指南
+
+从旧版本迁移非常简单，因为所有的 API 保持不变，只是内部目录结构得到了优化：
 
 ```typescript
-import { flattenTree, arrayToTree } from '@linglongos/utils'
+// 导入方式保持不变
+import { DataType, FileUtils, formatDate } from '@linglongos/utils'
 
-// 树形数据扁平化
-const tree = [
-  {
-    id: 1,
-    name: '根节点',
-    children: [
-      { id: 2, name: '子节点1' },
-      { id: 3, name: '子节点2' }
-    ]
-  }
-]
-const flattened = flattenTree(tree)
-// [{ id: 1, name: '根节点' }, { id: 2, name: '子节点1' }, { id: 3, name: '子节点2' }]
-
-// 数组转树形结构
-const array = [
-  { id: 1, name: '根节点', parentId: null },
-  { id: 2, name: '子节点1', parentId: 1 },
-  { id: 3, name: '子节点2', parentId: 1 }
-]
-const treeData = arrayToTree(array, {
-  idKey: 'id',
-  parentIdKey: 'parentId',
-  childrenKey: 'children'
-})
+// 所有功能继续正常工作
+const isString = DataType.isString('hello')
+const fileSize = FileUtils.formatSize(1024)
+const date = formatDate(new Date())
 ```
 
-### 📁 文件处理工具 (File)
+## 📄 许可证
 
-#### FileUtils - 文件工具类
+MIT License
 
-```typescript
-import { FileUtils, getMimeType } from '@linglongos/utils'
+---
 
-// 文件信息获取
-FileUtils.getExtension('document.pdf')    // '.pdf'
-FileUtils.getBasename('document.pdf')     // 'document'
-FileUtils.getDirname('/path/to/file.txt') // '/path/to'
-FileUtils.getFileType('image.jpg')        // 'image'
-
-// 文件类型判断
-FileUtils.isImage('photo.jpg')            // true
-FileUtils.isVideo('movie.mp4')            // true
-FileUtils.isAudio('music.mp3')            // true
-FileUtils.isDocument('report.pdf')        // true
-FileUtils.isArchive('data.zip')           // true
-FileUtils.isCode('script.js')             // true
-
-// 文件大小格式化
-FileUtils.formatSize(1024)                // '1.00 KB'
-FileUtils.formatSize(1024 * 1024)         // '1.00 MB'
-FileUtils.formatSize(1024 * 1024 * 1024)  // '1.00 GB'
-
-// 文件名处理
-FileUtils.sanitizeFilename('file<>name.txt')  // 'filename.txt'
-FileUtils.generateUniqueFilename('file.txt', ['file.txt', 'file(1).txt'])
-// 'file(2).txt'
-
-// 路径处理
-FileUtils.joinPath('home', 'user', 'docs')           // 'home/user/docs'
-FileUtils.normalizePath('home//user/../docs')        // 'home/docs'
-FileUtils.isAbsolutePath('/home/user')               // true
-FileUtils.getRelativePath('/home/user', '/home/user/docs') // 'docs'
-
-// 路径解析
-const pathInfo = FileUtils.parsePath('/home/user/document.pdf')
-// {
-//   dir: '/home/user',
-//   base: 'document.pdf',
-//   name: 'document',
-//   ext: '.pdf'
-// }
-
-// MIME类型
-getMimeType('document.pdf')               // 'application/pdf'
-getMimeType('image.jpg')                  // 'image/jpeg'
-```
-
-#### FileUploadUtils - 文件上传工具
-
-```typescript
-import { FileUploadUtils } from '@linglongos/utils'
-
-// 文件类型验证
-const isValidType = FileUploadUtils.validateFileType(
-  file,
-  ['image/jpeg', 'image/png']
-)
-
-// 文件大小验证
-const isValidSize = FileUploadUtils.validateFileSize(
-  file,
-  5 * 1024 * 1024 // 5MB
-)
-
-// 读取文件为Base64
-const base64 = await FileUploadUtils.readAsBase64(file)
-
-// 读取文件为文本
-const text = await FileUploadUtils.readAsText(file)
-
-// 图片压缩
-const compressedBlob = await FileUploadUtils.compressImage(
-  imageFile,
-  0.8,    // 质量
-  1920,   // 最大宽度
-  1080    // 最大高度
-)
-```
-
-### 🌐 URL处理工具 (URL)
-
-```typescript
-import {
-  parseUrlParams,
-  buildUrlParams,
-  addUrlParams,
-  removeUrlParams,
-  getDomain,
-  formatUrl
-} from '@linglongos/utils'
-
-// URL参数解析
-const params = parseUrlParams('https://example.com?name=张三&age=25')
-// { name: '张三', age: '25' }
-
-// 构建参数字符串
-const queryString = buildUrlParams({ name: '李四', age: 30 })
-// 'name=李四&age=30'
-
-// 添加参数到URL
-const newUrl = addUrlParams('https://example.com', { page: 1, size: 10 })
-// 'https://example.com?page=1&size=10'
-
-// 移除URL参数
-const cleanUrl = removeUrlParams(
-  'https://example.com?name=test&age=25&city=beijing',
-  ['age', 'city']
-) // 'https://example.com?name=test'
-
-// 获取域名
-getDomain('https://www.example.com/path') // 'www.example.com'
-
-// URL格式化
-const formatted = formatUrl('http://www.example.com/', {
-  forceHttps: true,
-  removeWww: true,
-  removeTrailingSlash: true
-}) // 'https://example.com'
-
-// API URL构建
-const apiUrl = buildApiUrl(
-  'https://api.example.com',
-  '/users/:id/posts',
-  { id: 123, page: 1 }
-) // 'https://api.example.com/users/123/posts?page=1'
-```
-
-### 🔤 字符串工具 (String)
-
-```typescript
-import {
-  truncate,
-  pad,
-  toCamelCase,
-  toPascalCase,
-  toKebabCase,
-  toSnakeCase,
-  toTitleCase,
-  removeWhitespace,
-  template
-} from '@linglongos/utils'
-
-// 字符串截断
-truncate('这是一个很长的字符串', 5)        // '这是...'
-truncate('这是一个很长的字符串', 5, '***') // '这是***'
-
-// 字符串填充
-pad('abc', 5)                    // '  abc'
-pad('abc', 5, '0', 'end')        // 'abc00'
-pad('abc', 5, '0', 'both')       // '0abc0'
-
-// 命名转换
-toCamelCase('hello-world')       // 'helloWorld'
-toPascalCase('hello-world')      // 'HelloWorld'
-toKebabCase('helloWorld')        // 'hello-world'
-toSnakeCase('helloWorld')        // 'hello_world'
-toTitleCase('hello world')       // 'Hello World'
-
-// 空白字符处理
-removeWhitespace('  hello world  ', 'both')  // 'hello world'
-removeWhitespace('  hello world  ', 'all')   // 'helloworld'
-
-// 模板字符串
-template('Hello {{name}}, you are {{age}} years old', {
-  name: '张三',
-  age: 25
-}) // 'Hello 张三, you are 25 years old'
-```
-
-### 🔢 数字工具 (Number)
-
-```typescript
-import {
-  toThousands,
-  formatFileSize,
-  toPercent,
-  toCurrency,
-  toChineseNumber,
-  toRoman,
-  randomInt,
-  clamp
-} from '@linglongos/utils'
-
-// 千分位格式化
-toThousands(1234567.89)          // '1,234,567.89'
-toThousands(1234567.89, 0)       // '1,234,568'
-
-// 文件大小格式化
-formatFileSize(1024)             // '1.00 KB'
-formatFileSize(1024 * 1024)      // '1.00 MB'
-
-// 百分比格式化
-toPercent(0.1234)                // '12.34%'
-toPercent(0.1234, 1)             // '12.3%'
-
-// 货币格式化
-toCurrency(1234.56)              // '¥1,234.56'
-toCurrency(1234.56, '$')         // '$1,234.56'
-
-// 数字转中文
-toChineseNumber(123)             // '一百二十三'
-toChineseNumber(1000)            // '一千'
-
-// 数字转罗马数字
-toRoman(123)                     // 'CXXIII'
-toRoman(1994)                    // 'MCMXCIV'
-
-// 随机数生成
-randomInt(1, 10)                 // 1-10之间的随机整数
-randomFloat(1, 10, 2)            // 1-10之间的随机浮点数，保留2位小数
-
-// 数值限制
-clamp(15, 1, 10)                 // 10 (限制在1-10之间)
-clamp(-5, 1, 10)                 // 1
-```
-
-### 📅 日期工具 (Date)
-
-```typescript
-import {
-  formatDate,
-  getRelativeTime,
-  formatDuration,
-  getFriendlyDate,
-  getWeekday,
-  getDateRange,
-  isLeapYear,
-  getDaysInMonth
-} from '@linglongos/utils'
-
-// 日期格式化
-formatDate(new Date(), 'YYYY-MM-DD')           // '2024-01-15'
-formatDate(new Date(), 'YYYY年MM月DD日')        // '2024年01月15日'
-formatDate(new Date(), 'HH:mm:ss')             // '14:30:25'
-
-// 相对时间
-getRelativeTime(new Date(Date.now() - 60000))  // '1分钟前'
-getRelativeTime(new Date(Date.now() - 3600000)) // '1小时前'
-
-// 持续时间格式化
-formatDuration(90000)                          // '1分钟30秒'
-formatDuration(3661000)                        // '1小时1分钟1秒'
-
-// 友好日期
-getFriendlyDate(new Date())                    // '今天'
-getFriendlyDate(new Date(Date.now() - 86400000)) // '昨天'
-
-// 星期几
-getWeekday(new Date(), 'zh')                   // '星期一'
-getWeekday(new Date(), 'en')                   // 'Monday'
-getWeekday(new Date(), 'short')                // '周一'
-
-// 日期范围
-const range = getDateRange('2024-01-01', '2024-01-03')
-// [Date(2024-01-01), Date(2024-01-02), Date(2024-01-03)]
-
-// 闰年判断
-isLeapYear(2024)                               // true
-isLeapYear(2023)                               // false
-
-// 获取月份天数
-getDaysInMonth(2024, 2)                        // 29 (2024年2月)
-getDaysInMonth(2023, 2)                        // 28 (2023年2月)
-```
-
-### ✅ 正则验证工具 (Regex)
-
-#### Validator - 数据验证
-
-```typescript
-import { Validator } from '@linglongos/utils'
-
-// 基础验证
-Validator.isEmail('user@example.com')          // true
-Validator.isPhone('13812345678')               // true
-Validator.isIdCard('110101199001011234')       // true
-Validator.isUrl('https://www.example.com')     // true
-
-// 网络相关验证
-Validator.isIPv4('192.168.1.1')               // true
-Validator.isIPv6('2001:0db8:85a3:0000:0000:8a2e:0370:7334') // true
-Validator.isMac('00:1B:44:11:3A:B7')           // true
-
-// 密码强度验证
-Validator.isStrongPassword('Abc123!@#')        // true
-Validator.isMediumPassword('abc123')           // true
-
-// 文本类型验证
-Validator.hasChinese('Hello 世界')             // true
-Validator.isPureChinese('你好世界')            // true
-Validator.isEnglish('Hello')                   // true
-
-// 数字验证
-Validator.isNumber('123')                      // true
-Validator.isPositiveInteger('123')             // true
-Validator.isFloat('123.45')                    // true
-
-// 其他验证
-Validator.isBankCard('6222021234567890123')    // true
-Validator.isPostalCode('100000')               // true
-Validator.isQQ('12345678')                     // true
-Validator.isWechat('wx_user123')               // true
-Validator.isLicensePlate('京A12345')           // true
-Validator.isHexColor('#FF0000')                // true
-Validator.isBase64('SGVsbG8gV29ybGQ=')          // true
-Validator.isUUID('550e8400-e29b-41d4-a716-446655440000') // true
-Validator.isDate('2024-01-15')                 // true
-Validator.isTime('14:30:25')                   // true
-Validator.isDateTime('2024-01-15 14:30:25')    // true
-Validator.isSemver('1.2.3')                    // true
-```
-
-#### StringProcessor - 字符串处理
-
-```typescript
-import { StringProcessor } from '@linglongos/utils'
-
-// HTML标签移除
-StringProcessor.removeHtmlTags('<p>Hello <b>World</b></p>') // 'Hello World'
-
-// 多余空白字符处理
-StringProcessor.removeExtraWhitespace('  hello   world  ')  // 'hello world'
-
-// 文件扩展名提取
-StringProcessor.getFileExtension('document.pdf')            // '.pdf'
-
-// 信息提取
-StringProcessor.extractEmails('联系邮箱：user@example.com') // ['user@example.com']
-StringProcessor.extractUrls('访问 https://example.com')     // ['https://example.com']
-StringProcessor.extractPhones('电话：13812345678')          // ['13812345678']
-
-// 信息脱敏
-StringProcessor.maskPhone('13812345678')                   // '138****5678'
-StringProcessor.maskEmail('user@example.com')             // 'u***@example.com'
-StringProcessor.maskIdCard('110101199001011234')          // '110101****1234'
+**玲珑OS团队** ❤️ 用心打造101****1234'
 StringProcessor.maskBankCard('6222021234567890123')       // '622202****0123'
 
 // 关键词高亮
