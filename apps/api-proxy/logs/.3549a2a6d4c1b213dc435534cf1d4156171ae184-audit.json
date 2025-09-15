@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "logs/.3549a2a6d4c1b213dc435534cf1d4156171ae184-audit.json",
+    "files": [
+        {
+            "date": 1757930299657,
+            "name": "logs/api-proxy-error-2025-09-15.log",
+            "hash": "29bc0a25b9a6ee1dc0d90a247dfd14b837924788eca59e4e4ede2a4a859df9db"
+        }
+    ],
+    "hashType": "sha256"
+}

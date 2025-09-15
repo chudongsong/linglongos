@@ -134,25 +134,60 @@
 	import { ref, computed, onMounted, onUnmounted } from 'vue'
 	import { useRouter } from 'vue-router'
 	import { useAuthStore } from '@/stores/auth'
-	import { UserIcon, SettingsIcon, LogOutIcon, FolderIcon, TerminalIcon } from 'lucide-vue-next'
+	import { useGridStore } from '@/stores/grid'
+	import { UserIcon, SettingsIcon, LogOutIcon, GridIcon } from 'lucide-vue-next'
+	import GridSystem from '@/components/grid/GridSystem.vue'
+	import type { GridItem, GridPosition, GridSize, GridPreset } from '@/types/grid'
 
 	/**
 	 * 桌面主界面组件
-	 * @description 系统桌面环境，提供应用启动和系统管理功能
+	 * @description 系统桌面环境，集成网格系统提供应用管理功能
 	 */
 
 	// 路由和状态管理
 	const router = useRouter()
 	const authStore = useAuthStore()
+	const gridStore = useGridStore()
+
+	// 组件引用
+	const gridSystemRef = ref<InstanceType<typeof GridSystem>>()
 
 	// 响应式数据
 	const currentTime = ref('')
+	const showGridLines = ref(false)
+	const isLoading = ref(false)
+	const loadingText = ref('加载中...')
+	const selectedItemsCount = ref(0)
 	let timeInterval: NodeJS.Timeout | null = null
+
+	// 网格预设
+	const gridPresets: GridPreset[] = [
+		{ size: 'small', cellSize: 48, gap: 8, columns: 16, rows: 10, name: '小', description: '密集排列' },
+		{ size: 'medium', cellSize: 64, gap: 12, columns: 12, rows: 8, name: '中', description: '平衡布局' },
+		{ size: 'large', cellSize: 80, gap: 16, columns: 10, rows: 6, name: '大', description: '清晰视觉' }
+	]
 
 	// 计算属性
 	const userDisplayName = computed(() => authStore.userDisplayName)
+	const currentConfig = computed(() => gridStore.currentConfig)
+	const currentGridSize = computed(() => gridStore.currentConfig.gridSize)
+	const totalItems = computed(() => gridStore.visibleGridItems.length)
+	const isDevelopment = computed(() => import.meta.env.DEV)
 
-	// 方法
+	/**
+	 * 切换网格大小
+	 */
+	const switchGridSize = (size: GridSize): void => {
+		gridStore.switchPreset(size)
+	}
+
+	/**
+	 * 切换网格线显示
+	 */
+	const toggleGridLines = (): void => {
+		showGridLines.value = !showGridLines.value
+	}
+
 	/**
 	 * 更新当前时间
 	 */
@@ -169,22 +204,56 @@
 	}
 
 	/**
-	 * 打开应用
-	 * @param appName 应用名称
-	 */
-	const openApp = (appName: string): void => {
-		console.log(`打开应用: ${appName}`)
-		// TODO: 实现应用启动逻辑
-		// 这里可以根据应用名称路由到不同的应用页面
-		// 或者打开模态窗口显示应用内容
-	}
-
-	/**
 	 * 打开设置
 	 */
 	const openSettings = (): void => {
 		console.log('打开系统设置')
 		// TODO: 实现设置页面导航
+	}
+
+	/**
+	 * 处理网格项目点击
+	 */
+	const handleItemClick = (item: GridItem, event: MouseEvent): void => {
+		console.log('项目点击:', item)
+	}
+
+	/**
+	 * 处理网格项目双击
+	 */
+	const handleItemDoubleClick = (item: GridItem, event: MouseEvent): void => {
+		console.log('项目双击:', item)
+		// 打开应用
+		openItem(item)
+	}
+
+	/**
+	 * 处理项目移动
+	 */
+	const handleItemMoved = (item: GridItem, from: GridPosition, to: GridPosition): void => {
+		console.log('项目移动:', item.id, 'from', from, 'to', to)
+	}
+
+	/**
+	 * 处理选择变化
+	 */
+	const handleSelectionChanged = (selectedItems: Set<string>): void => {
+		selectedItemsCount.value = selectedItems.size
+	}
+
+	/**
+	 * 处理网格右键菜单
+	 */
+	const handleGridContextMenu = (position: GridPosition, event: MouseEvent): void => {
+		console.log('网格右键菜单:', position)
+	}
+
+	/**
+	 * 打开项目
+	 */
+	const openItem = (item: GridItem): void => {
+		console.log('打开项目:', item)
+		// TODO: 实现应用启动逻辑
 	}
 
 	/**
@@ -200,7 +269,7 @@
 	}
 
 	// 生命周期钩子
-	onMounted(() => {
+	onMounted(async () => {
 		// 初始化时间显示
 		updateTime()
 
@@ -210,6 +279,22 @@
 		// 检查认证状态
 		if (!authStore.isAuthenticated) {
 			router.push('/login')
+			return
+		}
+
+		// 初始化网格系统
+		try {
+			isLoading.value = true
+			loadingText.value = '初始化网格系统...'
+			
+			// 加载网格数据
+			await gridStore.loadDesktopData()
+			
+			console.log('网格系统初始化完成')
+		} catch (error) {
+			console.error('网格系统初始化失败:', error)
+		} finally {
+			isLoading.value = false
 		}
 	})
 
@@ -235,25 +320,8 @@
 		@apply flex-1 overflow-hidden;
 	}
 
-	/* 应用卡片样式 */
-	.desktop-app-card {
-		@apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 border border-gray-200/50 dark:border-gray-700/50;
-	}
-
-	.desktop-app-card:hover {
-		@apply bg-white/90 dark:bg-gray-800/90;
-	}
-
-	.app-icon {
-		@apply w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg;
-	}
-
-	.app-title {
-		@apply text-lg font-semibold text-gray-800 dark:text-white mb-2;
-	}
-
-	.app-description {
-		@apply text-sm text-gray-600 dark:text-gray-400;
+	.desktop-footer {
+		@apply flex-shrink-0;
 	}
 
 	/* 动画效果 */
@@ -265,17 +333,5 @@
 		50% {
 			transform: translateY(-10px);
 		}
-	}
-
-	.desktop-app-card {
-		animation: float 6s ease-in-out infinite;
-	}
-
-	.desktop-app-card:nth-child(2) {
-		animation-delay: 2s;
-	}
-
-	.desktop-app-card:nth-child(3) {
-		animation-delay: 4s;
 	}
 </style>
