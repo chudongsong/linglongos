@@ -7,17 +7,26 @@
  * @param url URL字符串，默认为当前页面URL
  * @returns 参数对象
  */
-export function parseUrlParams(url: string = window.location.href): Record<string, string> {
+export function parseUrlParams(url?: string): Record<string, string> {
   const params: Record<string, string> = {}
-
+  
+  const targetUrl = url || (typeof window !== 'undefined' ? window.location.href : '')
+  
   try {
-    const urlObj = new URL(url)
-    urlObj.searchParams.forEach((value, key) => {
-      params[key] = value
-    })
+    const urlObj = new URL(targetUrl)
+    const searchParams = urlObj.search.substr(1)
+    
+    if (searchParams) {
+      searchParams.split('&').forEach(param => {
+        const [key, value] = param.split('=')
+        if (key) {
+          params[decodeURIComponent(key)] = decodeURIComponent(value || '')
+        }
+      })
+    }
   } catch (error) {
     // 如果URL无效，尝试解析查询字符串部分
-    const queryString = url.split('?')[1]
+    const queryString = targetUrl.split('?')[1]
     if (queryString) {
       queryString.split('&').forEach(param => {
         const [key, value] = param.split('=')
@@ -37,15 +46,16 @@ export function parseUrlParams(url: string = window.location.href): Record<strin
  * @returns 参数字符串
  */
 export function buildUrlParams(params: Record<string, any>): string {
-  const searchParams = new URLSearchParams()
+  const paramArray: string[] = []
 
-  Object.entries(params).forEach(([key, value]) => {
+  Object.keys(params).forEach(key => {
+    const value = params[key]
     if (value !== null && value !== undefined && value !== '') {
-      searchParams.append(key, String(value))
+      paramArray.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
     }
   })
 
-  return searchParams.toString()
+  return paramArray.join('&')
 }
 
 /**
@@ -57,17 +67,25 @@ export function buildUrlParams(params: Record<string, any>): string {
 export function addUrlParams(url: string, params: Record<string, any>): string {
   try {
     const urlObj = new URL(url)
-
-    Object.entries(params).forEach(([key, value]) => {
+    
+    Object.keys(params).forEach(key => {
+      const value = params[key]
       if (value !== null && value !== undefined && value !== '') {
-        urlObj.searchParams.set(key, String(value))
+        const searchParamsStr = urlObj.search || ''
+        const newParam = `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+        
+        if (searchParamsStr) {
+          urlObj.search = searchParamsStr + '&' + newParam
+        } else {
+          urlObj.search = '?' + newParam
+        }
       }
     })
 
     return urlObj.toString()
   } catch (error) {
     // 如果URL无效，手动拼接
-    const separator = url.includes('?') ? '&' : '?'
+    const separator = url.indexOf('?') !== -1 ? '&' : '?'
     const paramString = buildUrlParams(params)
     return paramString ? `${url}${separator}${paramString}` : url
   }
@@ -82,12 +100,17 @@ export function addUrlParams(url: string, params: Record<string, any>): string {
 export function removeUrlParams(url: string, keys: string[]): string {
   try {
     const urlObj = new URL(url)
-
+    const searchParams = parseUrlParams(url)
+    
     keys.forEach(key => {
-      urlObj.searchParams.delete(key)
+      delete searchParams[key]
     })
-
-    return urlObj.toString()
+    
+    const newParamString = buildUrlParams(searchParams)
+    const urlParts = url.split('?')
+    const baseUrl = urlParts[0] || ''
+    
+    return newParamString ? `${baseUrl}?${newParamString}` : baseUrl
   } catch (error) {
     return url
   }
@@ -102,7 +125,8 @@ export function getDomain(url: string): string {
   try {
     return new URL(url).hostname
   } catch (error) {
-    return ''
+    const match = url.match(/^https?:\/\/([^\/]+)/)
+    return match && match[1] ? match[1] : ''
   }
 }
 
@@ -115,7 +139,8 @@ export function getProtocol(url: string): string {
   try {
     return new URL(url).protocol
   } catch (error) {
-    return ''
+    const match = url.match(/^(https?):/)
+    return match ? match[1] + ':' : ''
   }
 }
 
@@ -128,7 +153,8 @@ export function getPath(url: string): string {
   try {
     return new URL(url).pathname
   } catch (error) {
-    return ''
+    const match = url.match(/^https?:\/\/[^\/]+(\/[^?#]*)?/)
+    return match && match[1] ? match[1] : '/'
   }
 }
 
@@ -156,7 +182,7 @@ export function isHttpUrl(url: string): boolean {
     const protocol = new URL(url).protocol
     return protocol === 'http:' || protocol === 'https:'
   } catch (error) {
-    return false
+    return /^https?:\/\//.test(url)
   }
 }
 
@@ -166,18 +192,19 @@ export function isHttpUrl(url: string): boolean {
  * @returns 是否为相对URL
  */
 export function isRelativeUrl(url: string): boolean {
-  return !isValidUrl(url) && !url.startsWith('//')
+  return !isValidUrl(url) && url.indexOf('//') !== 0
 }
 
 /**
- * 将相对URL转换为绝对URL
+ * 将相对URL转换为绝对URL（仅在浏览器环境中有效）
  * @param relativeUrl 相对URL
  * @param baseUrl 基础URL，默认为当前页面URL
  * @returns 绝对URL
  */
-export function toAbsoluteUrl(relativeUrl: string, baseUrl: string = window.location.href): string {
+export function toAbsoluteUrl(relativeUrl: string, baseUrl?: string): string {
   try {
-    return new URL(relativeUrl, baseUrl).toString()
+    const base = baseUrl || (typeof window !== 'undefined' ? window.location.href : '')
+    return new URL(relativeUrl, base).toString()
   } catch (error) {
     return relativeUrl
   }
@@ -208,14 +235,14 @@ export function formatUrl(
     }
 
     // 移除www
-    if (removeWww && urlObj.hostname.startsWith('www.')) {
+    if (removeWww && urlObj.hostname.indexOf('www.') === 0) {
       urlObj.hostname = urlObj.hostname.substring(4)
     }
 
     let result = urlObj.toString()
 
     // 移除末尾斜杠
-    if (removeTrailingSlash && result.endsWith('/') && urlObj.pathname === '/') {
+    if (removeTrailingSlash && result.charAt(result.length - 1) === '/' && urlObj.pathname === '/') {
       result = result.slice(0, -1)
     }
 
@@ -233,9 +260,11 @@ export function formatUrl(
 export function getFilenameFromUrl(url: string): string {
   try {
     const pathname = new URL(url).pathname
-    return pathname.split('/').pop() || ''
+    const parts = pathname.split('/')
+    return parts[parts.length - 1] || ''
   } catch (error) {
-    return ''
+    const parts = url.split('/')
+    return parts[parts.length - 1] || ''
   }
 }
 
@@ -266,7 +295,7 @@ export function buildApiUrl(
   const cleanBaseUrl = baseUrl.replace(/\/$/, '')
 
   // 确保endpoint以斜杠开头
-  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+  const cleanEndpoint = endpoint.charAt(0) === '/' ? endpoint : `/${endpoint}`
 
   let url = `${cleanBaseUrl}${cleanEndpoint}`
 
@@ -298,11 +327,13 @@ export function parsePathParams(pattern: string, path: string): Record<string, s
     const patternPart = patternParts[i]
     const pathPart = pathParts[i]
 
-    if (patternPart.startsWith(':')) {
-      const paramName = patternPart.slice(1)
-      params[paramName] = decodeURIComponent(pathPart)
-    } else if (patternPart !== pathPart) {
-      return {} // 路径不匹配
+    if (patternPart && pathPart) {
+      if (patternPart.charAt(0) === ':') {
+        const paramName = patternPart.slice(1)
+        params[paramName] = decodeURIComponent(pathPart)
+      } else if (patternPart !== pathPart) {
+        return {} // 路径不匹配
+      }
     }
   }
 

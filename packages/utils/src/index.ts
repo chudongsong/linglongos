@@ -6,26 +6,26 @@
 // 数据处理工具
 export * from './data'
 
+// 字符串工具
+export * from './string'
+
+// 数字工具
+export * from './number'
+
+// 日期工具
+export * from './date'
+
 // 文件处理工具
 export * from './file'
 
 // URL处理工具
 export * from './url'
 
-// 正则表达式工具
-export * from './regex'
+// 正则验证工具
+export * from './validator'
 
 // 格式化工具
 export * from './format'
-
-// 日期工具
-export * from './date'
-
-// 字符串工具
-export * from './string'
-
-// 数字工具
-export * from './number'
 
 /**
  * 工具库版本信息

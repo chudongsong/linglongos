@@ -1,5 +1,5 @@
 /**
- * 常用正则表达式工具
+ * 常用正则表达式和验证工具
  */
 
 /**
@@ -48,14 +48,8 @@ export const RegexPatterns = {
   // 正整数
   positiveInteger: /^[1-9]\d*$/,
 
-  // 非负整数（包括0）
-  nonNegativeInteger: /^\d+$/,
-
   // 浮点数
   float: /^-?\d+(\.\d+)?$/,
-
-  // 正浮点数
-  positiveFloat: /^[1-9]\d*\.\d+|0\.\d*[1-9]\d*$/,
 
   // 银行卡号
   bankCard: /^[1-9]\d{12,19}$/,
@@ -76,16 +70,6 @@ export const RegexPatterns = {
   // HTML标签
   htmlTag: /<[^>]+>/g,
 
-  // 空白字符
-  whitespace: /\s+/g,
-
-  // 文件扩展名
-  fileExtension: /\.[^.]+$/,
-
-  // 版本号（语义化版本）
-  semver:
-    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
-
   // 十六进制颜色值
   hexColor: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
 
@@ -103,6 +87,10 @@ export const RegexPatterns = {
 
   // 日期时间格式（YYYY-MM-DD HH:MM:SS）
   datetime: /^\d{4}-\d{2}-\d{2} ([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/,
+
+  // 语义化版本号
+  semver:
+    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
 } as const
 
 /**
@@ -246,143 +234,6 @@ export const Validator = {
 } as const
 
 /**
- * 字符串处理工具
- */
-export const StringProcessor = {
-  /**
-   * 移除HTML标签
-   */
-  removeHtmlTags: (str: string): string => str.replace(RegexPatterns.htmlTag, ''),
-
-  /**
-   * 移除多余空白字符
-   */
-  removeExtraWhitespace: (str: string): string => str.replace(RegexPatterns.whitespace, ' ').trim(),
-
-  /**
-   * 提取文件扩展名
-   */
-  getFileExtension: (filename: string): string => {
-    const match = filename.match(RegexPatterns.fileExtension)
-    return match ? match[0] : ''
-  },
-
-  /**
-   * 提取所有邮箱地址
-   */
-  extractEmails: (text: string): string[] => {
-    const matches = text.match(new RegExp(RegexPatterns.email.source, 'g'))
-    return matches || []
-  },
-
-  /**
-   * 提取所有URL
-   */
-  extractUrls: (text: string): string[] => {
-    const matches = text.match(new RegExp(RegexPatterns.url.source, 'g'))
-    return matches || []
-  },
-
-  /**
-   * 提取所有手机号
-   */
-  extractPhones: (text: string): string[] => {
-    const matches = text.match(new RegExp(RegexPatterns.phone.source, 'g'))
-    return matches || []
-  },
-
-  /**
-   * 脱敏手机号
-   */
-  maskPhone: (phone: string): string => {
-    if (!Validator.isPhone(phone)) return phone
-    return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
-  },
-
-  /**
-   * 脱敏邮箱
-   */
-  maskEmail: (email: string): string => {
-    if (!Validator.isEmail(email)) return email
-    return email.replace(/(.{1,3}).*@/, '$1***@')
-  },
-
-  /**
-   * 脱敏身份证号
-   */
-  maskIdCard: (idCard: string): string => {
-    if (!Validator.isIdCard(idCard)) return idCard
-    return idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2')
-  },
-
-  /**
-   * 脱敏银行卡号
-   */
-  maskBankCard: (bankCard: string): string => {
-    if (!Validator.isBankCard(bankCard)) return bankCard
-    return bankCard.replace(/(\d{4})\d+(\d{4})/, '$1****$2')
-  },
-
-  /**
-   * 高亮关键词
-   */
-  highlightKeywords: (
-    text: string,
-    keywords: string[],
-    className: string = 'highlight'
-  ): string => {
-    if (!keywords.length) return text
-
-    const pattern = new RegExp(
-      `(${keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
-      'gi'
-    )
-    return text.replace(pattern, `<span class="${className}">$1</span>`)
-  },
-
-  /**
-   * 转换为驼峰命名
-   */
-  toCamelCase: (str: string): string => {
-    return str.replace(/[-_\s]+(.)?/g, (_, char) => (char ? char.toUpperCase() : ''))
-  },
-
-  /**
-   * 转换为短横线命名
-   */
-  toKebabCase: (str: string): string => {
-    return str
-      .replace(/([A-Z])/g, '-$1')
-      .toLowerCase()
-      .replace(/^-/, '')
-  },
-
-  /**
-   * 转换为下划线命名
-   */
-  toSnakeCase: (str: string): string => {
-    return str
-      .replace(/([A-Z])/g, '_$1')
-      .toLowerCase()
-      .replace(/^_/, '')
-  },
-
-  /**
-   * 首字母大写
-   */
-  capitalize: (str: string): string => {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-  },
-
-  /**
-   * 每个单词首字母大写
-   */
-  titleCase: (str: string): string => {
-    return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
-  },
-} as const
-
-/**
  * 密码强度检测
  */
 export function checkPasswordStrength(password: string): {
@@ -460,5 +311,9 @@ export function checkPasswordStrength(password: string): {
     level = 'very-strong'
   }
 
-  return { score, level, suggestions }
+  return { 
+    score: Math.round((score / 7) * 100), 
+    level, 
+    suggestions 
+  }
 }

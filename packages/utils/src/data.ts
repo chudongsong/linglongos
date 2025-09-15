@@ -14,7 +14,7 @@ export const DataType = {
   /**
    * 判断是否为数字
    */
-  isNumber: (value: unknown): value is number => typeof value === 'number' && !Number.isNaN(value),
+  isNumber: (value: unknown): value is number => typeof value === 'number' && !isNaN(value),
 
   /**
    * 判断是否为布尔值
@@ -68,7 +68,7 @@ export const DataType = {
    * 判断是否为日期对象
    */
   isDate: (value: unknown): value is Date =>
-    value instanceof Date && !Number.isNaN(value.getTime()),
+    value instanceof Date && !isNaN(value.getTime()),
 
   /**
    * 判断是否为正则表达式
@@ -79,13 +79,13 @@ export const DataType = {
    * 判断是否为Promise
    */
   isPromise: (value: unknown): value is Promise<unknown> =>
-    value instanceof Promise || (typeof value === 'object' && value !== null && 'then' in value),
+    typeof value === 'object' && value !== null && 'then' in value && typeof (value as any).then === 'function',
 
   /**
    * 判断是否为整数
    */
   isInteger: (value: unknown): value is number =>
-    typeof value === 'number' && Number.isInteger(value),
+    typeof value === 'number' && value % 1 === 0,
 
   /**
    * 判断是否为正数
@@ -113,7 +113,7 @@ export function deepClone<T>(obj: T): T {
   }
 
   if (obj instanceof RegExp) {
-    return new RegExp(obj.source, obj.flags) as T
+    return new RegExp(obj.source, (obj as any).flags || '') as T
   }
 
   if (Array.isArray(obj)) {
@@ -145,10 +145,10 @@ export function deepMerge<T extends Record<string, any>>(target: T, ...sources: 
   if (DataType.isObject(target) && DataType.isObject(source)) {
     for (const key in source) {
       if (source[key] && DataType.isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} })
+        if (!target[key]) target[key] = {} as any
         deepMerge(target[key] as Record<string, any>, source[key] as Record<string, any>)
       } else {
-        Object.assign(target, { [key]: source[key] })
+        target[key] = source[key] as any
       }
     }
   }
@@ -166,18 +166,19 @@ export function uniqueArray<T>(arr: T[], key?: keyof T): T[] {
   if (!Array.isArray(arr)) return []
 
   if (key) {
-    const seen = new Set()
+    const seen: any[] = []
     return arr.filter(item => {
       const value = item[key]
-      if (seen.has(value)) {
+      if (seen.indexOf(value) !== -1) {
         return false
       }
-      seen.add(value)
+      seen.push(value)
       return true
     })
   }
 
-  return [...new Set(arr)]
+  // 简单去重实现
+  return arr.filter((item, index) => arr.indexOf(item) === index)
 }
 
 /**
@@ -325,24 +326,26 @@ export function arrayToTree<T extends Record<string, any>>(
   } = options
 
   const tree: T[] = []
-  const map = new Map<any, T>()
+  const map: Record<string, T> = {}
 
   // 创建映射
   for (const item of arr) {
-    map.set(item[idKey], { ...item, [childrenKey]: [] })
+    map[item[idKey]] = { ...item, [childrenKey]: [] }
   }
 
   // 构建树形结构
   for (const item of arr) {
-    const node = map.get(item[idKey])!
+    const node = map[item[idKey]]
     const parentId = item[parentIdKey]
 
-    if (parentId === rootValue) {
-      tree.push(node)
-    } else {
-      const parent = map.get(parentId)
-      if (parent) {
-        parent[childrenKey].push(node)
+    if (node) {
+      if (parentId === rootValue) {
+        tree.push(node)
+      } else {
+        const parent = map[parentId]
+        if (parent) {
+          parent[childrenKey].push(node)
+        }
       }
     }
   }

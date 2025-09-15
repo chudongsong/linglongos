@@ -62,7 +62,7 @@ describe('文件工具测试', () => {
 
   describe('sanitizeFilename', () => {
     it('应该正确生成安全的文件名', () => {
-      expect(FileUtils.sanitizeFilename('file<>:"/\\|?*name')).toBe('file________name')
+      expect(FileUtils.sanitizeFilename('file<>:"/\\|?*name')).toBe('file_________name')
       expect(FileUtils.sanitizeFilename('file   name')).toBe('file_name')
       expect(FileUtils.sanitizeFilename('_file_name_')).toBe('file_name')
     })

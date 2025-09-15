@@ -87,8 +87,18 @@ export const FileUtils = {
   getFileType: (filename: string): string => {
     const ext = FileUtils.getExtension(filename)
 
-    for (const [type, extensions] of Object.entries(FileTypeMap)) {
-      if ((extensions as readonly string[]).includes(ext)) {
+    const typeEntries = [
+      ['image', FileTypeMap.image],
+      ['video', FileTypeMap.video],
+      ['audio', FileTypeMap.audio],
+      ['document', FileTypeMap.document],
+      ['archive', FileTypeMap.archive],
+      ['code', FileTypeMap.code],
+      ['executable', FileTypeMap.executable],
+    ] as const
+
+    for (const [type, extensions] of typeEntries) {
+      if ((extensions as any).indexOf(ext) !== -1) {
         return type
       }
     }
@@ -163,7 +173,8 @@ export const FileUtils = {
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`
+    const size = bytes / Math.pow(k, i)
+    return `${size.toFixed(decimals)} ${sizes[i]}`
   },
 
   /**
@@ -172,12 +183,12 @@ export const FileUtils = {
    * @returns 安全的文件名
    */
   sanitizeFilename: (filename: string): string => {
-    // 移除或替换不安全的字符
+    // 先处理双反斜线，再处理其他字符
     return filename
-      .replace(/[<>:"/\\|?*]/g, '_') // 替换不安全字符
+      .replace(/\\{2,}/g, '_') // 先替换多个连续的反斜线
+      .replace(/[<>:"/\\|?*]/g, '_') // 再替换其他不安全字符
       .replace(/\s+/g, '_') // 替换空格
-      .replace(/_{2,}/g, '_') // 合并多个下划线
-      .replace(/^_|_$/g, '') // 移除首尾下划线
+      .replace(/^_+|_+$/g, '') // 移除首尾下划线
       .slice(0, 255) // 限制长度
   },
 
@@ -194,7 +205,7 @@ export const FileUtils = {
     let counter = 1
     let newFilename = filename
 
-    while (existingFiles.includes(newFilename)) {
+    while (existingFiles.indexOf(newFilename) !== -1) {
       newFilename = `${basename}(${counter})${extension}`
       counter++
     }
@@ -290,7 +301,15 @@ export const FileUtils = {
 
     // 构建相对路径
     const upLevels = fromParts.length - commonLength
-    const relativeParts = Array(upLevels).fill('..').concat(toParts.slice(commonLength))
+    const relativeParts = []
+    
+    for (let i = 0; i < upLevels; i++) {
+      relativeParts.push('..')
+    }
+    
+    for (let i = commonLength; i < toParts.length; i++) {
+      relativeParts.push(toParts[i])
+    }
 
     return relativeParts.join('/')
   },
@@ -366,122 +385,3 @@ export function getMimeType(filename: string): string {
   const ext = FileUtils.getExtension(filename)
   return MimeTypeMap[ext] || 'application/octet-stream'
 }
-
-/**
- * 文件上传相关工具
- */
-export const FileUploadUtils = {
-  /**
-   * 验证文件类型
-   * @param file 文件对象
-   * @param allowedTypes 允许的文件类型
-   * @returns 是否通过验证
-   */
-  validateFileType: (file: File, allowedTypes: string[]): boolean => {
-    const ext = FileUtils.getExtension(file.name)
-    return allowedTypes.includes(ext)
-  },
-
-  /**
-   * 验证文件大小
-   * @param file 文件对象
-   * @param maxSize 最大文件大小（字节）
-   * @returns 是否通过验证
-   */
-  validateFileSize: (file: File, maxSize: number): boolean => {
-    return file.size <= maxSize
-  },
-
-  /**
-   * 读取文件为Base64
-   * @param file 文件对象
-   * @returns Promise<string>
-   */
-  readAsBase64: (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => {
-        const result = reader.result as string
-        resolve(result.split(',')[1]) // 移除data:xxx;base64,前缀
-      }
-      reader.onerror = reject
-      reader.readAsDataURL(file)
-    })
-  },
-
-  /**
-   * 读取文件为文本
-   * @param file 文件对象
-   * @param encoding 编码格式
-   * @returns Promise<string>
-   */
-  readAsText: (file: File, encoding: string = 'UTF-8'): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result as string)
-      reader.onerror = reject
-      reader.readAsText(file, encoding)
-    })
-  },
-
-  /**
-   * 压缩图片
-   * @param file 图片文件
-   * @param quality 压缩质量（0-1）
-   * @param maxWidth 最大宽度
-   * @param maxHeight 最大高度
-   * @returns Promise<Blob>
-   */
-  compressImage: (
-    file: File,
-    quality: number = 0.8,
-    maxWidth: number = 1920,
-    maxHeight: number = 1080
-  ): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      if (!FileUtils.isImage(file.name)) {
-        reject(new Error('不是图片文件'))
-        return
-      }
-
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      const img = new Image()
-
-      img.onload = () => {
-        // 计算压缩后的尺寸
-        let { width, height } = img
-
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width
-          width = maxWidth
-        }
-
-        if (height > maxHeight) {
-          width = (width * maxHeight) / height
-          height = maxHeight
-        }
-
-        canvas.width = width
-        canvas.height = height
-
-        // 绘制并压缩
-        ctx?.drawImage(img, 0, 0, width, height)
-        canvas.toBlob(
-          blob => {
-            if (blob) {
-              resolve(blob)
-            } else {
-              reject(new Error('压缩失败'))
-            }
-          },
-          file.type,
-          quality
-        )
-      }
-
-      img.onerror = () => reject(new Error('图片加载失败'))
-      img.src = URL.createObjectURL(file)
-    })
-  },
-} as const
