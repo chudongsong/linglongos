@@ -9,10 +9,10 @@ import { logger } from '@/utils/logger';
 
 const router = Router();
 
-// Apply authentication to all routes
+// 对所有路由应用认证
 router.use(authenticateToken);
 
-// Validation schemas
+// 验证模式
 const createConfigSchema = Joi.object({
   name: Joi.string().min(1).max(100).required(),
   panelType: Joi.string().valid('onePanel', 'baota').required(),
@@ -37,14 +37,14 @@ const listQuerySchema = Joi.object({
 
 /**
  * GET /api/config/panels
- * Get list of panel configurations for the authenticated user
+ * 获取已认证用户的面板配置列表
  */
 router.get('/panels', asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
     throw createAuthError('Authentication required', 'AUTH_REQUIRED');
   }
 
-  // Validate query parameters
+  // 验证查询参数
   const { error, value } = listQuerySchema.validate(req.query);
   if (error) {
     throw createValidationError(error.details[0].message);
@@ -53,7 +53,7 @@ router.get('/panels', asyncHandler(async (req: Request, res: Response) => {
   const { panelType, isActive, healthStatus, search, page, limit } = value;
   const offset = (page - 1) * limit;
 
-  // Get panel configurations
+  // 获取面板配置
   const configs = await panelConfigRepository.list({
     userId: req.user.userId,
     panelType,
@@ -64,7 +64,7 @@ router.get('/panels', asyncHandler(async (req: Request, res: Response) => {
     offset,
   });
 
-  // Get total count
+  // 获取总数
   const total = await panelConfigRepository.count({
     userId: req.user.userId,
     panelType,
@@ -73,7 +73,7 @@ router.get('/panels', asyncHandler(async (req: Request, res: Response) => {
     search,
   });
 
-  // Remove sensitive data from response
+  // 从响应中移除敏感数据
   const sanitizedConfigs = configs.map(config => ({
     id: config.id,
     name: config.name,
@@ -103,7 +103,7 @@ router.get('/panels', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * GET /api/config/panels/:id
- * Get a specific panel configuration
+ * 获取特定的面板配置
  */
 router.get('/panels/:id', asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
@@ -126,12 +126,12 @@ router.get('/panels/:id', asyncHandler(async (req: Request, res: Response) => {
     });
   }
 
-  // Check if user owns this configuration
+  // 检查用户是否拥有此配置
   if (config.user_id !== req.user.userId) {
     throw createAuthError('Access denied', 'ACCESS_DENIED');
   }
 
-  // Return sanitized configuration (without API key)
+  // 返回清理后的配置（不包含 API 密钥）
   res.json({
     success: true,
     data: {
@@ -153,7 +153,7 @@ router.get('/panels/:id', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * POST /api/config/panels
- * Create a new panel configuration
+ * 创建新的面板配置
  */
 router.post('/panels', asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
@@ -168,13 +168,13 @@ router.post('/panels', asyncHandler(async (req: Request, res: Response) => {
 
   const { name, panelType, endpoint, apiKey } = value;
 
-  // Check if configuration name already exists for this user
+  // 检查该用户的配置名称是否已存在
   const nameExists = await panelConfigRepository.existsForUser(req.user.userId, name);
   if (nameExists) {
     throw createValidationError('Configuration name already exists');
   }
 
-  // Create configuration
+  // 创建配置
   const newConfig = await panelConfigRepository.create({
     userId: req.user.userId,
     name,

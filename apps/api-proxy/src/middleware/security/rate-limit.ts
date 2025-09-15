@@ -41,7 +41,7 @@ export class RateLimiter {
   }
 
   private defaultKeyGenerator(req: Request): string {
-    // Use user ID if available, otherwise fall back to IP
+    // 如果有用户 ID，优先使用，否则使用 IP
     if (req.user?.userId) {
       return `user:${req.user.userId}`;
     }
@@ -81,17 +81,17 @@ export class RateLimiter {
       }>(key);
       
       if (!hitData || hitData.windowStart < windowStart) {
-        // Initialize or reset window
+        // 初始化或重置窗口
         hitData = {
           requests: [],
           windowStart: now,
         };
       }
       
-      // Clean old requests outside the window
+      // 清理窗口外的旧请求
       hitData.requests = hitData.requests.filter(req => req.timestamp > windowStart);
       
-      // Count requests based on options
+      // 根据选项计算请求数
       let requestCount = hitData.requests.length;
       if (this.options.skipSuccessfulRequests) {
         requestCount = hitData.requests.filter(req => !req.success).length;
@@ -100,13 +100,13 @@ export class RateLimiter {
         requestCount = hitData.requests.filter(req => req.success).length;
       }
       
-      // Check if limit exceeded
+      // 检查是否超出限制
       if (requestCount >= this.options.maxRequests) {
         this.options.onLimitReached(req, res);
         
         const resetTime = new Date(hitData.windowStart + this.options.windowMs);
         
-        // Set rate limit headers
+        // 设置限速头
         res.setHeader('X-RateLimit-Limit', this.options.maxRequests);
         res.setHeader('X-RateLimit-Remaining', 0);
         res.setHeader('X-RateLimit-Reset', resetTime.toISOString());
@@ -124,16 +124,16 @@ export class RateLimiter {
         });
       }
       
-      // Add current request to tracking
+      // 将当前请求添加到跟踪列表
       hitData.requests.push({
         timestamp: now,
         success: true, // Will be updated in response handler if needed
       });
       
-      // Update cache
+      // 更新缓存
       this.cache.set(key, hitData);
       
-      // Set rate limit headers
+      // 设置限速头
       const remaining = Math.max(0, this.options.maxRequests - requestCount - 1);
       const resetTime = new Date(hitData.windowStart + this.options.windowMs);
       
@@ -141,10 +141,10 @@ export class RateLimiter {
       res.setHeader('X-RateLimit-Remaining', remaining);
       res.setHeader('X-RateLimit-Reset', resetTime.toISOString());
       
-      // Update request status on response
+      // 在响应时更新请求状态
       const originalJson = res.json;
       res.json = function(body: any) {
-        // Update the request status based on response
+        // 根据响应更新请求状态
         const currentData = this.cache?.get(key);
         if (currentData && currentData.requests.length > 0) {
           const lastRequest = currentData.requests[currentData.requests.length - 1];
@@ -192,7 +192,7 @@ export class RateLimiter {
   }
 }
 
-// Pre-configured rate limiters
+// 预配置的限速器
 export const createStrictRateLimit = (maxRequests: number = 10, windowMs: number = 60000) => {
   return new RateLimiter({
     windowMs,
@@ -223,5 +223,5 @@ export const createAuthRateLimit = (maxRequests: number = 5, windowMs: number = 
   });
 };
 
-// Export default rate limiter instance
+// 导出默认限速器实例
 export const defaultRateLimit = createAPIRateLimit();

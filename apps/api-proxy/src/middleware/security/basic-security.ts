@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
 /**
- * Basic input sanitization middleware
+ * 基本输入清理中间件
  */
 export const sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
-  // Basic sanitization - remove dangerous patterns
+  // 基本清理 - 移除危险模式
   if (req.body && typeof req.body === 'object') {
     sanitizeObject(req.body);
   }
@@ -15,7 +15,7 @@ export const sanitizeInput = (req: Request, res: Response, next: NextFunction) =
 };
 
 /**
- * Security headers middleware
+ * 安全头中间件
  */
 export const securityHeaders = (req: Request, res: Response, next: NextFunction) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -25,7 +25,7 @@ export const securityHeaders = (req: Request, res: Response, next: NextFunction)
 };
 
 /**
- * Request size validation middleware
+ * 请求大小验证中间件
  */
 export const validateRequestSize = (maxSize: string = '10mb') => {
   return (req: Request, res: Response, next: NextFunction) => {

@@ -4,7 +4,7 @@ import { PanelDetectionResult } from '@/types';
 import { logger } from '@/utils/logger';
 import { createValidationError } from '@/middleware/error-handler';
 
-// Extend Request type to include panel detection results
+// 扩展 Request 类型以包含面板检测结果
 declare global {
   namespace Express {
     interface Request {
@@ -15,24 +15,24 @@ declare global {
 }
 
 /**
- * Middleware to detect panel type from target endpoint
+ * 从目标端点检测面板类型的中间件
  */
 export const detectPanelType = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Extract target endpoint from request
+    // 从请求中提取目标端点
     const endpoint = extractEndpointFromRequest(req);
     
     if (!endpoint) {
       throw createValidationError('Target endpoint not found in request');
     }
 
-    // Store endpoint in request for later use
+    // 将端点存储在请求中以供后续使用
     req.targetEndpoint = endpoint;
 
-    // Detect panel type
+    // 检测面板类型
     const detectionResult = await panelDetectionService.detectPanelType(endpoint, req.headers as Record<string, string>);
     
-    // Store detection result in request
+    // 将检测结果存储在请求中
     req.panelDetection = detectionResult;
 
     logger.debug('Panel detection completed', {
@@ -54,7 +54,7 @@ export const detectPanelType = async (req: Request, res: Response, next: NextFun
 };
 
 /**
- * Middleware to require specific panel type
+ * 需要特定面板类型的中间件
  */
 export const requirePanelType = (expectedPanelType: 'onePanel' | 'baota') => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -85,7 +85,7 @@ export const requirePanelType = (expectedPanelType: 'onePanel' | 'baota') => {
 };
 
 /**
- * Middleware to require specific panel capabilities
+ * 需要特定面板能力的中间件
  */
 export const requireCapabilities = (requiredCapabilities: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -121,33 +121,33 @@ export const requireCapabilities = (requiredCapabilities: string[]) => {
 };
 
 /**
- * Extract target endpoint from request
+ * 从请求中提取目标端点
  */
 function extractEndpointFromRequest(req: Request): string | null {
-  // Check for explicit endpoint in headers
+  // 检查头中的显式端点
   const headerEndpoint = req.headers['x-target-endpoint'] as string;
   if (headerEndpoint) {
     return headerEndpoint;
   }
 
-  // Check for endpoint in query parameters
+  // 检查查询参数中的端点
   const queryEndpoint = req.query.endpoint as string;
   if (queryEndpoint) {
     return queryEndpoint;
   }
 
-  // Check for endpoint in request body
+  // 检查请求体中的端点
   if (req.body && req.body.endpoint) {
     return req.body.endpoint;
   }
 
-  // Try to extract from URL path (for proxy routes)
+  // 尝试从 URL 路径中提取（用于代理路由）
   const pathSegments = req.path.split('/').filter(segment => segment);
   
-  // Look for URL-like patterns in path segments
+  // 在路径段中查找 URL 模式
   for (const segment of pathSegments) {
     if (segment.startsWith('http%3A%2F%2F') || segment.startsWith('https%3A%2F%2F')) {
-      // URL-encoded endpoint
+      // URL 编码的端点
       return decodeURIComponent(segment);
     }
     
@@ -160,7 +160,7 @@ function extractEndpointFromRequest(req: Request): string | null {
 }
 
 /**
- * Middleware to validate endpoint format
+ * 验证端点格式的中间件
  */
 export const validateEndpoint = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -172,16 +172,16 @@ export const validateEndpoint = (req: Request, res: Response, next: NextFunction
       );
     }
 
-    // Validate URL format
+    // 验证 URL 格式
     try {
       const url = new URL(endpoint);
       
-      // Check protocol
+      // 检查协议
       if (!['http:', 'https:'].includes(url.protocol)) {
         throw createValidationError('Endpoint must use HTTP or HTTPS protocol');
       }
 
-      // Check hostname
+      // 检查主机名
       if (!url.hostname) {
         throw createValidationError('Endpoint must have a valid hostname');
       }

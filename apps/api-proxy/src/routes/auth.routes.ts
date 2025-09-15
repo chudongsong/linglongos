@@ -8,7 +8,7 @@ import { logger } from '@/utils/logger';
 
 const router = Router();
 
-// Validation schemas
+// 验证模式
 const loginSchema = Joi.object({
   username: Joi.string().min(3).max(50).required(),
   password: Joi.string().min(6).max(128).required(),
@@ -26,7 +26,7 @@ const refreshTokenSchema = Joi.object({
 
 /**
  * POST /api/auth/login
- * User login
+ * 用户登录
  */
 router.post('/login', asyncHandler(async (req: Request, res: Response) => {
   // Validate request body
@@ -37,13 +37,13 @@ router.post('/login', asyncHandler(async (req: Request, res: Response) => {
 
   const { username, password } = value;
 
-  // Find user by username
+  // 根据用户名查找用户
   const user = await userRepository.findByUsername(username);
   if (!user || !user.is_active) {
     throw createAuthError('Invalid username or password', 'INVALID_CREDENTIALS');
   }
 
-  // Verify password
+  // 验证密码
   const isPasswordValid = await authService.verifyPassword(password, user.password_hash);
   if (!isPasswordValid) {
     throw createAuthError('Invalid username or password', 'INVALID_CREDENTIALS');
@@ -55,7 +55,7 @@ router.post('/login', asyncHandler(async (req: Request, res: Response) => {
     username: user.username,
   });
 
-  // Log successful login
+  // 记录成功登录
   logger.info('User login successful', {
     userId: user.user_id,
     username: user.username,
@@ -84,7 +84,7 @@ router.post('/login', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * POST /api/auth/register
- * User registration
+ * 用户注册
  */
 router.post('/register', asyncHandler(async (req: Request, res: Response) => {
   // Validate request body
@@ -95,13 +95,13 @@ router.post('/register', asyncHandler(async (req: Request, res: Response) => {
 
   const { username, email, password } = value;
 
-  // Check if username already exists
+  // 检查用户名是否已存在
   const existingUser = await userRepository.findByUsername(username);
   if (existingUser) {
     throw createValidationError('Username already exists');
   }
 
-  // Check if email already exists (if provided)
+  // 检查邮箱是否已存在（如果提供）
   if (email) {
     const existingEmail = await userRepository.findByEmail(email);
     if (existingEmail) {
@@ -109,7 +109,7 @@ router.post('/register', asyncHandler(async (req: Request, res: Response) => {
     }
   }
 
-  // Create new user
+  // 创建新用户
   const newUser = await userRepository.create({
     username,
     email,
@@ -122,7 +122,7 @@ router.post('/register', asyncHandler(async (req: Request, res: Response) => {
     username: newUser.username,
   });
 
-  // Log successful registration
+  // 记录成功注册
   logger.info('User registration successful', {
     userId: newUser.user_id,
     username: newUser.username,
@@ -151,7 +151,7 @@ router.post('/register', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * POST /api/auth/refresh
- * Refresh access token
+ * 刷新访问令牌
  */
 router.post('/refresh', asyncHandler(async (req: Request, res: Response) => {
   // Validate request body
@@ -163,7 +163,7 @@ router.post('/refresh', asyncHandler(async (req: Request, res: Response) => {
   const { refreshToken } = value;
 
   try {
-    // Verify and refresh tokens
+    // 验证并刷新令牌
     const newTokens = authService.refreshAccessToken(refreshToken);
 
     logger.info('Token refresh successful', {
@@ -189,11 +189,11 @@ router.post('/refresh', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * POST /api/auth/logout
- * User logout (for future implementation with token blacklisting)
+ * 用户登出（为将来实现令牌黑名单功能预留）
  */
 router.post('/logout', asyncHandler(async (req: Request, res: Response) => {
-  // TODO: Implement token blacklisting
-  // For now, we'll just return success
+  // TODO: 实现令牌黑名单
+  // 目前只返回成功
   
   logger.info('User logout', {
     requestId: req.requestId,
@@ -208,15 +208,15 @@ router.post('/logout', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * GET /api/auth/me
- * Get current user information
+ * 获取当前用户信息
  */
 router.get('/me', asyncHandler(async (req: Request, res: Response) => {
-  // This endpoint requires authentication
+  // 此端点需要认证
   if (!req.user) {
     throw createAuthError('Authentication required', 'AUTH_REQUIRED');
   }
 
-  // Get user details from database
+  // 从数据库获取用户详情
   const user = await userRepository.findByUserId(req.user.userId);
   if (!user || !user.is_active) {
     throw createAuthError('User not found or inactive', 'USER_NOT_FOUND');
@@ -239,7 +239,7 @@ router.get('/me', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * PUT /api/auth/password
- * Change user password
+ * 修改用户密码
  */
 router.put('/password', asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
@@ -258,13 +258,13 @@ router.put('/password', asyncHandler(async (req: Request, res: Response) => {
 
   const { currentPassword, newPassword } = value;
 
-  // Verify current password
+  // 验证当前密码
   const isCurrentPasswordValid = await userRepository.verifyPassword(req.user.userId, currentPassword);
   if (!isCurrentPasswordValid) {
     throw createAuthError('Current password is incorrect', 'INVALID_PASSWORD');
   }
 
-  // Update password
+  // 更新密码
   await userRepository.update(req.user.userId, { password: newPassword });
 
   logger.info('Password changed successfully', {

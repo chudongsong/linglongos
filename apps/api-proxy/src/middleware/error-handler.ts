@@ -40,7 +40,7 @@ export const errorHandler = (
   let message = 'Internal server error';
   let details = undefined;
 
-  // Handle known AppError
+  // 处理已知的 AppError
   if (error instanceof AppError) {
     statusCode = error.statusCode;
     category = error.category;
@@ -48,7 +48,7 @@ export const errorHandler = (
     message = error.message;
     details = error.details;
   }
-  // Handle JWT errors
+  // 处理 JWT 错误
   else if (error.name === 'JsonWebTokenError') {
     statusCode = 401;
     category = ErrorCategory.AUTHENTICATION;
@@ -61,21 +61,21 @@ export const errorHandler = (
     code = 'TOKEN_EXPIRED';
     message = 'Authentication token has expired';
   }
-  // Handle validation errors
+  // 处理验证错误
   else if (error.name === 'ValidationError') {
     statusCode = 400;
     category = ErrorCategory.VALIDATION;
     code = 'VALIDATION_ERROR';
     message = error.message;
   }
-  // Handle syntax errors
+  // 处理语法错误
   else if (error instanceof SyntaxError && 'body' in error) {
     statusCode = 400;
     category = ErrorCategory.VALIDATION;
     code = 'INVALID_JSON';
     message = 'Invalid JSON in request body';
   }
-  // Handle unknown errors
+  // 处理未知错误
   else {
     message = error.message || message;
   }
@@ -89,7 +89,7 @@ export const errorHandler = (
     requestId: req.requestId || 'unknown',
   };
 
-  // Log error
+  // 记录错误
   if (statusCode >= 500) {
     logger.error('Server Error:', {
       requestId: req.requestId,
@@ -109,21 +109,21 @@ export const errorHandler = (
     });
   }
 
-  // Send error response
+  // 发送错误响应
   res.status(statusCode).json({
     success: false,
     error: errorResponse,
   });
 };
 
-// Async error wrapper
+// 异步错误包装器
 export const asyncHandler = (fn: Function) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
 
-// Create specific error types
+// 创建特定错误类型
 export const createAuthError = (message: string, code: string = 'AUTH_ERROR') => {
   return new AppError(message, 401, ErrorCategory.AUTHENTICATION, code);
 };

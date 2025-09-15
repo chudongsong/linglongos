@@ -3,7 +3,7 @@ import { authService, TokenPayload } from '@/auth/auth.service';
 import { createAuthError } from '@/middleware/error-handler';
 import { logger } from '@/utils/logger';
 
-// Extend Request type to include user information
+// 扩展 Request 类型以包含用户信息
 declare global {
   namespace Express {
     interface Request {
@@ -13,17 +13,17 @@ declare global {
 }
 
 /**
- * Middleware to authenticate JWT tokens
+ * JWT 令牌认证中间件
  */
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authService.extractTokenFromHeader(authHeader);
     
-    // Verify the token
+    // 验证令牌
     const payload = authService.verifyAccessToken(token);
     
-    // Attach user info to request
+    // 将用户信息附加到请求对象
     req.user = payload;
     
     logger.debug('Token authenticated successfully', {
@@ -46,7 +46,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 };
 
 /**
- * Optional authentication middleware - doesn't throw error if token is missing
+ * 可选认证中间件 - 当令牌缺失时不抛出错误
  */
 export const optionalAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -74,13 +74,13 @@ export const optionalAuth = (req: Request, res: Response, next: NextFunction) =>
       requestId: req.requestId,
     });
     
-    // For optional auth, we don't pass the error to next()
+    // 对于可选认证，我们不传递错误给 next()
     next();
   }
 };
 
 /**
- * Middleware to require specific permissions (placeholder for future implementation)
+ * 需要特定权限的中间件（为将来实现预留）
  */
 export const requirePermission = (permission: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -88,8 +88,8 @@ export const requirePermission = (permission: string) => {
       throw createAuthError('Authentication required', 'AUTH_REQUIRED');
     }
     
-    // TODO: Implement permission checking logic
-    // For now, we'll just check if user is authenticated
+    // TODO: 实现权限检查逻辑
+    // 目前只检查用户是否已认证
     
     logger.debug('Permission check passed', {
       userId: req.user.userId,
@@ -102,15 +102,15 @@ export const requirePermission = (permission: string) => {
 };
 
 /**
- * Middleware to require admin role (placeholder for future implementation)
+ * 需要管理员角色的中间件（为将来实现预留）
  */
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     throw createAuthError('Authentication required', 'AUTH_REQUIRED');
   }
   
-  // TODO: Implement admin role checking
-  // For now, we'll allow all authenticated users
+  // TODO: 实现管理员角色检查
+  // 目前允许所有已认证用户
   
   logger.debug('Admin check passed', {
     userId: req.user.userId,
@@ -121,7 +121,7 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
 };
 
 /**
- * Middleware to validate user owns resource (placeholder for future implementation)
+ * 验证用户拥有资源的中间件（为将来实现预留）
  */
 export const requireOwnership = (resourceParam: string = 'id') => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -131,8 +131,8 @@ export const requireOwnership = (resourceParam: string = 'id') => {
     
     const resourceId = req.params[resourceParam];
     
-    // TODO: Implement ownership checking logic
-    // This would typically check if the authenticated user owns the resource
+    // TODO: 实现所有权检查逻辑
+    // 这通常会检查已认证用户是否拥有该资源
     
     logger.debug('Ownership check passed', {
       userId: req.user.userId,

@@ -2,7 +2,7 @@ import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { serverConfig } from '@/config';
 
-// Custom log format
+// 自定义日志格式
 const logFormat = winston.format.combine(
   winston.format.timestamp({
     format: 'YYYY-MM-DD HH:mm:ss',
@@ -20,13 +20,13 @@ const logFormat = winston.format.combine(
   })
 );
 
-// Create the logger
+// 创建日志记录器
 export const logger = winston.createLogger({
   level: serverConfig.logging.level,
   format: logFormat,
   defaultMeta: { service: 'api-proxy' },
   transports: [
-    // Console transport
+    // 控制台输出
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
@@ -34,7 +34,7 @@ export const logger = winston.createLogger({
       ),
     }),
     
-    // File transport with rotation
+    // 带轮转的文件输出
     new DailyRotateFile({
       filename: serverConfig.logging.file.replace('.log', '-%DATE%.log'),
       datePattern: 'YYYY-MM-DD',
@@ -47,7 +47,7 @@ export const logger = winston.createLogger({
       ),
     }),
     
-    // Error file transport
+    // 错误文件输出
     new DailyRotateFile({
       filename: serverConfig.logging.file.replace('.log', '-error-%DATE%.log'),
       datePattern: 'YYYY-MM-DD',
@@ -63,7 +63,7 @@ export const logger = winston.createLogger({
   ],
 });
 
-// Create request logger function
+// 创建请求日志记录器函数
 export const createRequestLogger = () => {
   return (req: any, res: any, next: any) => {
     const start = Date.now();

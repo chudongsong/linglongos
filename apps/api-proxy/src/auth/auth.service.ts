@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   /**
-   * Hash password using bcrypt
+   * 使用 bcrypt 对密码进行哈希加密
    */
   public async hashPassword(password: string): Promise<string> {
     const saltRounds = 12;
@@ -34,14 +34,14 @@ export class AuthService {
   }
 
   /**
-   * Verify password against hash
+   * 验证密码与哈希值是否匹配
    */
   public async verifyPassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
 
   /**
-   * Generate access token
+   * 生成访问令牌
    */
   public generateAccessToken(payload: Omit<TokenPayload, 'iat' | 'exp'>): string {
     return jwt.sign(payload, this.jwtSecret, {
@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   /**
-   * Generate refresh token
+   * 生成刷新令牌
    */
   public generateRefreshToken(payload: Omit<TokenPayload, 'iat' | 'exp'>): string {
     return jwt.sign(payload, this.refreshSecret, {
@@ -63,13 +63,13 @@ export class AuthService {
   }
 
   /**
-   * Generate both access and refresh tokens
+   * 生成访问令牌和刷新令牌
    */
   public generateTokens(payload: Omit<TokenPayload, 'iat' | 'exp'>): AuthTokens {
     const accessToken = this.generateAccessToken(payload);
     const refreshToken = this.generateRefreshToken(payload);
     
-    // Calculate expiration time in seconds
+    // 计算过期时间（秒）
     const decoded = jwt.decode(accessToken) as jwt.JwtPayload;
     const expiresIn = decoded.exp! - Math.floor(Date.now() / 1000);
 
@@ -81,7 +81,7 @@ export class AuthService {
   }
 
   /**
-   * Verify access token
+   * 验证访问令牌
    */
   public verifyAccessToken(token: string): TokenPayload {
     try {
@@ -103,7 +103,7 @@ export class AuthService {
   }
 
   /**
-   * Verify refresh token
+   * 验证刷新令牌
    */
   public verifyRefreshToken(token: string): TokenPayload {
     try {
@@ -125,7 +125,7 @@ export class AuthService {
   }
 
   /**
-   * Extract token from Authorization header
+   * 从 Authorization 头中提取令牌
    */
   public extractTokenFromHeader(authorization?: string): string {
     if (!authorization) {
@@ -141,12 +141,12 @@ export class AuthService {
   }
 
   /**
-   * Refresh access token using refresh token
+   * 使用刷新令牌刷新访问令牌
    */
   public refreshAccessToken(refreshToken: string): AuthTokens {
     const payload = this.verifyRefreshToken(refreshToken);
     
-    // Generate new tokens
+    // 生成新的令牌
     return this.generateTokens({
       userId: payload.userId,
       username: payload.username,
@@ -154,7 +154,7 @@ export class AuthService {
   }
 
   /**
-   * Generate random secure token for password reset, etc.
+   * 生成随机安全令牌，用于密码重置等场景
    */
   public generateSecureToken(length: number = 32): string {
     const crypto = require('crypto');

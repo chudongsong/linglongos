@@ -26,7 +26,7 @@ export class ProxyEngine {
   }
 
   /**
-   * Execute proxy request using axios
+   * 使用 axios 执行代理请求
    */
   public async executeRequest(
     proxyRequest: ProxyRequest,
@@ -37,22 +37,22 @@ export class ProxyEngine {
     const mergedOptions = { ...this.defaultOptions, ...options };
 
     try {
-      // Build target URL
+      // 构建目标 URL
       const targetUrl = this.buildTargetUrl(proxyRequest.userCredentials.endpoint, targetPath);
       
-      // Prepare request configuration
+      // 准备请求配置
       const axiosConfig: AxiosRequestConfig = {
         method: proxyRequest.method.toLowerCase() as any,
         url: targetUrl,
         headers: proxyRequest.headers,
         timeout: mergedOptions.timeout,
-        validateStatus: () => true, // Accept all status codes
+        validateStatus: () => true, // 接受所有状态码
         httpsAgent: mergedOptions.validateSsl ? undefined : new (require('https').Agent)({
           rejectUnauthorized: false,
         }),
       };
 
-      // Add request body for non-GET requests
+      // 为非-GET 请求添加请求体
       if (proxyRequest.method !== 'GET' && proxyRequest.body) {
         if (proxyRequest.headers['content-type']?.includes('application/json')) {
           axiosConfig.data = JSON.stringify(proxyRequest.body);
@@ -63,7 +63,7 @@ export class ProxyEngine {
         }
       }
 
-      // Execute request with retry logic
+      // 使用重试逻辑执行请求
       const response = await this.executeWithRetry(axiosConfig, mergedOptions);
       
       const processingTime = Date.now() - startTime;
@@ -106,7 +106,7 @@ export class ProxyEngine {
   }
 
   /**
-   * Execute request with retry logic
+   * 使用重试逻辑执行请求
    */
   private async executeWithRetry(
     config: AxiosRequestConfig,
@@ -118,7 +118,7 @@ export class ProxyEngine {
       try {
         const response = await axios(config);
         
-        // Don't retry on successful responses (even 4xx/5xx)
+        // 对成功响应（甚至 4xx/5xx）不进行重试
         if (response.status < 500 || attempt === options.retryAttempts) {
           return response;
         }
@@ -127,7 +127,7 @@ export class ProxyEngine {
       } catch (error) {
         lastError = error instanceof Error ? error : new Error('Unknown error');
         
-        // Don't retry on client errors (4xx) or final attempt
+        // 对客户端错误（4xx）或最后一次尝试不进行重试
         if (axios.isAxiosError(error)) {
           if (error.response && error.response.status < 500) {
             return error.response;
@@ -139,9 +139,9 @@ export class ProxyEngine {
           throw lastError;
         }
 
-        // Wait before retry
+        // 在重试前等待
         if (attempt < options.retryAttempts!) {
-          const delay = options.retryDelay! * Math.pow(2, attempt - 1); // Exponential backoff
+          const delay = options.retryDelay! * Math.pow(2, attempt - 1); // 指数退让
           logger.debug(`Retrying request in ${delay}ms (attempt ${attempt}/${options.retryAttempts})`, {
             url: config.url,
             error: lastError.message,
@@ -155,7 +155,7 @@ export class ProxyEngine {
   }
 
   /**
-   * Create HTTP proxy middleware for streaming requests
+   * 为流请求创建 HTTP 代理中间件
    */
   public createProxyMiddleware(
     credentials: UserCredentials,
@@ -169,16 +169,16 @@ export class ProxyEngine {
       secure: mergedOptions.validateSsl,
       timeout: mergedOptions.timeout,
       
-      // Custom header modification
+      // 根据面板类型添加认证头
       onProxyReq: (proxyReq, req: Request) => {
-        // Add authentication headers based on panel type
+        // 根据面板类型添加认证头
         if (credentials.panelType === 'onePanel') {
           proxyReq.setHeader('Authorization', `Bearer ${credentials.apiKey}`);
         } else if (credentials.panelType === 'baota') {
           proxyReq.setHeader('X-BT-Key', credentials.apiKey);
         }
 
-        // Add tracking headers
+        // 添加跟踪头
         proxyReq.setHeader('X-Proxy-Source', 'api-proxy-service');
         proxyReq.setHeader('X-Request-ID', req.requestId || 'unknown');
 
@@ -189,9 +189,9 @@ export class ProxyEngine {
         });
       },
 
-      // Handle proxy response
+      // 处理代理响应
       onProxyRes: (proxyRes, req: Request, res: Response) => {
-        // Add response headers
+        // 添加响应头
         res.setHeader('X-Proxy-Target', credentials.endpoint);
         res.setHeader('X-Panel-Type', credentials.panelType);
 
@@ -202,7 +202,7 @@ export class ProxyEngine {
         });
       },
 
-      // Handle errors
+      // 处理错误
       onError: (err, req: Request, res: Response) => {
         logger.error('Proxy middleware error', {
           requestId: req.requestId,
@@ -226,9 +226,9 @@ export class ProxyEngine {
         }
       },
 
-      // Path rewriting
+      // 路径重写
       pathRewrite: (path, req: Request) => {
-        // Use mapped path if available
+        // 如果可用，使用映射路径
         const mappedPath = req.mappedPath || path;
         
         logger.debug('Path rewritten for proxy', {
@@ -246,7 +246,7 @@ export class ProxyEngine {
   }
 
   /**
-   * Build target URL
+   * 构建目标 URL
    */
   private buildTargetUrl(endpoint: string, path: string): string {
     try {
@@ -262,7 +262,7 @@ export class ProxyEngine {
   }
 
   /**
-   * Serialize form data for URL encoding
+   * 为 URL 编码序列化表单数据
    */
   private serializeFormData(data: any): string {
     const params = new URLSearchParams();
@@ -277,14 +277,14 @@ export class ProxyEngine {
   }
 
   /**
-   * Sleep utility for retry delays
+   * 用于重试延迟的睡眠工具
    */
   private sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
-   * Health check for target endpoint
+   * 目标端点的健康检查
    */
   public async healthCheck(credentials: UserCredentials): Promise<boolean> {
     try {

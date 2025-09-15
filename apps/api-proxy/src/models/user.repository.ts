@@ -30,7 +30,7 @@ export class UserRepository {
   }
 
   /**
-   * Create a new user
+   * 创建新用户
    */
   public async create(userData: CreateUserData): Promise<User> {
     try {
@@ -65,7 +65,7 @@ export class UserRepository {
   }
 
   /**
-   * Find user by database ID
+   * 根据数据库 ID 查找用户
    */
   public async findById(id: number): Promise<User | null> {
     try {
@@ -81,7 +81,7 @@ export class UserRepository {
   }
 
   /**
-   * Find user by user ID (UUID)
+   * 根据用户 ID（UUID）查找用户
    */
   public async findByUserId(userId: string): Promise<User | null> {
     try {
@@ -97,7 +97,7 @@ export class UserRepository {
   }
 
   /**
-   * Find user by username
+   * 根据用户名查找用户
    */
   public async findByUsername(username: string): Promise<User | null> {
     try {
@@ -113,7 +113,7 @@ export class UserRepository {
   }
 
   /**
-   * Find user by email
+   * 根据邮箱查找用户
    */
   public async findByEmail(email: string): Promise<User | null> {
     try {
@@ -129,7 +129,7 @@ export class UserRepository {
   }
 
   /**
-   * Update user
+   * 更新用户
    */
   public async update(userId: string, updateData: UpdateUserData): Promise<User | null> {
     try {
@@ -183,7 +183,7 @@ export class UserRepository {
   }
 
   /**
-   * Delete user (soft delete by setting is_active to false)
+   * 删除用户（通过设置 is_active 为 false 进行软删除）
    */
   public async delete(userId: string): Promise<boolean> {
     try {
@@ -206,7 +206,7 @@ export class UserRepository {
   }
 
   /**
-   * List users with filtering
+   * 使用过滤条件列出用户
    */
   public async list(filter: UserFilter = {}): Promise<User[]> {
     try {
@@ -245,7 +245,7 @@ export class UserRepository {
   }
 
   /**
-   * Get user count
+   * 获取用户数量
    */
   public async count(filter: UserFilter = {}): Promise<number> {
     try {
@@ -272,7 +272,7 @@ export class UserRepository {
   }
 
   /**
-   * Verify user password
+   * 验证用户密码
    */
   public async verifyPassword(userId: string, password: string): Promise<boolean> {
     try {
@@ -289,7 +289,7 @@ export class UserRepository {
   }
 
   /**
-   * Check if username exists
+   * 检查用户名是否存在
    */
   public async usernameExists(username: string, excludeUserId?: string): Promise<boolean> {
     try {
@@ -310,7 +310,7 @@ export class UserRepository {
   }
 
   /**
-   * Check if email exists
+   * 检查邮箱是否存在
    */
   public async emailExists(email: string, excludeUserId?: string): Promise<boolean> {
     try {

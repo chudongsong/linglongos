@@ -4,7 +4,7 @@ import { createRequestLogger } from '@/utils/logger';
 import { apiLogRepository } from '@/models/api-log.repository';
 import { logger } from '@/utils/logger';
 
-// Extend Request type to include requestId
+// 扩展 Request 类型以包含 requestId
 declare global {
   namespace Express {
     interface Request {
@@ -15,14 +15,14 @@ declare global {
 }
 
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
-  // Generate unique request ID
+  // 生成唯一请求 ID
   req.requestId = uuidv4();
   req.startTime = Date.now();
   
-  // Add request ID to response headers
+  // 将请求 ID 添加到响应头
   res.setHeader('X-Request-ID', req.requestId);
   
-  // Log request completion
+  // 记录请求完成
   res.on('finish', async () => {
     const responseTime = Date.now() - req.startTime;
     const { method, originalUrl, ip } = req;
@@ -38,14 +38,14 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
       requestId: req.requestId,
     };
     
-    // Log to console/file
+    // 记录到控制台/文件
     if (statusCode >= 400) {
       logger.warn('HTTP Request', logData);
     } else {
       logger.info('HTTP Request', logData);
     }
 
-    // Save to database for API endpoints (exclude health checks)
+    // 保存到数据库用于 API 端点（排除健康检查）
     if (req.user && originalUrl.startsWith('/api/') && !originalUrl.includes('/health')) {
       try {
         await apiLogRepository.create({
@@ -64,6 +64,6 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
     }
   });
   
-  // Use winston request logger
+  // 使用 winston 请求日志记录器
   createRequestLogger()(req, res, next);
 };

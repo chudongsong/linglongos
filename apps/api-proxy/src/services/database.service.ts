@@ -68,27 +68,27 @@ export class DatabaseService {
   }
 
   /**
-   * Initialize database connection and create tables
+   * 初始化数据库连接并创建表
    */
   public async initialize(): Promise<void> {
     try {
-      // Ensure database directory exists
+      // 确保数据库目录存在
       const dbDir = path.dirname(this.dbPath);
       if (!fs.existsSync(dbDir)) {
         fs.mkdirSync(dbDir, { recursive: true });
         logger.info('Created database directory', { path: dbDir });
       }
 
-      // Open database connection
+      // 打开数据库连接
       this.db = await open({
         filename: this.dbPath,
         driver: sqlite3.Database,
       });
 
-      // Enable foreign key constraints
+      // 启用外键约束
       await this.db.exec('PRAGMA foreign_keys = ON');
       
-      // Create tables
+      // 创建表
       await this.createTables();
       
       logger.info('Database initialized successfully', { path: this.dbPath });
@@ -99,14 +99,14 @@ export class DatabaseService {
   }
 
   /**
-   * Create database tables
+   * 创建数据库表
    */
   private async createTables(): Promise<void> {
     if (!this.db) {
       throw new Error('Database not initialized');
     }
 
-    // Users table
+    // 用户表
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -120,7 +120,7 @@ export class DatabaseService {
       )
     `);
 
-    // Panel configurations table
+    // 面板配置表
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS panel_configs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -140,7 +140,7 @@ export class DatabaseService {
       )
     `);
 
-    // API logs table
+    // API 日志表
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS api_logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -158,7 +158,7 @@ export class DatabaseService {
       )
     `);
 
-    // User sessions table
+    // 用户会话表
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS user_sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -175,7 +175,7 @@ export class DatabaseService {
       )
     `);
 
-    // Create indexes for better performance
+    // 为更好的性能创建索引
     await this.db.exec(`
       CREATE INDEX IF NOT EXISTS idx_users_user_id ON users (user_id);
       CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
@@ -189,7 +189,7 @@ export class DatabaseService {
       CREATE INDEX IF NOT EXISTS idx_user_sessions_is_active ON user_sessions (is_active);
     `);
 
-    // Create triggers to update updated_at timestamp
+    // 创建触发器来更新 updated_at 时间戳
     await this.db.exec(`
       CREATE TRIGGER IF NOT EXISTS update_users_updated_at
         AFTER UPDATE ON users
@@ -217,7 +217,7 @@ export class DatabaseService {
   }
 
   /**
-   * Get database instance
+   * 获取数据库实例
    */
   public getDatabase(): Database {
     if (!this.db) {
@@ -227,7 +227,7 @@ export class DatabaseService {
   }
 
   /**
-   * Close database connection
+   * 关闭数据库连接
    */
   public async close(): Promise<void> {
     if (this.db) {
@@ -238,14 +238,14 @@ export class DatabaseService {
   }
 
   /**
-   * Check if database is connected
+   * 检查数据库是否已连接
    */
   public isConnected(): boolean {
     return this.db !== null;
   }
 
   /**
-   * Execute a transaction
+   * 执行事务
    */
   public async transaction<T>(callback: (db: Database) => Promise<T>): Promise<T> {
     if (!this.db) {
@@ -265,7 +265,7 @@ export class DatabaseService {
   }
 
   /**
-   * Health check for database
+   * 数据库健康检查
    */
   public async healthCheck(): Promise<boolean> {
     try {
@@ -282,7 +282,7 @@ export class DatabaseService {
   }
 
   /**
-   * Get database statistics
+   * 获取数据库统计信息
    */
   public async getStats(): Promise<any> {
     if (!this.db) {
@@ -312,7 +312,7 @@ export class DatabaseService {
   }
 
   /**
-   * Clean up old records
+   * 清理旧记录
    */
   public async cleanup(options: {
     logRetentionDays?: number;
@@ -327,19 +327,19 @@ export class DatabaseService {
 
     try {
       await this.transaction(async (db) => {
-        // Clean up old API logs
+        // 清理旧的 API 日志
         const logResult = await db.run(
           'DELETE FROM api_logs WHERE created_at < datetime("now", "-" || ? || " days")',
           [logRetentionDays]
         );
 
-        // Clean up inactive sessions
+        // 清理非活动会话
         const sessionResult = await db.run(
           'DELETE FROM user_sessions WHERE is_active = 0 AND updated_at < datetime("now", "-" || ? || " days")',
           [inactiveSessionDays]
         );
 
-        // Clean up expired active sessions
+        // 清理过期的活动会话
         const expiredResult = await db.run(
           'UPDATE user_sessions SET is_active = 0 WHERE expires_at < datetime("now")'
         );

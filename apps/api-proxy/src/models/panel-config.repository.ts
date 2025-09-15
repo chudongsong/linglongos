@@ -39,11 +39,11 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Create a new panel configuration
+   * 创建新的面板配置
    */
   public async create(configData: CreatePanelConfigData): Promise<PanelConfig> {
     try {
-      // Encrypt the API key
+      // 加密 API 密钥
       const encryptedApiKey = cryptoService.encrypt(configData.apiKey);
 
       const result = await this.db.run(
@@ -85,7 +85,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Find panel configuration by ID
+   * 根据 ID 查找面板配置
    */
   public async findById(id: number): Promise<PanelConfig | null> {
     try {
@@ -101,7 +101,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Find panel configuration by ID with decrypted API key
+   * 根据 ID 查找并解密 API 密钥的面板配置
    */
   public async findByIdDecrypted(id: number): Promise<DecryptedPanelConfig | null> {
     try {
@@ -118,7 +118,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Update panel configuration
+   * 更新面板配置
    */
   public async update(id: number, updateData: UpdatePanelConfigData): Promise<PanelConfig | null> {
     try {
@@ -177,7 +177,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Delete panel configuration (soft delete)
+   * 删除面板配置（软删除）
    */
   public async delete(id: number): Promise<boolean> {
     try {
@@ -200,7 +200,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * List panel configurations with filtering
+   * 使用过滤条件列出面板配置
    */
   public async list(filter: PanelConfigFilter = {}): Promise<PanelConfig[]> {
     try {
@@ -254,7 +254,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * List panel configurations with decrypted API keys
+   * 列出带有解密 API 密钥的面板配置
    */
   public async listDecrypted(filter: PanelConfigFilter = {}): Promise<DecryptedPanelConfig[]> {
     try {
@@ -267,7 +267,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Get panel configuration count
+   * 获取面板配置数量
    */
   public async count(filter: PanelConfigFilter = {}): Promise<number> {
     try {
@@ -309,7 +309,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Update health status for panel configuration
+   * 更新面板配置的健康状态
    */
   public async updateHealthStatus(id: number, status: 'healthy' | 'unhealthy' | 'unknown'): Promise<boolean> {
     try {
@@ -332,7 +332,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Get configurations that need health check
+   * 获取需要健康检查的配置
    */
   public async getConfigsForHealthCheck(maxAgeMinutes: number = 30): Promise<PanelConfig[]> {
     try {
@@ -353,7 +353,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Check if panel configuration exists for user
+   * 检查用户的面板配置是否存在
    */
   public async existsForUser(userId: string, name: string, excludeId?: number): Promise<boolean> {
     try {
@@ -374,7 +374,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Decrypt API key from panel configuration
+   * 从面板配置中解密 API 密钥
    */
   private decryptApiKey(config: PanelConfig): DecryptedPanelConfig {
     try {
@@ -406,7 +406,7 @@ export class PanelConfigRepository {
   }
 
   /**
-   * Mask endpoint for logging
+   * 为日志记录隐藏端点
    */
   private maskEndpoint(endpoint: string): string {
     try {

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { ServerConfig, AuthConfig, PanelConfig } from '@/types';
 
-// Load environment variables
+// 加载环境变量
 dotenv.config();
 
 export const serverConfig: ServerConfig = {
@@ -53,7 +53,7 @@ export const isDevelopment = process.env.NODE_ENV === 'development';
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTest = process.env.NODE_ENV === 'test';
 
-// Validation function for required environment variables
+// 验证必需环境变量的函数
 export function validateConfig(): void {
   const requiredEnvVars = [
     'JWT_SECRET',

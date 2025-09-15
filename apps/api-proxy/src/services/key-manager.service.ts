@@ -31,7 +31,7 @@ export class KeyManager {
       useClones: false,
     });
 
-    // Handle cache events
+    // 处理缓存事件
     this.cache.on('expired', (key: string) => {
       logger.debug('Cache key expired', { key });
     });
@@ -42,7 +42,7 @@ export class KeyManager {
   }
 
   /**
-   * Store encrypted API credentials
+   * 存储加密的 API 凭据
    */
   public async storeCredentials(
     userId: string,
@@ -52,13 +52,13 @@ export class KeyManager {
     apiKey: string
   ): Promise<string> {
     try {
-      // Generate unique ID for credentials
+      // 为凭据生成唯一 ID
       const id = cryptoService.generateSecureToken(16);
       
-      // Encrypt the API key
+      // 加密 API 密钥
       const apiKeyEncrypted = cryptoService.encrypt(apiKey);
       
-      // Create credentials object
+      // 创建凭据对象
       const credentials: StoredCredentials = {
         id,
         userId,
@@ -71,10 +71,10 @@ export class KeyManager {
         updatedAt: new Date(),
       };
 
-      // Store in memory (in production, this would be stored in database)
+      // 存储在内存中（在生产环境中，这将存储在数据库中）
       this.credentials.set(id, credentials);
       
-      // Cache the decrypted credentials for quick access
+      // 缓存解密的凭据以便快速访问
       const userCredentials: UserCredentials = {
         userId,
         panelType,
@@ -99,25 +99,25 @@ export class KeyManager {
   }
 
   /**
-   * Retrieve and decrypt API credentials
+   * 检索和解密 API 凭据
    */
   public async getCredentials(credentialsId: string): Promise<UserCredentials | null> {
     try {
-      // Check cache first
+      // 先检查缓存
       const cached = this.cache.get<UserCredentials>(`creds:${credentialsId}`);
       if (cached) {
         logger.debug('Credentials retrieved from cache', { credentialsId });
         return cached;
       }
 
-      // Get from storage
+      // 从存储中获取
       const stored = this.credentials.get(credentialsId);
       if (!stored || !stored.isActive) {
         logger.warn('Credentials not found or inactive', { credentialsId });
         return null;
       }
 
-      // Decrypt API key
+      // 解密 API 密钥
       const apiKey = cryptoService.decrypt(stored.apiKeyEncrypted);
       
       const userCredentials: UserCredentials = {
@@ -127,7 +127,7 @@ export class KeyManager {
         apiKey,
       };
 
-      // Cache for future use
+      // 缓存以供将来使用
       this.cache.set(`creds:${credentialsId}`, userCredentials);
 
       logger.debug('Credentials retrieved and decrypted', {
@@ -144,7 +144,7 @@ export class KeyManager {
   }
 
   /**
-   * Get credentials by user ID
+   * 根据用户 ID 获取凭据
    */
   public async getCredentialsByUserId(userId: string): Promise<StoredCredentials[]> {
     const userCredentials = Array.from(this.credentials.values())
@@ -154,7 +154,7 @@ export class KeyManager {
   }
 
   /**
-   * Update credentials
+   * 更新凭据
    */
   public async updateCredentials(
     credentialsId: string,
@@ -167,15 +167,15 @@ export class KeyManager {
         return false;
       }
 
-      // Update fields
+      // 更新字段
       if (updates.name) stored.name = updates.name;
       if (updates.endpoint) stored.endpoint = updates.endpoint;
       stored.updatedAt = new Date();
 
-      // Update storage
+      // 更新存储
       this.credentials.set(credentialsId, stored);
 
-      // Invalidate cache
+      // 使缓存失效
       this.cache.del(`creds:${credentialsId}`);
 
       logger.info('Credentials updated', {
@@ -191,7 +191,7 @@ export class KeyManager {
   }
 
   /**
-   * Delete credentials
+   * 删除凭据
    */
   public async deleteCredentials(credentialsId: string): Promise<boolean> {
     try {
@@ -201,12 +201,12 @@ export class KeyManager {
         return false;
       }
 
-      // Soft delete - mark as inactive
+      // 软删除 - 标记为非活动
       stored.isActive = false;
       stored.updatedAt = new Date();
       this.credentials.set(credentialsId, stored);
 
-      // Remove from cache
+      // 从缓存中移除
       this.cache.del(`creds:${credentialsId}`);
 
       logger.info('Credentials deleted', { credentialsId });
@@ -218,7 +218,7 @@ export class KeyManager {
   }
 
   /**
-   * Validate credentials by testing connection
+   * 通过测试连接来验证凭据
    */
   public async validateCredentials(credentialsId: string): Promise<boolean> {
     try {
@@ -227,8 +227,8 @@ export class KeyManager {
         return false;
       }
 
-      // TODO: Implement actual validation by testing panel connection
-      // For now, we'll just check if credentials exist and are properly formatted
+      // TODO: 通过测试面板连接实现实际验证
+      // 目前，我们只检查凭据是否存在且格式正确
       const isValid = !!(
         credentials.apiKey &&
         credentials.endpoint &&
@@ -250,7 +250,7 @@ export class KeyManager {
   }
 
   /**
-   * Clear all cached credentials
+   * 清空所有缓存的凭据
    */
   public clearCache(): void {
     this.cache.flushAll();
@@ -258,7 +258,7 @@ export class KeyManager {
   }
 
   /**
-   * Get cache statistics
+   * 获取缓存统计信息
    */
   public getCacheStats() {
     return {
@@ -268,7 +268,7 @@ export class KeyManager {
   }
 
   /**
-   * Helper method to mask endpoint for logging
+   * 为日志记录隐藏端点的辅助方法
    */
   private maskEndpoint(endpoint: string): string {
     try {
@@ -280,7 +280,7 @@ export class KeyManager {
   }
 
   /**
-   * Helper method to validate URL format
+   * 验证 URL 格式的辅助方法
    */
   private isValidUrl(url: string): boolean {
     try {

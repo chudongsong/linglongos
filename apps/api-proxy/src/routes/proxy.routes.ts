@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { panelConfigRepository } from '@/models/panel-config.repository';
 import { authenticateToken } from '@/auth/auth.middleware';
 import { validateEndpoint, detectPanelType } from '@/middleware/panel-detection.middleware';
@@ -11,13 +11,13 @@ import { logger } from '@/utils/logger';
 
 const router = Router();
 
-// Apply authentication to all routes
+// 对所有路由应用认证
 router.use(authenticateToken);
 
 /**
- * Middleware to load panel configuration
+ * 加载面板配置的中间件
  */
-const loadPanelConfig = asyncHandler(async (req: Request, res: Response, next) => {
+const loadPanelConfig = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     throw createAuthError('Authentication required', 'AUTH_REQUIRED');
   }
@@ -27,7 +27,7 @@ const loadPanelConfig = asyncHandler(async (req: Request, res: Response, next) =
     throw createValidationError('Invalid configuration ID');
   }
 
-  // Get configuration with decrypted API key
+  // 使用解密的 API 密钥获取配置
   const config = await panelConfigRepository.findByIdDecrypted(configId);
   if (!config) {
     return res.status(404).json({
@@ -39,31 +39,31 @@ const loadPanelConfig = asyncHandler(async (req: Request, res: Response, next) =
     });
   }
 
-  // Check ownership
+  // 检查所有权
   if (config.user_id !== req.user.userId) {
     throw createAuthError('Access denied', 'ACCESS_DENIED');
   }
 
-  // Check if configuration is active
+  // 检查配置是否激活
   if (!config.is_active) {
     throw createValidationError('Panel configuration is not active');
   }
 
-  // Store configuration in request
+  // 在请求中存储配置
   req.panelConfig = config;
 
   next();
 });
 
 /**
- * Middleware to apply panel-specific processing
+ * 应用面板特定处理的中间件
  */
-const applyPanelMiddleware = (req: Request, res: Response, next) => {
+const applyPanelMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (!req.panelConfig) {
     throw createProxyError('Panel configuration not loaded');
   }
 
-  // Set credentials for middleware
+  // 为中间件设置凭据
   req.body.credentials = {
     userId: req.panelConfig.user_id,
     panelType: req.panelConfig.panel_type,
@@ -71,7 +71,7 @@ const applyPanelMiddleware = (req: Request, res: Response, next) => {
     apiKey: req.panelConfig.apiKey,
   };
 
-  // Apply panel-specific middleware
+  // 应用面板特定中间件
   if (req.panelConfig.panel_type === 'onePanel') {
     onePanelMiddleware.middleware()(req, res, next);
   } else if (req.panelConfig.panel_type === 'baota') {
@@ -83,7 +83,7 @@ const applyPanelMiddleware = (req: Request, res: Response, next) => {
 
 /**
  * ALL /api/proxy/:configId/*
- * Proxy requests to configured panel
+ * 将请求代理到已配置的面板
  */
 router.all('/:configId/*', 
   loadPanelConfig,
@@ -94,28 +94,28 @@ router.all('/:configId/*',
     }
 
     try {
-      // Execute proxy request
+      // 执行代理请求
       const response = await proxyEngine.executeRequest(
         req.proxyRequest,
         req.mappedPath
       );
 
-      // Set response headers
+      // 设置响应头
       Object.entries(response.headers).forEach(([key, value]) => {
         if (typeof value === 'string') {
           res.setHeader(key, value);
         }
       });
 
-      // Add proxy information headers
+      // 添加代理信息头
       res.setHeader('X-Proxy-Source', 'api-proxy-service');
       res.setHeader('X-Panel-Type', req.panelConfig.panel_type);
       res.setHeader('X-Processing-Time', `${response.processingTime}ms`);
 
-      // Send response
+      // 发送响应
       res.status(response.statusCode).json(response.body);
 
-      // Log successful proxy request
+      // 记录成功的代理请求
       logger.info('Proxy request completed', {
         configId: req.panelConfig.id,
         userId: req.user?.userId,
@@ -145,7 +145,7 @@ router.all('/:configId/*',
 
 /**
  * ALL /api/proxy/auto/*
- * Auto-detect panel type and proxy request
+ * 自动检测面板类型并代理请求
  */
 router.all('/auto/*',
   validateEndpoint,
@@ -159,7 +159,7 @@ router.all('/auto/*',
       throw createProxyError('Unable to detect panel type for the target endpoint');
     }
 
-    // Create temporary credentials for auto-proxy
+    // 为自动代理创建临时凭据
     const credentials = {
       userId: req.user.userId,
       panelType: req.panelDetection.panelType,
@@ -171,10 +171,10 @@ router.all('/auto/*',
       throw createValidationError('API key is required. Provide it via X-API-Key header or request body.');
     }
 
-    // Set credentials for middleware
+    // 为中间件设置凭据
     req.body.credentials = credentials;
 
-    // Apply panel-specific middleware
+    // 应用面板特定中间件
     let panelMiddleware;
     if (req.panelDetection.panelType === 'onePanel') {
       panelMiddleware = onePanelMiddleware.middleware();
@@ -184,7 +184,7 @@ router.all('/auto/*',
       throw createProxyError(`Unsupported panel type: ${req.panelDetection.panelType}`);
     }
 
-    // Apply middleware and execute request
+    // 应用中间件并执行请求
     panelMiddleware(req, res, async () => {
       try {
         if (!req.proxyRequest || !req.mappedPath) {
@@ -196,23 +196,23 @@ router.all('/auto/*',
           req.mappedPath
         );
 
-        // Set response headers
+        // 设置响应头
         Object.entries(response.headers).forEach(([key, value]) => {
           if (typeof value === 'string') {
             res.setHeader(key, value);
           }
         });
 
-        // Add proxy information headers
+        // 添加代理信息头
         res.setHeader('X-Proxy-Source', 'api-proxy-service');
         res.setHeader('X-Panel-Type', req.panelDetection!.panelType);
         res.setHeader('X-Panel-Detection', 'auto');
         res.setHeader('X-Processing-Time', `${response.processingTime}ms`);
 
-        // Send response
+        // 发送响应
         res.status(response.statusCode).json(response.body);
 
-        // Log successful auto-proxy request
+        // 记录成功的自动代理请求
         logger.info('Auto-proxy request completed', {
           userId: req.user?.userId,
           method: req.method,
@@ -243,7 +243,7 @@ router.all('/auto/*',
 
 /**
  * GET /api/proxy/health/:configId
- * Check health of specific panel configuration
+ * 检查特定面板配置的健康状态
  */
 router.get('/health/:configId',
   loadPanelConfig,
@@ -262,7 +262,7 @@ router.get('/health/:configId',
     const isHealthy = await proxyEngine.healthCheck(credentials);
     const healthStatus = isHealthy ? 'healthy' : 'unhealthy';
 
-    // Update health status in database
+    // 在数据库中更新健康状态
     await panelConfigRepository.updateHealthStatus(req.panelConfig.id, healthStatus);
 
     logger.info('Panel health check completed', {
@@ -287,7 +287,7 @@ router.get('/health/:configId',
   })
 );
 
-// Extend Request type to include panel configuration
+// 扩展 Request 类型以包含面板配置
 declare global {
   namespace Express {
     interface Request {

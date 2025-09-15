@@ -11,10 +11,10 @@ import { logger } from '@/utils/logger';
 
 const router = Router();
 
-// Apply authentication to all routes
+// 对所有路由应用认证
 router.use(authenticateToken);
 
-// Validation schemas
+// 验证模式
 const statsQuerySchema = Joi.object({
   dateFrom: Joi.string().isoDate().optional(),
   dateTo: Joi.string().isoDate().optional(),
@@ -34,7 +34,7 @@ const logsQuerySchema = Joi.object({
 
 /**
  * GET /api/monitoring/stats
- * Get API usage statistics for current user
+ * 获取当前用户的 API 使用统计
  */
 router.get('/stats', asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
@@ -49,7 +49,7 @@ router.get('/stats', asyncHandler(async (req: Request, res: Response) => {
 
   const { dateFrom, dateTo, panelConfigId } = value;
 
-  // Get statistics
+  // 获取统计信息
   const stats = await apiLogRepository.getStats({
     userId: req.user.userId,
     dateFrom,
@@ -57,7 +57,7 @@ router.get('/stats', asyncHandler(async (req: Request, res: Response) => {
     panelConfigId,
   });
 
-  // Get daily stats for the last 30 days if no date range specified
+  // 如果没有指定日期范围，获取过去 30 天的日统计
   const dailyDateFrom = dateFrom || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
   const dailyDateTo = dateTo || new Date().toISOString();
   
@@ -83,7 +83,7 @@ router.get('/stats', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * GET /api/monitoring/logs
- * Get API access logs for current user
+ * 获取当前用户的 API 访问日志
  */
 router.get('/logs', asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
@@ -99,7 +99,7 @@ router.get('/logs', asyncHandler(async (req: Request, res: Response) => {
   const { method, statusCode, dateFrom, dateTo, hasError, search, page, limit } = value;
   const offset = (page - 1) * limit;
 
-  // Get logs
+  // 获取日志
   const logs = await apiLogRepository.list({
     userId: req.user.userId,
     method,
@@ -112,7 +112,7 @@ router.get('/logs', asyncHandler(async (req: Request, res: Response) => {
     offset,
   });
 
-  // Get total count
+  // 获取总数
   const total = await apiLogRepository.count({
     userId: req.user.userId,
     method,
@@ -140,7 +140,7 @@ router.get('/logs', asyncHandler(async (req: Request, res: Response) => {
 
 /**
  * GET /api/monitoring/health
- * Get system health status
+ * 获取系统健康状态
  */
 router.get('/health', asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
@@ -148,13 +148,13 @@ router.get('/health', asyncHandler(async (req: Request, res: Response) => {
   }
 
   try {
-    // Check database health
+    // 检查数据库健康状态
     const dbHealthy = await databaseService.healthCheck();
     
-    // Get database stats
+    // 获取数据库统计信息
     const dbStats = await databaseService.getStats();
     
-    // Get panel configurations health
+    // 获取面板配置健康状态
     const userPanelConfigs = await panelConfigRepository.list({
       userId: req.user.userId,
       isActive: true,
@@ -168,7 +168,7 @@ router.get('/health', asyncHandler(async (req: Request, res: Response) => {
       lastCheck: config.last_health_check,
     }));
 
-    // Recent error count (last 24 hours)
+    // 最近错误数量（过去 24 小时）
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const recentErrors = await apiLogRepository.count({
       userId: req.user.userId,
@@ -176,7 +176,7 @@ router.get('/health', asyncHandler(async (req: Request, res: Response) => {
       hasError: true,
     });
 
-    // Recent request count (last 24 hours)
+    // 最近请求数量（过去 24 小时）
     const recentRequests = await apiLogRepository.count({
       userId: req.user.userId,
       dateFrom: yesterday,

@@ -18,7 +18,7 @@ export class OnePanelDetector implements DetectionStrategy {
         validateStatus: () => true, // Accept all status codes
       };
 
-      // Try to detect 1Panel by checking common endpoints
+      // 尝试通过检查常见端点来检测 1Panel
       const detectionEndpoints = [
         '/api/v1/auth/captcha',
         '/api/v1/auth/login',
@@ -31,11 +31,11 @@ export class OnePanelDetector implements DetectionStrategy {
           const url = new URL(path, endpoint).toString();
           const response = await axios.get(url, config);
           
-          // Check response headers and content for 1Panel signatures
+          // 检查响应头和内容以查找 1Panel 签名
           const serverHeader = response.headers['server']?.toLowerCase();
           const poweredBy = response.headers['x-powered-by']?.toLowerCase();
           
-          // Check for 1Panel specific indicators
+          // 检查 1Panel 特定指示器
           if (
             serverHeader?.includes('1panel') ||
             poweredBy?.includes('1panel') ||
@@ -56,11 +56,11 @@ export class OnePanelDetector implements DetectionStrategy {
             };
           }
 
-          // Check API response structure typical of 1Panel
+          // 检查 1Panel 的典型 API 响应结构
           if (response.status === 200 && response.data) {
             const data = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
             
-            // Look for 1Panel specific API patterns
+            // 查找 1Panel 特定的 API 模式
             if (
               data.includes('"code":') ||
               data.includes('"success":') ||
@@ -81,7 +81,7 @@ export class OnePanelDetector implements DetectionStrategy {
             }
           }
         } catch (error) {
-          // Continue to next endpoint
+          // 继续到下一个端点
           logger.debug('1Panel detection endpoint failed', {
             endpoint,
             path,
@@ -104,13 +104,13 @@ export class OnePanelDetector implements DetectionStrategy {
   }
 
   private extractVersion(data: any, headers: Record<string, string>): string | undefined {
-    // Try to extract version from headers
+    // 尝试从头中提取版本
     const versionHeader = headers['x-panel-version'] || headers['x-1panel-version'];
     if (versionHeader) {
       return versionHeader;
     }
 
-    // Try to extract version from response data
+    // 尝试从响应数据中提取版本
     if (data && typeof data === 'object') {
       return data.version || data.app_version || data.build_version;
     }
@@ -122,12 +122,12 @@ export class OnePanelDetector implements DetectionStrategy {
     const capabilities: string[] = [];
     
     if (data && typeof data === 'object') {
-      // Look for capability indicators in the response
+      // 在响应中查找能力指示器
       if (data.features || data.capabilities) {
         capabilities.push(...(data.features || data.capabilities));
       }
       
-      // Infer capabilities based on available endpoints
+      // 根据可用端点推断能力
       if (data.endpoints) {
         capabilities.push('api_endpoints');
       }
@@ -149,7 +149,7 @@ export class BaotaDetector implements DetectionStrategy {
         validateStatus: () => true,
       };
 
-      // Try to detect Baota by checking common endpoints
+      // 尝试通过检查常见端点来检测宝塔
       const detectionEndpoints = [
         '/login',
         '/api',
@@ -162,12 +162,12 @@ export class BaotaDetector implements DetectionStrategy {
           const url = new URL(path, endpoint).toString();
           const response = await axios.get(url, config);
           
-          // Check response headers and content for Baota signatures
+          // 检查响应头和内容以查找宝塔签名
           const serverHeader = response.headers['server']?.toLowerCase();
           const poweredBy = response.headers['x-powered-by']?.toLowerCase();
           const contentType = response.headers['content-type']?.toLowerCase();
           
-          // Check for Baota specific indicators
+          // 检查宝塔特定指示器
           if (
             serverHeader?.includes('baota') ||
             serverHeader?.includes('bt') ||
@@ -190,7 +190,7 @@ export class BaotaDetector implements DetectionStrategy {
             };
           }
 
-          // Check for Baota login page patterns
+          // 检查宝塔登录页面模式
           if (response.status === 200 && contentType?.includes('text/html')) {
             const htmlContent = response.data?.toString() || '';
             
@@ -251,13 +251,13 @@ export class BaotaDetector implements DetectionStrategy {
   }
 
   private extractVersion(data: any, headers: Record<string, string>): string | undefined {
-    // Try to extract version from headers
+    // 尝试从头中提取版本
     const versionHeader = headers['x-bt-version'] || headers['x-baota-version'];
     if (versionHeader) {
       return versionHeader;
     }
 
-    // Try to extract version from response data
+    // 尝试从响应数据中提取版本
     if (data && typeof data === 'object') {
       return data.version || data.panel_version || data.bt_version;
     }
@@ -298,7 +298,7 @@ export class PanelDetectionService {
   async detectPanelType(endpoint: string, headers?: Record<string, string>): Promise<PanelDetectionResult> {
     logger.info('Starting panel detection', { endpoint });
 
-    // Validate endpoint format
+    // 验证端点格式
     try {
       new URL(endpoint);
     } catch (error) {
@@ -309,7 +309,7 @@ export class PanelDetectionService {
       };
     }
 
-    // Try each detector
+    // 尝试每个检测器
     for (const detector of this.detectors) {
       try {
         const result = await detector.detect(endpoint, headers);
