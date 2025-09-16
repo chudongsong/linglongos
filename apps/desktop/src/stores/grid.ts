@@ -170,10 +170,11 @@ export const useGridStore = defineStore('grid', () => {
 		const positionKey = getPositionKey(position)
 		for (const item of gridItems.value.values()) {
 			if (item.id !== excludeItemId && item.general.visible && getPositionKey(item.position) === positionKey) {
+				const suggested = findNearestAvailablePosition(position)
 				return {
 					isValid: false,
 					reason: '位置已被占用',
-					suggestedPosition: findNearestAvailablePosition(position),
+					...(suggested && { suggestedPosition: suggested }),
 				}
 			}
 		}
@@ -336,6 +337,132 @@ export const useGridStore = defineStore('grid', () => {
 		}
 
 		return true
+	}
+
+	/**
+	 * 拖拽替换项目
+	 * 当拖拽到已有内容位置时，替换当前图标，被替换的图标及其后续图标向后移动
+	 */
+	const moveGridItemWithReplacement = (id: string, position: GridPosition, options: GridOperationOptions = {}): boolean => {
+		const { autoSave = true } = options
+		const draggedItem = gridItems.value.get(id)
+
+		if (!draggedItem) return false
+
+		// 边界检查
+		if (
+			position.x < 0 ||
+			position.x >= currentConfig.value.columns ||
+			position.y < 0 ||
+			position.y >= currentConfig.value.rows
+		) {
+			return false
+		}
+
+		// 检查目标位置是否有其他项目
+		const targetItem = findItemAtPosition(position)
+		
+		if (!targetItem || targetItem.id === id) {
+			// 目标位置为空或是自己，直接移动
+			return moveGridItem(id, position, { validatePosition: false, autoSave })
+		}
+
+		// 目标位置有其他项目，执行替换逻辑
+		const originalPosition = { ...draggedItem.position }
+		
+		// 获取所有需要移动的项目（从目标位置开始的所有项目）
+		const itemsToShift = getItemsToShiftForReplacement(position, id)
+		
+		// 执行替换
+		draggedItem.position = { ...position }
+		
+		// 移动被替换的项目及其后续项目
+		shiftItemsForReplacement(itemsToShift, originalPosition)
+
+		updateOccupiedPositions()
+
+		if (autoSave) {
+			saveConfiguration()
+		}
+
+		return true
+	}
+
+	/**
+	 * 查找指定位置的项目
+	 */
+	const findItemAtPosition = (position: GridPosition): GridItem | undefined => {
+		const positionKey = getPositionKey(position)
+		for (const item of gridItems.value.values()) {
+			if (item.general.visible && getPositionKey(item.position) === positionKey) {
+				return item
+			}
+		}
+		return undefined
+	}
+
+	/**
+	 * 获取需要移动的项目列表（用于替换操作）
+	 */
+	const getItemsToShiftForReplacement = (startPosition: GridPosition, excludeId: string): GridItem[] => {
+		const itemsToShift: GridItem[] = []
+		const { columns, rows } = currentConfig.value
+		
+		// 从目标位置开始，按行优先顺序收集所有后续项目
+		for (let y = startPosition.y; y < rows; y++) {
+			const startX = y === startPosition.y ? startPosition.x : 0
+			
+			for (let x = startX; x < columns; x++) {
+				const item = findItemAtPosition({ x, y })
+				if (item && item.id !== excludeId && item.general.visible) {
+					itemsToShift.push(item)
+				}
+			}
+		}
+		
+		return itemsToShift
+	}
+
+	/**
+	 * 移动项目以腾出空间（用于替换操作）
+	 */
+	const shiftItemsForReplacement = (itemsToShift: GridItem[], startFromPosition: GridPosition): void => {
+		if (itemsToShift.length === 0) return
+
+		const { columns, rows } = currentConfig.value
+		let currentPos = { ...startFromPosition }
+
+		for (const item of itemsToShift) {
+			// 找到下一个可用位置
+			while (currentPos.y < rows) {
+				// 检查当前位置是否可用
+				const existingItem = findItemAtPosition(currentPos)
+				if (!existingItem || itemsToShift.includes(existingItem)) {
+					// 位置可用，移动项目
+					item.position = { ...currentPos }
+					
+					// 移动到下一个位置
+					currentPos.x++
+					if (currentPos.x >= columns) {
+						currentPos.x = 0
+						currentPos.y++
+					}
+					break
+				}
+				
+				// 当前位置不可用，移动到下一个位置
+				currentPos.x++
+				if (currentPos.x >= columns) {
+					currentPos.x = 0
+					currentPos.y++
+				}
+			}
+			
+			// 如果超出边界，隐藏项目
+			if (currentPos.y >= rows) {
+				item.general.visible = false
+			}
+		}
 	}
 
 	/**
@@ -527,6 +654,7 @@ export const useGridStore = defineStore('grid', () => {
 		addGridItem,
 		removeGridItem,
 		moveGridItem,
+		moveGridItemWithReplacement,
 		moveMultipleItems,
 
 		// 选择管理

@@ -8,28 +8,26 @@
 		@contextmenu="handleContextMenu"
 	>
 		<template #default="{ gridConfig, containerDimensions }">
-			<!-- 网格项目渲染 -->
-			<GridItem
-				v-for="item in visibleGridItems"
-				:key="item.id"
-				:item="item"
+			<!-- Vue3 DnD 拖拽系统 -->
+			<Vue3DndSystem
+				:items="visibleGridItems"
 				:grid-config="gridConfig"
-				:is-selected="selectedItems.has(item.id)"
-				:is-dragging="dragState.isDragging && dragState.dragItem?.id === item.id"
-				:style="getItemStyle(item, gridConfig)"
-				@click="handleItemClick(item, $event)"
-				@double-click="handleItemDoubleClick(item, $event)"
-				@context-menu="handleItemContextMenu(item, $event)"
-				@drag-start="handleDragStart(item, $event)"
-				@drag-end="handleDragEnd(item, $event)"
-			/>
-
-			<!-- 拖拽预览位置指示器 -->
-			<div
-				v-if="dragState.isDragging && dragState.dropTarget"
-				class="drop-target-indicator"
-				:style="getDropTargetStyle(dragState.dropTarget, gridConfig)"
-			/>
+				:enable-drag="enableDrag"
+				:show-drop-zones="showGridLines"
+				@item-moved="handleItemMoved"
+				@items-reordered="handleItemsReordered"
+			>
+				<template #default="{ item }">
+					<GridItem
+						:item="item"
+						:grid-config="gridConfig"
+						:is-selected="selectedItems.has(item.id)"
+						@click="handleItemClick(item, $event)"
+						@double-click="handleItemDoubleClick(item, $event)"
+						@context-menu="handleItemContextMenu(item, $event)"
+					/>
+				</template>
+			</Vue3DndSystem>
 
 			<!-- 空位置指示器（在显示网格线时） -->
 			<div
@@ -60,6 +58,7 @@
 	import GridContainer from './GridContainer.vue'
 	import GridItem from './GridItem.vue'
 	import ContextMenu from './ContextMenu.vue'
+	import Vue3DndSystem from './Vue3DndSystem.vue'
 	import type { GridItem as GridItemType, GridConfig, GridPosition, DesktopApp } from '@/types/grid'
 
 	/**
@@ -391,6 +390,21 @@
 		}
 
 		gridStore.startDrag(item)
+	}
+
+	/**
+	 * 处理项目移动（Vue3 DnD）
+	 */
+	const handleItemMoved = (item: GridItemType, from: GridPosition, to: GridPosition): void => {
+		emit('item-moved', item, from, to)
+	}
+
+	/**
+	 * 处理项目重新排序（Vue3 DnD）
+	 */
+	const handleItemsReordered = (items: GridItemType[]): void => {
+		// 项目重新排序后的处理逻辑
+		console.log('Items reordered:', items)
 	}
 
 	/**

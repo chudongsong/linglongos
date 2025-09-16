@@ -416,11 +416,14 @@
 
 <style scoped>
 	.grid-item {
-		@apply relative flex flex-col items-center justify-center;
+		@apply relative flex flex-col items-center;
 		@apply bg-transparent hover:bg-black/5 dark:hover:bg-white/5;
 		@apply rounded-lg transition-all duration-200 ease-in-out;
 		@apply cursor-pointer select-none;
 		@apply border-2 border-transparent;
+		@apply p-2;
+		/* 确保最小高度能容纳图标和两行文字 */
+		min-height: calc(40px + 8px + 2.4em + 16px); /* 图标高度 + 间距 + 两行文字高度 + padding */
 		user-select: none;
 		-webkit-user-select: none;
 	}
@@ -479,8 +482,10 @@
 	/* 图标容器 */
 	.item-icon {
 		@apply relative flex items-center justify-center;
-		@apply w-12 h-12 mb-2;
+		@apply w-10 h-10 mb-2;
 		@apply rounded-lg;
+		@apply transition-transform duration-200 ease-in-out;
+		@apply flex-shrink-0;
 	}
 
 	.icon-image {
@@ -512,16 +517,21 @@
 	/* 项目标题 */
 	.item-title {
 		@apply text-center text-gray-700 dark:text-gray-300;
-		@apply font-medium leading-tight;
-		@apply w-full px-1;
+		@apply font-medium;
+		@apply w-full px-1 mt-auto;
+		@apply flex-shrink-0;
+		line-height: 1.2;
+		min-height: 2.4em; /* 确保至少两行文字的高度 */
 	}
 
 	.title-text {
-		@apply block;
+		@apply block w-full;
 		@apply overflow-hidden text-ellipsis;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+		word-break: break-word;
+		hyphens: auto;
 	}
 
 	.title--selected {
