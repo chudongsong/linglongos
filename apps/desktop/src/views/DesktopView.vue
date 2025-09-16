@@ -22,8 +22,47 @@
 					</div>
 				</div>
 
+				<!-- 中间：网格控制工具 -->
+				<div class="flex items-center space-x-2">
+					<!-- 网格尺寸切换 -->
+					<div class="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+						<button
+							v-for="preset in gridPresets"
+							:key="preset.size"
+							@click="switchGridSize(preset.size)"
+							:class="{
+								'bg-white dark:bg-gray-600 shadow-sm': currentGridSize === preset.size,
+								'text-gray-700 dark:text-gray-300': currentGridSize === preset.size,
+								'text-gray-500 dark:text-gray-400': currentGridSize !== preset.size,
+							}"
+							class="px-2 py-1 text-xs rounded transition-all duration-200"
+							:title="preset.description"
+						>
+							{{ preset.name }}
+						</button>
+					</div>
+
+					<!-- 网格线切换 -->
+					<button
+						@click="toggleGridLines"
+						:class="{
+							'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400': showGridLines,
+							'text-gray-600 dark:text-gray-400': !showGridLines,
+						}"
+						class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+						title="切换网格线显示"
+					>
+						<GridIcon class="w-4 h-4" />
+					</button>
+				</div>
+
 				<!-- 右侧：用户信息和操作 -->
 				<div class="flex items-center space-x-4">
+					<!-- 项目统计信息 -->
+					<div class="text-xs text-gray-500 dark:text-gray-400">
+						项目: {{ totalItems }} | 选中: {{ selectedItemsCount }}
+					</div>
+
 					<!-- 用户信息 -->
 					<div class="flex items-center space-x-2">
 						<div class="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
@@ -53,13 +92,13 @@
 			</div>
 		</header>
 
-		<!-- 桌面主体区域 -->
+		<!-- 桌面主体区域 - 网格系统 -->
 		<main class="desktop-main">
 			<div
-				class="h-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden"
+				class="h-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative"
 			>
 				<!-- 背景装饰 -->
-				<div class="absolute inset-0 opacity-30">
+				<div class="absolute inset-0 opacity-20">
 					<div
 						class="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
 					/>
@@ -73,56 +112,32 @@
 					/>
 				</div>
 
-				<!-- 桌面内容区域 -->
-				<div class="relative z-10 h-full flex flex-col items-center justify-center p-8">
-					<!-- 欢迎信息 -->
-					<div class="text-center mb-12">
-						<h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">欢迎使用玲珑OS</h1>
-						<p class="text-lg text-gray-600 dark:text-gray-300 mb-8">您的个人桌面环境已准备就绪</p>
+				<!-- 网格系统容器 -->
+				<div class="relative z-10 h-full">
+					<GridSystem
+						ref="gridSystemRef"
+						:show-grid-lines="showGridLines"
+						:show-debug-info="isDevelopment"
+						:responsive="true"
+						:enable-multi-select="true"
+						:enable-drag="true"
+						:auto-save-interval="5000"
+						@item-click="handleItemClick"
+						@item-double-click="handleItemDoubleClick"
+						@item-moved="handleItemMoved"
+						@selection-changed="handleSelectionChanged"
+						@grid-context-menu="handleGridContextMenu"
+					/>
+				</div>
 
-						<!-- 快速操作卡片 -->
-						<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-							<!-- 文件管理器 -->
-							<div class="desktop-app-card" @click="openApp('file-manager')">
-								<div class="app-icon bg-blue-500">
-									<FolderIcon class="w-8 h-8 text-white" />
-								</div>
-								<h3 class="app-title">文件管理器</h3>
-								<p class="app-description">管理您的文件和文件夹</p>
-							</div>
-
-							<!-- 终端 -->
-							<div class="desktop-app-card" @click="openApp('terminal')">
-								<div class="app-icon bg-gray-800">
-									<TerminalIcon class="w-8 h-8 text-white" />
-								</div>
-								<h3 class="app-title">终端</h3>
-								<p class="app-description">命令行界面</p>
-							</div>
-
-							<!-- 设置 -->
-							<div class="desktop-app-card" @click="openApp('settings')">
-								<div class="app-icon bg-green-500">
-									<SettingsIcon class="w-8 h-8 text-white" />
-								</div>
-								<h3 class="app-title">系统设置</h3>
-								<p class="app-description">配置系统选项</p>
-							</div>
-						</div>
-					</div>
-
-					<!-- 系统状态信息 -->
-					<div class="mt-auto">
-						<div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-4 shadow-lg">
-							<div class="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
-								<div class="flex items-center space-x-2">
-									<div class="w-2 h-2 bg-green-500 rounded-full"></div>
-									<span>系统运行正常</span>
-								</div>
-								<div>版本: 1.0.0</div>
-								<div>用户: {{ userDisplayName }}</div>
-							</div>
-						</div>
+				<!-- 加载遮罩 -->
+				<div
+					v-if="isLoading"
+					class="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50"
+				>
+					<div class="text-center">
+						<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+						<p class="text-gray-600 dark:text-gray-400">{{ loadingText }}</p>
 					</div>
 				</div>
 			</div>
@@ -164,7 +179,7 @@
 	const gridPresets: GridPreset[] = [
 		{ size: 'small', cellSize: 48, gap: 8, columns: 16, rows: 10, name: '小', description: '密集排列' },
 		{ size: 'medium', cellSize: 64, gap: 12, columns: 12, rows: 8, name: '中', description: '平衡布局' },
-		{ size: 'large', cellSize: 80, gap: 16, columns: 10, rows: 6, name: '大', description: '清晰视觉' }
+		{ size: 'large', cellSize: 80, gap: 16, columns: 10, rows: 6, name: '大', description: '清晰视觉' },
 	]
 
 	// 计算属性
@@ -286,10 +301,10 @@
 		try {
 			isLoading.value = true
 			loadingText.value = '初始化网格系统...'
-			
+
 			// 加载网格数据
 			await gridStore.loadDesktopData()
-			
+
 			console.log('网格系统初始化完成')
 		} catch (error) {
 			console.error('网格系统初始化失败:', error)
@@ -320,10 +335,6 @@
 		@apply flex-1 overflow-hidden;
 	}
 
-	.desktop-footer {
-		@apply flex-shrink-0;
-	}
-
 	/* 动画效果 */
 	@keyframes float {
 		0%,
@@ -332,6 +343,38 @@
 		}
 		50% {
 			transform: translateY(-10px);
+		}
+	}
+
+	/* 网格控制工具栏样式增强 */
+	.desktop-header button:hover {
+		@apply scale-105;
+	}
+
+	/* 响应式调整 */
+	@media (max-width: 768px) {
+		.desktop-header {
+			@apply px-2;
+		}
+
+		.desktop-header .flex {
+			@apply space-x-2;
+		}
+	}
+
+	/* 高对比度模式支持 */
+	@media (prefers-contrast: high) {
+		.desktop-header {
+			@apply border-b-2;
+		}
+	}
+
+	/* 减少动画的用户偏好 */
+	@media (prefers-reduced-motion: reduce) {
+		.desktop-container *,
+		.desktop-header button {
+			@apply transition-none;
+			animation: none !important;
 		}
 	}
 </style>

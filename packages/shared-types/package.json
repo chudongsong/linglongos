@@ -1,19 +1,19 @@
 {
-  "name": "@linglongos/shared-types",
-  "version": "1.0.0",
-  "description": "玲珑OS 共享类型定义",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "type-check": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "typescript": "^5.8.3",
-    "vue": "^3.5.18"
-  },
-  "files": [
-    "dist"
-  ]
+	"name": "@linglongos/shared-types",
+	"version": "1.0.0",
+	"description": "玲珑OS 共享类型定义",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"type-check": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"typescript": "^5.8.3",
+		"vue": "^3.5.18"
+	},
+	"files": [
+		"dist"
+	]
 }

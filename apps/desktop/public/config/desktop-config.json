@@ -1,270 +1,270 @@
 {
-  "version": "1.0.0",
-  "metadata": {
-    "name": "默认桌面配置",
-    "description": "玲珑OS默认桌面布局",
-    "author": "system",
-    "createdAt": "2024-01-01T00:00:00Z",
-    "lastModified": "2024-01-01T12:00:00Z"
-  },
-  "gridConfig": {
-    "id": "default-medium",
-    "name": "中等网格",
-    "gridSize": "medium",
-    "cellSize": 64,
-    "gap": 12,
-    "columns": 12,
-    "rows": 8,
-    "padding": {
-      "top": 20,
-      "right": 20,
-      "bottom": 20,
-      "left": 20
-    }
-  },
-  "apps": [
-    {
-      "id": "app-file-manager",
-      "name": "文件管理器",
-      "icon": "/icons/file-manager.svg",
-      "description": "管理文件和文件夹",
-      "category": "系统工具"
-    },
-    {
-      "id": "app-terminal",
-      "name": "终端",
-      "icon": "/icons/terminal.svg",
-      "description": "命令行界面",
-      "category": "开发工具"
-    },
-    {
-      "id": "app-browser",
-      "name": "浏览器",
-      "icon": "/icons/browser.svg",
-      "description": "网页浏览器",
-      "category": "网络工具"
-    },
-    {
-      "id": "app-calculator",
-      "name": "计算器",
-      "icon": "/icons/calculator.svg",
-      "description": "科学计算器",
-      "category": "实用工具"
-    },
-    {
-      "id": "app-settings",
-      "name": "系统设置",
-      "icon": "/icons/settings.svg",
-      "description": "配置系统选项",
-      "category": "系统工具"
-    },
-    {
-      "id": "app-notepad",
-      "name": "记事本",
-      "icon": "/icons/notepad.svg",
-      "description": "文本编辑器",
-      "category": "办公软件"
-    },
-    {
-      "id": "app-image-viewer",
-      "name": "图片查看器",
-      "icon": "/icons/image-viewer.svg",
-      "description": "查看和编辑图片",
-      "category": "多媒体"
-    },
-    {
-      "id": "app-music-player",
-      "name": "音乐播放器",
-      "icon": "/icons/music-player.svg",
-      "description": "播放音频文件",
-      "category": "多媒体"
-    }
-  ],
-  "gridItems": [
-    {
-      "id": "item-1",
-      "appId": "app-file-manager",
-      "type": "apps",
-      "position": {
-        "x": 0,
-        "y": 0
-      },
-      "general": {
-        "locked": false,
-        "visible": true
-      },
-      "data": {
-        "title": "文件管理器",
-        "path": "/home/user"
-      },
-      "metadata": {
-        "create_time": "1757924473000",
-        "ext_name": "",
-        "open_mode": "app-file-manager"
-      }
-    },
-    {
-      "id": "item-2",
-      "appId": "app-terminal",
-      "type": "apps",
-      "position": {
-        "x": 1,
-        "y": 0
-      },
-      "general": {
-        "locked": false,
-        "visible": true
-      },
-      "data": {
-        "title": "终端",
-        "startCommand": "ls -la",
-        "theme": "dark"
-      },
-      "metadata": {
-        "create_time": "1757924474000",
-        "ext_name": "",
-        "open_mode": "app-terminal"
-      }
-    },
-    {
-      "id": "item-3",
-      "appId": "app-browser",
-      "type": "apps",
-      "position": {
-        "x": 2,
-        "y": 0
-      },
-      "general": {
-        "locked": false,
-        "visible": true
-      },
-      "data": {
-        "title": "浏览器",
-        "startUrl": "https://www.example.com",
-        "newTab": true
-      },
-      "metadata": {
-        "create_time": "1757924475000",
-        "ext_name": "",
-        "open_mode": "app-browser"
-      }
-    },
-    {
-      "id": "item-4",
-      "appId": "app-calculator",
-      "type": "apps",
-      "position": {
-        "x": 0,
-        "y": 1
-      },
-      "general": {
-        "locked": false,
-        "visible": true
-      },
-      "data": {
-        "title": "计算器",
-        "mode": "scientific"
-      },
-      "metadata": {
-        "create_time": "1757924476000",
-        "ext_name": "",
-        "open_mode": "app-calculator"
-      }
-    },
-    {
-      "id": "item-5",
-      "appId": "app-settings",
-      "type": "apps",
-      "position": {
-        "x": 1,
-        "y": 1
-      },
-      "general": {
-        "locked": true,
-        "visible": true
-      },
-      "data": {
-        "title": "系统设置",
-        "section": "appearance"
-      },
-      "metadata": {
-        "create_time": "1757924477000",
-        "ext_name": "",
-        "open_mode": "app-settings"
-      }
-    },
-    {
-      "id": "item-6",
-      "appId": "app-notepad",
-      "type": "apps",
-      "position": {
-        "x": 2,
-        "y": 1
-      },
-      "general": {
-        "locked": false,
-        "visible": true
-      },
-      "data": {
-        "title": "记事本",
-        "autoSave": true
-      },
-      "metadata": {
-        "create_time": "1757924478000",
-        "ext_name": "",
-        "open_mode": "app-notepad"
-      }
-    },
-    {
-      "id": "item-7",
-      "appId": "file-document-1",
-      "type": "files",
-      "position": {
-        "x": 3,
-        "y": 0
-      },
-      "general": {
-        "locked": false,
-        "visible": true
-      },
-      "data": {
-        "title": "项目文档.txt",
-        "path": "/home/user/Documents/项目文档.txt",
-        "size": 1024
-      },
-      "metadata": {
-        "create_time": "1757924479000",
-        "ext_name": "txt",
-        "open_mode": "app-notepad"
-      }
-    },
-    {
-      "id": "item-8",
-      "appId": "file-image-1",
-      "type": "files",
-      "position": {
-        "x": 3,
-        "y": 1
-      },
-      "general": {
-        "locked": false,
-        "visible": true
-      },
-      "data": {
-        "title": "桌面壁纸.jpg",
-        "path": "/home/user/Pictures/desktop-wallpaper.jpg",
-        "size": 2048576
-      },
-      "metadata": {
-        "create_time": "1757924480000",
-        "ext_name": "jpg",
-        "open_mode": "app-image-viewer"
-      }
-    }
-  ],
-  "theme": {
-    "mode": "light",
-    "accentColor": "#3b82f6",
-    "wallpaper": "/wallpapers/default.jpg"
-  }
+	"version": 1,
+	"metadata": {
+		"name": "默认桌面配置",
+		"description": "玲珑OS默认桌面布局",
+		"author": "system",
+		"createdAt": "2024-01-01T00:00:00Z",
+		"lastModified": "2024-01-01T12:00:00Z"
+	},
+	"gridConfig": {
+		"id": "default-medium",
+		"name": "中等网格",
+		"gridSize": "medium",
+		"cellSize": 64,
+		"gap": 12,
+		"columns": 12,
+		"rows": 8,
+		"padding": {
+			"top": 20,
+			"right": 20,
+			"bottom": 20,
+			"left": 20
+		}
+	},
+	"apps": [
+		{
+			"id": "app-file-manager",
+			"name": "文件管理器",
+			"icon": "/icons/file-manager.svg",
+			"description": "管理文件和文件夹",
+			"category": "系统工具"
+		},
+		{
+			"id": "app-terminal",
+			"name": "终端",
+			"icon": "/icons/terminal.svg",
+			"description": "命令行界面",
+			"category": "开发工具"
+		},
+		{
+			"id": "app-browser",
+			"name": "浏览器",
+			"icon": "/icons/browser.svg",
+			"description": "网页浏览器",
+			"category": "网络工具"
+		},
+		{
+			"id": "app-calculator",
+			"name": "计算器",
+			"icon": "/icons/calculator.svg",
+			"description": "科学计算器",
+			"category": "实用工具"
+		},
+		{
+			"id": "app-settings",
+			"name": "系统设置",
+			"icon": "/icons/settings.svg",
+			"description": "配置系统选项",
+			"category": "系统工具"
+		},
+		{
+			"id": "app-notepad",
+			"name": "记事本",
+			"icon": "/icons/notepad.svg",
+			"description": "文本编辑器",
+			"category": "办公软件"
+		},
+		{
+			"id": "app-image-viewer",
+			"name": "图片查看器",
+			"icon": "/icons/image-viewer.svg",
+			"description": "查看和编辑图片",
+			"category": "多媒体"
+		},
+		{
+			"id": "app-music-player",
+			"name": "音乐播放器",
+			"icon": "/icons/music-player.svg",
+			"description": "播放音频文件",
+			"category": "多媒体"
+		}
+	],
+	"items": [
+		{
+			"id": "item-1",
+			"appId": "app-file-manager",
+			"type": "apps",
+			"position": {
+				"x": 0,
+				"y": 0
+			},
+			"general": {
+				"locked": false,
+				"visible": true
+			},
+			"data": {
+				"title": "文件管理器",
+				"path": "/home/user"
+			},
+			"metadata": {
+				"create_time": "1757924473000",
+				"ext_name": "",
+				"open_mode": "app-file-manager"
+			}
+		},
+		{
+			"id": "item-2",
+			"appId": "app-terminal",
+			"type": "apps",
+			"position": {
+				"x": 1,
+				"y": 0
+			},
+			"general": {
+				"locked": false,
+				"visible": true
+			},
+			"data": {
+				"title": "终端",
+				"startCommand": "ls -la",
+				"theme": "dark"
+			},
+			"metadata": {
+				"create_time": "1757924474000",
+				"ext_name": "",
+				"open_mode": "app-terminal"
+			}
+		},
+		{
+			"id": "item-3",
+			"appId": "app-browser",
+			"type": "apps",
+			"position": {
+				"x": 2,
+				"y": 0
+			},
+			"general": {
+				"locked": false,
+				"visible": true
+			},
+			"data": {
+				"title": "浏览器",
+				"startUrl": "https://www.example.com",
+				"newTab": true
+			},
+			"metadata": {
+				"create_time": "1757924475000",
+				"ext_name": "",
+				"open_mode": "app-browser"
+			}
+		},
+		{
+			"id": "item-4",
+			"appId": "app-calculator",
+			"type": "apps",
+			"position": {
+				"x": 0,
+				"y": 1
+			},
+			"general": {
+				"locked": false,
+				"visible": true
+			},
+			"data": {
+				"title": "计算器",
+				"mode": "scientific"
+			},
+			"metadata": {
+				"create_time": "1757924476000",
+				"ext_name": "",
+				"open_mode": "app-calculator"
+			}
+		},
+		{
+			"id": "item-5",
+			"appId": "app-settings",
+			"type": "apps",
+			"position": {
+				"x": 1,
+				"y": 1
+			},
+			"general": {
+				"locked": true,
+				"visible": true
+			},
+			"data": {
+				"title": "系统设置",
+				"section": "appearance"
+			},
+			"metadata": {
+				"create_time": "1757924477000",
+				"ext_name": "",
+				"open_mode": "app-settings"
+			}
+		},
+		{
+			"id": "item-6",
+			"appId": "app-notepad",
+			"type": "apps",
+			"position": {
+				"x": 2,
+				"y": 1
+			},
+			"general": {
+				"locked": false,
+				"visible": true
+			},
+			"data": {
+				"title": "记事本",
+				"autoSave": true
+			},
+			"metadata": {
+				"create_time": "1757924478000",
+				"ext_name": "",
+				"open_mode": "app-notepad"
+			}
+		},
+		{
+			"id": "item-7",
+			"appId": "file-document-1",
+			"type": "files",
+			"position": {
+				"x": 3,
+				"y": 0
+			},
+			"general": {
+				"locked": false,
+				"visible": true
+			},
+			"data": {
+				"title": "项目文档.txt",
+				"path": "/home/user/Documents/项目文档.txt",
+				"size": 1024
+			},
+			"metadata": {
+				"create_time": "1757924479000",
+				"ext_name": "txt",
+				"open_mode": "app-notepad"
+			}
+		},
+		{
+			"id": "item-8",
+			"appId": "file-image-1",
+			"type": "files",
+			"position": {
+				"x": 3,
+				"y": 1
+			},
+			"general": {
+				"locked": false,
+				"visible": true
+			},
+			"data": {
+				"title": "桌面壁纸.jpg",
+				"path": "/home/user/Pictures/desktop-wallpaper.jpg",
+				"size": 2048576
+			},
+			"metadata": {
+				"create_time": "1757924480000",
+				"ext_name": "jpg",
+				"open_mode": "app-image-viewer"
+			}
+		}
+	],
+	"theme": {
+		"mode": "light",
+		"accentColor": "#3b82f6",
+		"wallpaper": "/wallpapers/default.jpg"
+	}
 }

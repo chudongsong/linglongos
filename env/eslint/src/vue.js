@@ -26,11 +26,14 @@ export default defineConfigWithVueTs(
 	// 修复 TypeScript-ESLint 的 no-unused-expressions 规则问题
 	{
 		rules: {
-			'@typescript-eslint/no-unused-expressions': ['error', {
-				allowShortCircuit: true,
-				allowTernary: true,
-				allowTaggedTemplates: true,
-			}],
+			'@typescript-eslint/no-unused-expressions': [
+				'error',
+				{
+					allowShortCircuit: true,
+					allowTernary: true,
+					allowTaggedTemplates: true,
+				},
+			],
 		},
 	},
 )

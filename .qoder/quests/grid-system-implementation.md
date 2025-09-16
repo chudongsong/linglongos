@@ -7,6 +7,7 @@
 ## 技术栈与依赖
 
 ### 现有技术栈
+
 - **Vue 3**: 组合式API、响应式系统
 - **TypeScript**: 类型安全
 - **Pinia**: 状态管理
@@ -15,6 +16,7 @@
 - **Radix Vue**: UI组件库
 
 ### 新增依赖
+
 - **@formkit/vue-dnd**: Vue 3拖拽库（https://www.vue3-dnd.com/）
 - **lodash-es**: 工具函数库（深拷贝、防抖等）
 
@@ -28,17 +30,17 @@ graph TB
     B --> C[GridSystem]
     C --> D[GridItem]
     C --> E[DragDropProvider]
-    
+
     F[GridStore] --> C
     G[ConfigManager] --> F
-    
+
     H[静态JSON文件] --> G
     I[本地存储] --> G
-    
+
     K[网格预设管理器] --> C
     L[位置计算器] --> C
     M[碰撞检测器] --> C
-    
+
     subgraph "拖拽系统"
         E --> N[DragPreview]
         E --> O[DropZone]
@@ -53,15 +55,15 @@ graph LR
     A[GridSystem] --> B[网格计算引擎]
     A --> C[拖拽管理器]
     A --> D[状态管理器]
-    
+
     B --> E[网格尺寸计算]
     B --> F[位置转换]
     B --> G[碰撞检测]
-    
+
     C --> H[拖拽事件处理]
     C --> I[拖拽预览]
     C --> J[自动吸附]
-    
+
     D --> K[网格状态]
     D --> L[静态JSON数据]
     D --> M[配置缓存]
@@ -74,14 +76,14 @@ graph LR
 ``typescript
 // 网格配置类型
 interface GridConfig {
-  id: string
-  name: string
-  gridSize: GridSize
-  cellSize: number
-  gap: number
-  columns: number
-  rows: number
-  padding: Padding
+id: string
+name: string
+gridSize: GridSize
+cellSize: number
+gap: number
+columns: number
+rows: number
+padding: Padding
 }
 
 // 网格尺寸预设
@@ -89,54 +91,55 @@ type GridSize = 'small' | 'medium' | 'large'
 
 // 网格项目类型
 interface GridItem {
-  id: string
-  appId: string
-  type: 'apps' | 'files' // apps 应用、files 文件
-  position: GridPosition
-  general: GridItemGeneral
-  data: Record<string, any> // 桌面应用的补充参数
-  metadata: GridItemMetadata
+id: string
+appId: string
+type: 'apps' | 'files' // apps 应用、files 文件
+position: GridPosition
+general: GridItemGeneral
+data: Record<string, any> // 桌面应用的补充参数
+metadata: GridItemMetadata
 }
 
 // 网格位置（用于计算和拖拽）
 interface GridPosition {
-  x: number // 网格列索引
-  y: number // 网格行索引
+x: number // 网格列索引
+y: number // 网格行索引
 }
 
 // 网格项目通用配置
 interface GridItemGeneral {
-  locked: boolean  // 是否锁定位置
-  visible: boolean // 是否可见
+locked: boolean // 是否锁定位置
+visible: boolean // 是否可见
 }
 
 // 网格项目元数据
 interface GridItemMetadata {
-  create_time: string    // 创建时间戳
-  ext_name?: string      // 扩展名（文件类型时使用）
-  open_mode: string      // 打开方式标识
+create_time: string // 创建时间戳
+ext_name?: string // 扩展名（文件类型时使用）
+open_mode: string // 打开方式标识
 }
 
 // 桌面应用信息
 interface DesktopApp {
-  id: string
-  name: string
-  icon: string
-  description?: string
-  category?: string
-  executable?: string
+id: string
+name: string
+icon: string
+description?: string
+category?: string
+executable?: string
 }
 
 // 桌面配置
 interface DesktopConfiguration {
-  version: number
-  gridConfig: GridConfig
-  apps: DesktopApp[]
-  items: GridItem[]
-  theme: ThemeConfig
-  wallpaper?: string
-  lastModified: number
+version: number
+gridConfig: GridConfig
+apps: DesktopApp[]
+items: GridItem[]
+theme: ThemeConfig
+wallpaper?: string
+lastModified: number
 }
+
 ```
 
 ### 网格预设配置
@@ -201,17 +204,17 @@ interface GridState {
   // 网格配置
   currentConfig: GridConfig
   availablePresets: GridConfig[]
-  
+
   // 应用和网格项目
   availableApps: DesktopApp[]
   gridItems: Map<string, GridItem>
   selectedItems: Set<string>
-  
+
   // 拖拽状态
   isDragging: boolean
   dragItem: GridItem | null
   dropTarget: GridPosition | null
-  
+
   // 布局状态
   occupiedPositions: Set<string>
   availablePositions: GridPosition[]
@@ -222,21 +225,21 @@ interface GridActions {
   // 配置管理
   setGridConfig(config: GridConfig): void
   switchPreset(size: GridSize): void
-  
+
   // 数据加载
   loadDesktopData(): Promise<void>
-  
+
   // 项目管理
   addGridItem(item: GridItem): boolean
   removeGridItem(id: string): void
   moveGridItem(id: string, position: GridPosition): boolean
-  
+
   // 拖拽处理
   startDrag(item: GridItem): void
   updateDragTarget(position: GridPosition): void
   finalizeDrop(): boolean
   cancelDrag(): void
-  
+
   // 配置持久化
   saveConfiguration(): Promise<void>
   exportConfiguration(): string
@@ -253,14 +256,14 @@ interface GridActions {
 graph TB
     A[DragDropProvider] --> B[useDrag Hook]
     A --> C[useDrop Hook]
-    
+
     B --> D[GridItem组件]
     C --> E[DropZone组件]
-    
+
     F[拖拽事件流] --> G[onDragStart]
     G --> H[onDragOver]
     H --> I[onDrop]
-    
+
     J[自动吸附算法] --> K[位置计算]
     K --> L[网格对齐]
     L --> M[动画效果]
@@ -268,7 +271,7 @@ graph TB
 
 ### 拖拽交互流程
 
-1. **拖拽开始**: 
+1. **拖拽开始**:
    - 记录原始位置
    - 创建拖拽预览
    - 标记占用位置为可用
@@ -287,30 +290,33 @@ graph TB
 
 ``typescript
 class GridSnapAlgorithm {
-  /**
-   * 计算最佳吸附位置
-   */
+/\*\*
+
+- 计算最佳吸附位置
+  \*/
   calculateSnapPosition(
-    mousePosition: Point,
-    gridConfig: GridConfig
+  mousePosition: Point,
+  gridConfig: GridConfig
   ): GridPosition {
-    // 1. 鼠标位置转换为网格坐标
-    const gridX = Math.round(mousePosition.x / (gridConfig.cellSize + gridConfig.gap))
-    const gridY = Math.round(mousePosition.y / (gridConfig.cellSize + gridConfig.gap))
-    
-    // 2. 边界检查和约束（每个图标占用1x1网格）
-    const constrainedX = Math.max(0, Math.min(gridX, gridConfig.columns - 1))
-    const constrainedY = Math.max(0, Math.min(gridY, gridConfig.rows - 1))
-    
-    // 3. 碰撞检测
-    const targetPosition = { x: constrainedX, y: constrainedY }
-    if (this.isPositionOccupied(targetPosition)) {
-      return this.findNearestAvailablePosition(targetPosition)
-    }
-    
-    return targetPosition
+  // 1. 鼠标位置转换为网格坐标
+  const gridX = Math.round(mousePosition.x / (gridConfig.cellSize + gridConfig.gap))
+  const gridY = Math.round(mousePosition.y / (gridConfig.cellSize + gridConfig.gap))
+
+  // 2. 边界检查和约束（每个图标占用1x1网格）
+  const constrainedX = Math.max(0, Math.min(gridX, gridConfig.columns - 1))
+  const constrainedY = Math.max(0, Math.min(gridY, gridConfig.rows - 1))
+
+  // 3. 碰撞检测
+  const targetPosition = { x: constrainedX, y: constrainedY }
+  if (this.isPositionOccupied(targetPosition)) {
+  return this.findNearestAvailablePosition(targetPosition)
   }
+
+  return targetPosition
+
 }
+}
+
 ```
 
 ## JSON配置系统设计
@@ -479,92 +485,98 @@ class GridSnapAlgorithm {
 
 ``typescript
 class ConfigurationManager {
-  /**
-   * 加载静态JSON配置
-   */
+/\*\*
+
+- 加载静态JSON配置
+  \*/
   async loadStaticConfiguration(): Promise<DesktopConfiguration> {
-    try {
-      // 从静态文件加载配置
-      const response = await fetch('/config/desktop-config.json')
-      const config = await response.json()
-      
-      // 配置验证
-      this.validateConfiguration(config)
-      
+  try {
+  // 从静态文件加载配置
+  const response = await fetch('/config/desktop-config.json')
+  const config = await response.json()
+  // 配置验证
+  this.validateConfiguration(config)
+
       return config
-    } catch (error) {
-      console.error('配置加载失败:', error)
-      // 返回默认配置
-      return this.getDefaultConfiguration()
-    }
+
+  } catch (error) {
+  console.error('配置加载失败:', error)
+  // 返回默认配置
+  return this.getDefaultConfiguration()
+  }
   }
 
-  /**
-   * 导入JSON配置
-   */
+/\*\*
+
+- 导入JSON配置
+  \*/
   async importConfiguration(jsonString: string): Promise<boolean> {
-    try {
-      const config = JSON.parse(jsonString)
-      
-      // 1. 配置验证
-      this.validateConfiguration(config)
-      
+  try {
+  const config = JSON.parse(jsonString)
+  // 1. 配置验证
+  this.validateConfiguration(config)
+
       // 2. 版本兼容性检查
       const migratedConfig = this.migrateConfiguration(config)
-      
+
       // 3. 网格状态更新
       await this.applyGridConfiguration(migratedConfig)
-      
+
       return true
-    } catch (error) {
-      console.error('配置导入失败:', error)
-      return false
-    }
+
+  } catch (error) {
+  console.error('配置导入失败:', error)
+  return false
+  }
   }
 
-  /**
-   * 导出当前配置
-   */
+/\*\*
+
+- 导出当前配置
+  \*/
   exportConfiguration(): string {
-    const config: DesktopConfiguration = {
-      version: this.getCurrentVersion(),
-      metadata: this.generateMetadata(),
-      gridConfig: this.gridStore.currentConfig,
-      apps: this.gridStore.availableApps,
-      items: Array.from(this.gridStore.gridItems.values()),
-      theme: this.themeStore.currentTheme,
-      lastModified: Date.now()
-    }
-    
-    return JSON.stringify(config, null, 2)
+  const config: DesktopConfiguration = {
+  version: this.getCurrentVersion(),
+  metadata: this.generateMetadata(),
+  gridConfig: this.gridStore.currentConfig,
+  apps: this.gridStore.availableApps,
+  items: Array.from(this.gridStore.gridItems.values()),
+  theme: this.themeStore.currentTheme,
+  lastModified: Date.now()
   }
 
-  /**
-   * 获取默认配置
-   */
-  private getDefaultConfiguration(): DesktopConfiguration {
-    return {
-      version: 1,
-      gridConfig: {
-        id: 'default-medium',
-        name: '中等网格',
-        gridSize: 'medium',
-        cellSize: 64,
-        gap: 12,
-        columns: 12,
-        rows: 8,
-        padding: { top: 20, right: 20, bottom: 20, left: 20 }
-      },
-      apps: [],
-      items: [],
-      theme: {
-        mode: 'light',
-        accentColor: '#3b82f6'
-      },
-      lastModified: Date.now()
-    }
-  }
+  return JSON.stringify(config, null, 2)
+
 }
+
+/\*\*
+
+- 获取默认配置
+  \*/
+  private getDefaultConfiguration(): DesktopConfiguration {
+  return {
+  version: 1,
+  gridConfig: {
+  id: 'default-medium',
+  name: '中等网格',
+  gridSize: 'medium',
+  cellSize: 64,
+  gap: 12,
+  columns: 12,
+  rows: 8,
+  padding: { top: 20, right: 20, bottom: 20, left: 20 }
+  },
+  apps: [],
+  items: [],
+  theme: {
+  mode: 'light',
+  accentColor: '#3b82f6'
+  },
+  lastModified: Date.now()
+  }
+  }
+  }
+
 ```
 
 ## 静态JSON数据结构
@@ -791,104 +803,110 @@ class ConfigurationManager {
 
 ``typescript
 class GridItemManager {
-  /**
-   * 创建应用类型的网格项
-   */
+/\*\*
+
+- 创建应用类型的网格项
+  \*/
   createAppItem(
-    appId: string, 
-    position: GridPosition, 
-    data: Record<string, any> = {}
+  appId: string,
+  position: GridPosition,
+  data: Record<string, any> = {}
   ): GridItem {
-    return {
-      id: this.generateItemId(),
-      appId,
-      type: 'apps',
-      position,
-      general: {
-        locked: false,
-        visible: true
-      },
-      data: {
-        title: data.title || this.getAppName(appId),
-        ...data
-      },
-      metadata: {
-        create_time: Date.now().toString(),
-        ext_name: '',
-        open_mode: appId
-      }
-    }
+  return {
+  id: this.generateItemId(),
+  appId,
+  type: 'apps',
+  position,
+  general: {
+  locked: false,
+  visible: true
+  },
+  data: {
+  title: data.title || this.getAppName(appId),
+  ...data
+  },
+  metadata: {
+  create_time: Date.now().toString(),
+  ext_name: '',
+  open_mode: appId
   }
-  
-  /**
-   * 创建文件类型的网格项
-   */
+  }
+  }
+
+/\*\*
+
+- 创建文件类型的网格项
+  \*/
   createFileItem(
-    filePath: string,
-    position: GridPosition,
-    fileName: string,
-    extName: string,
-    openMode: string
+  filePath: string,
+  position: GridPosition,
+  fileName: string,
+  extName: string,
+  openMode: string
   ): GridItem {
-    return {
-      id: this.generateItemId(),
-      appId: this.generateFileId(filePath),
-      type: 'files',
-      position,
-      general: {
-        locked: false,
-        visible: true
-      },
-      data: {
-        title: fileName,
-        path: filePath,
-        size: 0 // 需要从文件系统获取
-      },
-      metadata: {
-        create_time: Date.now().toString(),
-        ext_name: extName,
-        open_mode: openMode
-      }
-    }
+  return {
+  id: this.generateItemId(),
+  appId: this.generateFileId(filePath),
+  type: 'files',
+  position,
+  general: {
+  locked: false,
+  visible: true
+  },
+  data: {
+  title: fileName,
+  path: filePath,
+  size: 0 // 需要从文件系统获取
+  },
+  metadata: {
+  create_time: Date.now().toString(),
+  ext_name: extName,
+  open_mode: openMode
   }
-  
-  /**
-   * 更新网格项位置
-   */
+  }
+  }
+
+/\*\*
+
+- 更新网格项位置
+  \*/
   updateItemPosition(item: GridItem, newPosition: GridPosition): GridItem {
-    return {
-      ...item,
-      position: newPosition
-    }
+  return {
+  ...item,
+  position: newPosition
   }
-  
-  /**
-   * 切换锁定状态
-   */
+  }
+
+/\*\*
+
+- 切换锁定状态
+  \*/
   toggleLocked(item: GridItem): GridItem {
-    return {
-      ...item,
-      general: {
-        ...item.general,
-        locked: !item.general.locked
-      }
-    }
+  return {
+  ...item,
+  general: {
+  ...item.general,
+  locked: !item.general.locked
   }
-  
-  /**
-   * 更新项目数据
-   */
+  }
+  }
+
+/\*\*
+
+- 更新项目数据
+  \*/
   updateItemData(item: GridItem, newData: Record<string, any>): GridItem {
-    return {
-      ...item,
-      data: {
-        ...item.data,
-        ...newData
-      }
-    }
+  return {
+  ...item,
+  data: {
+  ...item.data,
+  ...newData
   }
-}
-```
+  }
+  }
+  }
+
+````
 
 ### 数据加载与管理
 
@@ -904,20 +922,20 @@ class DesktopDataManager {
       if (localConfig) {
         return localConfig
       }
-      
+
       // 2. 加载静态JSON配置
       const staticConfig = await this.loadStaticConfiguration()
-      
+
       // 3. 保存到本地存储
       this.saveToLocalStorage(staticConfig)
-      
+
       return staticConfig
     } catch (error) {
       console.error('数据加载失败:', error)
       return this.getEmptyConfiguration()
     }
   }
-  
+
   /**
    * 从本地存储加载
    */
@@ -929,7 +947,7 @@ class DesktopDataManager {
       return null
     }
   }
-  
+
   /**
    * 保存到本地存储
    */
@@ -940,21 +958,21 @@ class DesktopDataManager {
       console.error('保存到本地存储失败:', error)
     }
   }
-  
+
   /**
    * 按类型过滤网格项
    */
   filterItemsByType(items: GridItem[], type: 'apps' | 'files'): GridItem[] {
     return items.filter(item => item.type === type)
   }
-  
+
   /**
    * 按可见性过滤网格项
    */
   filterVisibleItems(items: GridItem[]): GridItem[] {
     return items.filter(item => item.general.visible)
   }
-  
+
   /**
    * 按锁定状态过滤网格项
    */
@@ -1020,3 +1038,4 @@ class DesktopDataManager {
 - **拖拽响应延迟**: < 16ms (60fps)
 - **配置加载时间**: < 100ms
 - **内存使用峰值**: < 50MB (1000个应用)
+````

@@ -20,9 +20,3 @@ pnpm-lock.yaml
 coverage
 *.min.js
 *.min.css
-*.md
-
-# 配置文件
-/jest.config.js
-/eslint.config.js
-/prettier.config.js

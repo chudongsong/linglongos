@@ -1,21 +1,16 @@
 {
-  "extends": "./env/typescript/base.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "jsx": "preserve",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@linglongos/*": ["packages/*/src"]
-    }
-  },
-  "include": [
-    "packages/*/src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+	"extends": "./env/typescript/base.json",
+	"compilerOptions": {
+		"noEmit": true,
+		"jsx": "preserve",
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"baseUrl": ".",
+		"paths": {
+			"@linglongos/*": ["packages/*/src"]
+		}
+	},
+	"include": ["packages/*/src/**/*"],
+	"exclude": ["node_modules", "dist"]
 }

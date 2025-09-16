@@ -36,8 +36,8 @@ export const version = '1.0.0'
  * 工具库信息
  */
 export const info = {
-  name: '@linglongos/utils',
-  version,
-  description: '玲珑OS工具库 - 提供常用的工具方法',
-  author: 'LingLong OS Team',
+	name: '@linglongos/utils',
+	version,
+	description: '玲珑OS工具库 - 提供常用的工具方法',
+	author: 'LingLong OS Team',
 } as const

@@ -15,32 +15,34 @@
 注册新用户账户。
 
 #### 请求体
+
 ```json
 {
-  "username": "string",      // 必填，3-50字符
-  "email": "string",         // 可选，有效邮箱格式
-  "password": "string"       // 必填，6-128字符
+	"username": "string", // 必填，3-50字符
+	"email": "string", // 可选，有效邮箱格式
+	"password": "string" // 必填，6-128字符
 }
 ```
 
 #### 响应示例
+
 ```json
 {
-  "success": true,
-  "data": {
-    "user": {
-      "id": "uuid",
-      "username": "testuser",
-      "email": "test@example.com",
-      "createdAt": "2024-01-15T10:30:00Z"
-    },
-    "tokens": {
-      "accessToken": "jwt_token",
-      "refreshToken": "refresh_token",
-      "expiresIn": 86400
-    }
-  },
-  "message": "Registration successful"
+	"success": true,
+	"data": {
+		"user": {
+			"id": "uuid",
+			"username": "testuser",
+			"email": "test@example.com",
+			"createdAt": "2024-01-15T10:30:00Z"
+		},
+		"tokens": {
+			"accessToken": "jwt_token",
+			"refreshToken": "refresh_token",
+			"expiresIn": 86400
+		}
+	},
+	"message": "Registration successful"
 }
 ```
 
@@ -51,31 +53,33 @@
 用户登录获取访问令牌。
 
 #### 请求体
+
 ```json
 {
-  "username": "string",      // 必填
-  "password": "string"       // 必填
+	"username": "string", // 必填
+	"password": "string" // 必填
 }
 ```
 
 #### 响应示例
+
 ```json
 {
-  "success": true,
-  "data": {
-    "user": {
-      "id": "uuid",
-      "username": "testuser",
-      "email": "test@example.com",
-      "createdAt": "2024-01-15T10:30:00Z"
-    },
-    "tokens": {
-      "accessToken": "jwt_token",
-      "refreshToken": "refresh_token",
-      "expiresIn": 86400
-    }
-  },
-  "message": "Login successful"
+	"success": true,
+	"data": {
+		"user": {
+			"id": "uuid",
+			"username": "testuser",
+			"email": "test@example.com",
+			"createdAt": "2024-01-15T10:30:00Z"
+		},
+		"tokens": {
+			"accessToken": "jwt_token",
+			"refreshToken": "refresh_token",
+			"expiresIn": 86400
+		}
+	},
+	"message": "Login successful"
 }
 ```
 
@@ -86,9 +90,10 @@
 使用刷新令牌获取新的访问令牌。
 
 #### 请求体
+
 ```json
 {
-  "refreshToken": "string"   // 必填
+	"refreshToken": "string" // 必填
 }
 ```
 
@@ -109,10 +114,11 @@
 **Headers**: `Authorization: Bearer <access_token>`
 
 #### 请求体
+
 ```json
 {
-  "currentPassword": "string",  // 必填
-  "newPassword": "string"       // 必填，6-128字符
+	"currentPassword": "string", // 必填
+	"newPassword": "string" // 必填，6-128字符
 }
 ```
 
@@ -127,6 +133,7 @@
 **Headers**: `Authorization: Bearer <access_token>`
 
 #### 查询参数
+
 - `panelType` (可选): onePanel | baota
 - `isActive` (可选): true | false
 - `healthStatus` (可选): healthy | unhealthy | unknown
@@ -135,31 +142,32 @@
 - `limit` (可选): 每页条数，默认20
 
 #### 响应示例
+
 ```json
 {
-  "success": true,
-  "data": {
-    "configs": [
-      {
-        "id": 1,
-        "name": "My 1Panel Server",
-        "panelType": "onePanel",
-        "endpoint": "https://panel.example.com",
-        "isActive": true,
-        "healthStatus": "healthy",
-        "lastHealthCheck": "2024-01-15T10:30:00Z",
-        "createdAt": "2024-01-15T09:00:00Z",
-        "updatedAt": "2024-01-15T10:30:00Z"
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 1,
-      "totalPages": 1
-    }
-  },
-  "message": "Panel configurations retrieved successfully"
+	"success": true,
+	"data": {
+		"configs": [
+			{
+				"id": 1,
+				"name": "My 1Panel Server",
+				"panelType": "onePanel",
+				"endpoint": "https://panel.example.com",
+				"isActive": true,
+				"healthStatus": "healthy",
+				"lastHealthCheck": "2024-01-15T10:30:00Z",
+				"createdAt": "2024-01-15T09:00:00Z",
+				"updatedAt": "2024-01-15T10:30:00Z"
+			}
+		],
+		"pagination": {
+			"page": 1,
+			"limit": 20,
+			"total": 1,
+			"totalPages": 1
+		}
+	},
+	"message": "Panel configurations retrieved successfully"
 }
 ```
 
@@ -180,12 +188,13 @@
 **Headers**: `Authorization: Bearer <access_token>`
 
 #### 请求体
+
 ```json
 {
-  "name": "string",          // 必填，1-100字符
-  "panelType": "onePanel|baota",  // 必填
-  "endpoint": "string",      // 必填，有效URL
-  "apiKey": "string"         // 必填，1-500字符
+	"name": "string", // 必填，1-100字符
+	"panelType": "onePanel|baota", // 必填
+	"endpoint": "string", // 必填，有效URL
+	"apiKey": "string" // 必填，1-500字符
 }
 ```
 
@@ -198,11 +207,12 @@
 **Headers**: `Authorization: Bearer <access_token>`
 
 #### 请求体
+
 ```json
 {
-  "name": "string",          // 可选
-  "endpoint": "string",      // 可选
-  "apiKey": "string"         // 可选
+	"name": "string", // 可选
+	"endpoint": "string", // 可选
+	"apiKey": "string" // 可选
 }
 ```
 
@@ -223,15 +233,16 @@
 **Headers**: `Authorization: Bearer <access_token>`
 
 #### 响应示例
+
 ```json
 {
-  "success": true,
-  "data": {
-    "isHealthy": true,
-    "healthStatus": "healthy",
-    "testedAt": "2024-01-15T10:30:00Z"
-  },
-  "message": "Panel configuration test successful"
+	"success": true,
+	"data": {
+		"isHealthy": true,
+		"healthStatus": "healthy",
+		"testedAt": "2024-01-15T10:30:00Z"
+	},
+	"message": "Panel configuration test successful"
 }
 ```
 
@@ -246,12 +257,14 @@
 **Headers**: `Authorization: Bearer <access_token>`
 
 #### 示例
+
 ```http
 GET /api/proxy/1/system/info
 Authorization: Bearer <access_token>
 ```
 
 自动转换为对应面板的API调用：
+
 - 1Panel: `GET /api/v1/system/info`
 - 宝塔: `POST /ajax` with action=GetSystemTotal
 
@@ -261,14 +274,17 @@ Authorization: Bearer <access_token>
 
 自动检测面板类型并代理请求。
 
-**Headers**: 
+**Headers**:
+
 - `Authorization: Bearer <access_token>`
 - `X-API-Key: <panel_api_key>` 或在请求体中提供
 
 #### 查询参数
+
 - `endpoint`: 目标面板地址
 
 #### 示例
+
 ```http
 GET /api/proxy/auto/system/info?endpoint=https://panel.example.com
 Authorization: Bearer <access_token>
@@ -289,15 +305,15 @@ X-API-Key: your-panel-api-key
 
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "category": "AUTH|VALIDATION|PANEL_CONN|PROXY|INTERNAL",
-    "message": "Error description",
-    "details": {},
-    "timestamp": "2024-01-15T10:30:00Z",
-    "requestId": "uuid"
-  }
+	"success": false,
+	"error": {
+		"code": "ERROR_CODE",
+		"category": "AUTH|VALIDATION|PANEL_CONN|PROXY|INTERNAL",
+		"message": "Error description",
+		"details": {},
+		"timestamp": "2024-01-15T10:30:00Z",
+		"requestId": "uuid"
+	}
 }
 ```
 
@@ -316,36 +332,38 @@ X-API-Key: your-panel-api-key
 
 ### 1Panel API映射
 
-| 通用路径 | 1Panel API | 描述 |
-|---------|------------|------|
-| `/auth/login` | `/api/v1/auth/login` | 登录 |
-| `/system/info` | `/api/v1/system/info` | 系统信息 |
-| `/containers` | `/api/v1/containers` | 容器列表 |
-| `/images` | `/api/v1/images` | 镜像列表 |
-| `/websites` | `/api/v1/websites` | 网站管理 |
-| `/databases` | `/api/v1/databases` | 数据库管理 |
+| 通用路径       | 1Panel API            | 描述       |
+| -------------- | --------------------- | ---------- |
+| `/auth/login`  | `/api/v1/auth/login`  | 登录       |
+| `/system/info` | `/api/v1/system/info` | 系统信息   |
+| `/containers`  | `/api/v1/containers`  | 容器列表   |
+| `/images`      | `/api/v1/images`      | 镜像列表   |
+| `/websites`    | `/api/v1/websites`    | 网站管理   |
+| `/databases`   | `/api/v1/databases`   | 数据库管理 |
 
 ### 宝塔面板API映射
 
-| 通用路径 | 宝塔API | Action | 描述 |
-|---------|---------|---------|------|
-| `/auth/login` | `/login` | - | 登录 |
-| `/system/info` | `/ajax` | `GetSystemTotal` | 系统信息 |
-| `/websites` | `/site` | `GetSites` | 网站列表 |
-| `/databases` | `/database` | `GetDatabases` | 数据库列表 |
-| `/files` | `/files` | `GetDir` | 文件管理 |
+| 通用路径       | 宝塔API     | Action           | 描述       |
+| -------------- | ----------- | ---------------- | ---------- |
+| `/auth/login`  | `/login`    | -                | 登录       |
+| `/system/info` | `/ajax`     | `GetSystemTotal` | 系统信息   |
+| `/websites`    | `/site`     | `GetSites`       | 网站列表   |
+| `/databases`   | `/database` | `GetDatabases`   | 数据库列表 |
+| `/files`       | `/files`    | `GetDir`         | 文件管理   |
 
 ## 请求/响应示例
 
 ### 1Panel系统信息查询
 
 **请求**:
+
 ```http
 GET /api/proxy/1/system/info
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **实际转换为**:
+
 ```http
 GET https://panel.example.com/api/v1/system/info
 Authorization: Bearer panel-api-key
@@ -356,12 +374,14 @@ X-Panel-Type: onePanel
 ### 宝塔面板网站列表查询
 
 **请求**:
+
 ```http
 GET /api/proxy/2/websites/list
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **实际转换为**:
+
 ```http
 POST https://panel.example.com/site
 Content-Type: application/x-www-form-urlencoded
@@ -374,7 +394,7 @@ action=GetSites&p=1&limit=20&request_token=baota_api_request&request_time=164224
 
 - **默认限制**: 每15分钟100个请求
 - **基于IP**: 限制来源IP的请求频率
-- **响应头**: 
+- **响应头**:
   - `X-RateLimit-Limit`: 限制数量
   - `X-RateLimit-Remaining`: 剩余请求数
   - `X-RateLimit-Reset`: 重置时间

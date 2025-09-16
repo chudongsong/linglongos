@@ -9,11 +9,11 @@
  * @returns 重复后的字符串
  */
 function repeatString(str: string, count: number): string {
-  let result = ''
-  for (let i = 0; i < count; i++) {
-    result += str
-  }
-  return result
+	let result = ''
+	for (let i = 0; i < count; i++) {
+		result += str
+	}
+	return result
 }
 
 /**
@@ -24,8 +24,8 @@ function repeatString(str: string, count: number): string {
  * @returns 截断后的字符串
  */
 export function truncate(str: string, length: number, suffix: string = '...'): string {
-  if (str.length <= length) return str
-  return str.slice(0, length - suffix.length) + suffix
+	if (str.length <= length) return str
+	return str.slice(0, length - suffix.length) + suffix
 }
 
 /**
@@ -37,27 +37,27 @@ export function truncate(str: string, length: number, suffix: string = '...'): s
  * @returns 填充后的字符串
  */
 export function pad(
-  str: string,
-  length: number,
-  char: string = ' ',
-  position: 'start' | 'end' | 'both' = 'start'
+	str: string,
+	length: number,
+	char: string = ' ',
+	position: 'start' | 'end' | 'both' = 'start',
 ): string {
-  if (str.length >= length) return str
+	if (str.length >= length) return str
 
-  const padLength = length - str.length
+	const padLength = length - str.length
 
-  switch (position) {
-    case 'start':
-      return repeatString(char, padLength) + str
-    case 'end':
-      return str + repeatString(char, padLength)
-    case 'both':
-      const leftPad = Math.floor(padLength / 2)
-      const rightPad = padLength - leftPad
-      return repeatString(char, leftPad) + str + repeatString(char, rightPad)
-    default:
-      return str
-  }
+	switch (position) {
+		case 'start':
+			return repeatString(char, padLength) + str
+		case 'end':
+			return str + repeatString(char, padLength)
+		case 'both':
+			const leftPad = Math.floor(padLength / 2)
+			const rightPad = padLength - leftPad
+			return repeatString(char, leftPad) + str + repeatString(char, rightPad)
+		default:
+			return str
+	}
 }
 
 /**
@@ -66,9 +66,7 @@ export function pad(
  * @returns 驼峰命名字符串
  */
 export function toCamelCase(str: string): string {
-  return str
-    .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
-    .replace(/^(.)/, c => c.toLowerCase())
+	return str.replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : '')).replace(/^(.)/, (c) => c.toLowerCase())
 }
 
 /**
@@ -77,8 +75,8 @@ export function toCamelCase(str: string): string {
  * @returns 帕斯卡命名字符串
  */
 export function toPascalCase(str: string): string {
-  const camelCase = toCamelCase(str)
-  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1)
+	const camelCase = toCamelCase(str)
+	return camelCase.charAt(0).toUpperCase() + camelCase.slice(1)
 }
 
 /**
@@ -87,10 +85,10 @@ export function toPascalCase(str: string): string {
  * @returns 短横线命名字符串
  */
 export function toKebabCase(str: string): string {
-  return str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/[\s_]+/g, '-')
-    .toLowerCase()
+	return str
+		.replace(/([a-z])([A-Z])/g, '$1-$2')
+		.replace(/[\s_]+/g, '-')
+		.toLowerCase()
 }
 
 /**
@@ -99,10 +97,10 @@ export function toKebabCase(str: string): string {
  * @returns 下划线命名字符串
  */
 export function toSnakeCase(str: string): string {
-  return str
-    .replace(/([a-z])([A-Z])/g, '$1_$2')
-    .replace(/[\s-]+/g, '_')
-    .toLowerCase()
+	return str
+		.replace(/([a-z])([A-Z])/g, '$1_$2')
+		.replace(/[\s-]+/g, '_')
+		.toLowerCase()
 }
 
 /**
@@ -111,11 +109,11 @@ export function toSnakeCase(str: string): string {
  * @returns 标题命名字符串
  */
 export function toTitleCase(str: string): string {
-  return str
-    .toLowerCase()
-    .split(/\s+/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
+	return str
+		.toLowerCase()
+		.split(/\s+/)
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ')
 }
 
 /**
@@ -124,22 +122,19 @@ export function toTitleCase(str: string): string {
  * @param type 移除类型
  * @returns 处理后的字符串
  */
-export function removeWhitespace(
-  str: string,
-  type: 'all' | 'start' | 'end' | 'both' = 'both'
-): string {
-  switch (type) {
-    case 'all':
-      return str.replace(/\s/g, '')
-    case 'start':
-      return str.replace(/^\s+/, '')
-    case 'end':
-      return str.replace(/\s+$/, '')
-    case 'both':
-      return str.trim()
-    default:
-      return str
-  }
+export function removeWhitespace(str: string, type: 'all' | 'start' | 'end' | 'both' = 'both'): string {
+	switch (type) {
+		case 'all':
+			return str.replace(/\s/g, '')
+		case 'start':
+			return str.replace(/^\s+/, '')
+		case 'end':
+			return str.replace(/\s+$/, '')
+		case 'both':
+			return str.trim()
+		default:
+			return str
+	}
 }
 
 /**
@@ -149,9 +144,9 @@ export function removeWhitespace(
  * @returns 替换后的字符串
  */
 export function template(template: string, data: Record<string, any>): string {
-  return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-    return data[key] !== undefined ? String(data[key]) : match
-  })
+	return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+		return data[key] !== undefined ? String(data[key]) : match
+	})
 }
 
 /**
@@ -161,11 +156,11 @@ export function template(template: string, data: Record<string, any>): string {
  * @returns 格式化后的JSON字符串
  */
 export function formatJson(obj: any, indent: number = 2): string {
-  try {
-    return JSON.stringify(obj, null, indent)
-  } catch (error) {
-    return String(obj)
-  }
+	try {
+		return JSON.stringify(obj, null, indent)
+	} catch (error) {
+		return String(obj)
+	}
 }
 
 /**
@@ -174,7 +169,7 @@ export function formatJson(obj: any, indent: number = 2): string {
  * @returns 移除HTML标签后的字符串
  */
 export function removeHtmlTags(str: string): string {
-  return str.replace(/<[^>]+>/g, '')
+	return str.replace(/<[^>]+>/g, '')
 }
 
 /**
@@ -183,7 +178,7 @@ export function removeHtmlTags(str: string): string {
  * @returns 处理后的字符串
  */
 export function removeExtraWhitespace(str: string): string {
-  return str.replace(/\s+/g, ' ').trim()
+	return str.replace(/\s+/g, ' ').trim()
 }
 
 /**
@@ -192,8 +187,8 @@ export function removeExtraWhitespace(str: string): string {
  * @returns 扩展名
  */
 export function getFileExtension(filename: string): string {
-  const match = filename.match(/\.[^.]+$/)
-  return match ? match[0] : ''
+	const match = filename.match(/\.[^.]+$/)
+	return match ? match[0] : ''
 }
 
 /**
@@ -203,18 +198,11 @@ export function getFileExtension(filename: string): string {
  * @param className CSS类名
  * @returns 高亮后的HTML字符串
  */
-export function highlightKeywords(
-  text: string,
-  keywords: string[],
-  className: string = 'highlight'
-): string {
-  if (!keywords.length) return text
+export function highlightKeywords(text: string, keywords: string[], className: string = 'highlight'): string {
+	if (!keywords.length) return text
 
-  const pattern = new RegExp(
-    `(${keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`,
-    'gi'
-  )
-  return text.replace(pattern, `<span class="${className}">$1</span>`)
+	const pattern = new RegExp(`(${keywords.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi')
+	return text.replace(pattern, `<span class="${className}">$1</span>`)
 }
 
 /**
@@ -223,7 +211,7 @@ export function highlightKeywords(
  * @returns 首字母大写的字符串
  */
 export function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
 /**
@@ -232,7 +220,7 @@ export function capitalize(str: string): string {
  * @returns 每个单词首字母大写的字符串
  */
 export function titleCase(str: string): string {
-  return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+	return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
 }
 
 /**
@@ -241,8 +229,8 @@ export function titleCase(str: string): string {
  * @returns 脱敏后的手机号
  */
 export function maskPhone(phone: string): string {
-  if (!/^1[3-9]\d{9}$/.test(phone)) return phone
-  return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+	if (!/^1[3-9]\d{9}$/.test(phone)) return phone
+	return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
 }
 
 /**
@@ -251,8 +239,8 @@ export function maskPhone(phone: string): string {
  * @returns 脱敏后的邮箱
  */
 export function maskEmail(email: string): string {
-  if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) return email
-  return email.replace(/(.{1,3}).*@/, '$1***@')
+	if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) return email
+	return email.replace(/(.{1,3}).*@/, '$1***@')
 }
 
 /**
@@ -261,8 +249,8 @@ export function maskEmail(email: string): string {
  * @returns 脱敏后的身份证号
  */
 export function maskIdCard(idCard: string): string {
-  if (!/^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]$/.test(idCard)) return idCard
-  return idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2')
+	if (!/^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]$/.test(idCard)) return idCard
+	return idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2')
 }
 
 /**
@@ -271,32 +259,32 @@ export function maskIdCard(idCard: string): string {
  * @returns 脱敏后的银行卡号
  */
 export function maskBankCard(bankCard: string): string {
-  if (!/^[1-9]\d{12,19}$/.test(bankCard)) return bankCard
-  return bankCard.replace(/(\d{4})\d+(\d{4})/, '$1****$2')
+	if (!/^[1-9]\d{12,19}$/.test(bankCard)) return bankCard
+	return bankCard.replace(/(\d{4})\d+(\d{4})/, '$1****$2')
 }
 
 /**
  * 字符串工具集合
  */
 export const StringUtils = {
-  truncate,
-  pad,
-  toCamelCase,
-  toPascalCase,
-  toKebabCase,
-  toSnakeCase,
-  toTitleCase,
-  removeWhitespace,
-  template,
-  formatJson,
-  removeHtmlTags,
-  removeExtraWhitespace,
-  getFileExtension,
-  highlightKeywords,
-  capitalize,
-  titleCase,
-  maskPhone,
-  maskEmail,
-  maskIdCard,
-  maskBankCard,
+	truncate,
+	pad,
+	toCamelCase,
+	toPascalCase,
+	toKebabCase,
+	toSnakeCase,
+	toTitleCase,
+	removeWhitespace,
+	template,
+	formatJson,
+	removeHtmlTags,
+	removeExtraWhitespace,
+	getFileExtension,
+	highlightKeywords,
+	capitalize,
+	titleCase,
+	maskPhone,
+	maskEmail,
+	maskIdCard,
+	maskBankCard,
 }
