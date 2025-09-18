@@ -136,6 +136,28 @@ export interface IDesktopConfig {
 }
 
 /**
+ * JSON配置文件根接口
+ */
+export interface IDesktopConfigFile {
+  /** 配置版本 */
+  version: string;
+  /** 最后更新时间 */
+  lastUpdated: string;
+  /** 桌面配置 */
+  desktop: {
+    /** 配置信息 */
+    config: IDesktopConfig;
+    /** 网格配置（简化版） */
+    grid: {
+      columns: number;
+      rows: number;
+    };
+    /** 图标列表 */
+    icons: IDesktopIcon[];
+  };
+}
+
+/**
  * 应用程序信息接口
  */
 export interface IApplication {

@@ -4,6 +4,7 @@ import Login from '../features/auth/Login';
 import Desktop from '../features/desktop/Desktop';
 import GridTest from '../pages/GridTest';
 import GridSystemTest from '../test/GridSystemTest';
+import TestPage from '../pages/TestPage';
 import ProtectedRoute from './ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/test',
         element: <GridSystemTest />,
+      },
+      {
+        path: '/test-page',
+        element: <TestPage />,
       },
     ],
   },

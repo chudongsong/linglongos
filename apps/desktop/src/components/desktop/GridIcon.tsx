@@ -64,11 +64,12 @@ const GridIcon: React.FC<GridIconProps> = memo(({
     onDoubleClick?.();
   };
 
-  // 计算精确的布局尺寸
-  const iconContainerSize = Math.floor(size * 0.75); // 图标容器占总尺寸的75%
-  const labelHeight = 20; // 固定标签高度
-  const iconTopMargin = Math.floor((size - iconContainerSize - labelHeight) / 2); // 上边距
-  const labelTopMargin = 4; // 标签与图标的间距
+  // 计算精确的布局尺寸，确保均匀间距
+  const iconContainerSize = Math.floor(size * 0.7); // 图标容器占总尺寸的70%
+  const labelHeight = Math.max(16, Math.floor(size * 0.15)); // 响应式标签高度
+  const totalContentHeight = iconContainerSize + labelHeight + 4; // 总内容高度（包含4px间距）
+  const iconTopMargin = Math.floor((size - totalContentHeight) / 2); // 垂直居中
+  const labelTopMargin = 4; // 标签与图标的固定间距
 
   // 渲染图标内容
   const renderIconContent = () => {
@@ -178,21 +179,22 @@ const GridIcon: React.FC<GridIconProps> = memo(({
       {/* 图标标签 - 精确定位和尺寸 */}
       <div 
         className={cn(
-          'text-xs text-center truncate px-2 py-1 rounded',
+          'text-center truncate rounded flex items-center justify-center',
           'bg-white/90 backdrop-blur-sm text-gray-900 shadow-sm',
-          'border border-white/20',
-          isSelected && 'bg-blue-100 text-blue-900 border-blue-200'
+          'border border-white/20 transition-all duration-200',
+          isSelected && 'bg-blue-100 text-blue-900 border-blue-200',
+          'hover:bg-white hover:shadow-md'
         )}
         style={{
-          width: size - 4, // 留出2px边距
+          width: Math.min(size - 4, iconContainerSize + 8), // 标签宽度不超过图标容器
           height: labelHeight,
           marginTop: labelTopMargin,
-          lineHeight: `${labelHeight - 8}px`, // 减去padding
-          fontSize: Math.max(10, Math.floor(size * 0.12)), // 响应式字体大小
+          fontSize: Math.max(9, Math.min(12, Math.floor(size * 0.11))), // 更合理的字体大小范围
+          padding: '2px 6px', // 固定内边距
         }}
         title={icon.name} // 悬停显示完整名称
       >
-        {icon.name}
+        <span className="truncate">{icon.name}</span>
       </div>
 
       {/* 拖拽指示器 */}

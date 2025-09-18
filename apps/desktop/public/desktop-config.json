@@ -1,0 +1,195 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-01-20T10:00:00.000Z",
+  "desktop": {
+    "config": {
+      "layoutMode": "grid",
+      "gridConfig": {
+        "size": "medium",
+        "columns": 10,
+        "rows": 7,
+        "gap": 20,
+        "iconSize": 88,
+        "padding": {
+          "top": 32,
+          "right": 32,
+          "bottom": 32,
+          "left": 32
+        }
+      },
+      "autoArrange": true,
+      "snapToGrid": true,
+      "background": {
+        "type": "gradient",
+        "value": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      },
+      "theme": {
+        "primary": "#3b82f6",
+        "secondary": "#8b5cf6",
+        "textColor": "#1f2937"
+      }
+    },
+    "icons": [
+      {
+        "id": "icon-1",
+        "name": "文件管理器",
+        "type": "folder",
+        "icon": "folder",
+        "gridPosition": {
+          "row": 0,
+          "col": 0
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/file-manager",
+        "description": "管理文件和文件夹的系统应用",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-2",
+        "name": "终端",
+        "type": "terminal",
+        "icon": "terminal",
+        "gridPosition": {
+          "row": 0,
+          "col": 1
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/terminal",
+        "description": "命令行终端工具",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-3",
+        "name": "系统设置",
+        "type": "settings",
+        "icon": "settings",
+        "gridPosition": {
+          "row": 0,
+          "col": 2
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/settings",
+        "description": "系统配置和设置",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-4",
+        "name": "代码编辑器",
+        "type": "editor",
+        "icon": "code",
+        "gridPosition": {
+          "row": 0,
+          "col": 3
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/code-editor",
+        "description": "强大的代码编辑器",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-5",
+        "name": "图片查看器",
+        "type": "image",
+        "icon": "image",
+        "gridPosition": {
+          "row": 1,
+          "col": 0
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/image-viewer",
+        "description": "查看和编辑图片",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-6",
+        "name": "音乐播放器",
+        "type": "music",
+        "icon": "music",
+        "gridPosition": {
+          "row": 1,
+          "col": 1
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/music-player",
+        "description": "播放音乐文件",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-7",
+        "name": "视频播放器",
+        "type": "video",
+        "icon": "video",
+        "gridPosition": {
+          "row": 1,
+          "col": 2
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/video-player",
+        "description": "播放视频文件",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-8",
+        "name": "计算器",
+        "type": "calculator",
+        "icon": "calculator",
+        "gridPosition": {
+          "row": 1,
+          "col": 3
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/calculator",
+        "description": "科学计算器",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-9",
+        "name": "浏览器",
+        "type": "browser",
+        "icon": "globe",
+        "gridPosition": {
+          "row": 2,
+          "col": 0
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/browser",
+        "description": "网页浏览器",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      },
+      {
+        "id": "icon-10",
+        "name": "任务管理器",
+        "type": "task",
+        "icon": "activity",
+        "gridPosition": {
+          "row": 2,
+          "col": 1
+        },
+        "isActive": false,
+        "isDraggable": true,
+        "appPath": "/apps/task-manager",
+        "description": "系统任务管理器",
+        "createdAt": "2024-01-20T10:00:00.000Z",
+        "updatedAt": "2024-01-20T10:00:00.000Z"
+      }
+    ]
+  }
+}

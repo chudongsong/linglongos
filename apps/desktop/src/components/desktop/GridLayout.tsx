@@ -3,9 +3,9 @@
  * @description 提供灵活的网格系统，支持大、中、小三种预设布局
  */
 
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent, DragMoveEvent } from '@dnd-kit/core';
 import { cn } from '../../utils/cn';
 import { 
   type IDesktopIcon, 
@@ -13,6 +13,7 @@ import {
   type GridSize, 
   type IGridPosition
 } from '../../types/grid';
+import { GridPositionValidator } from '../../utils/gridPositionValidator';
 import GridIcon from './GridIcon';
 
 interface GridLayoutProps {
@@ -50,7 +51,32 @@ const GridLayout: React.FC<GridLayoutProps> = ({
   onGridSizeChange,
   onDesktopClick
 }) => {
+  // 位置验证状态
+  const [positionValidation, setPositionValidation] = useState<{
+    isValid: boolean;
+    conflicts: any[];
+    outOfBounds: any[];
+  }>({ isValid: true, conflicts: [], outOfBounds: [] });
+
+  // 验证图标位置配置
+  useEffect(() => {
+    const validationResult = GridPositionValidator.validatePositions(
+      icons,
+      gridConfig.columns,
+      gridConfig.rows
+    );
+    
+    setPositionValidation(validationResult);
+    
+    // 在开发环境下输出验证结果
+    if (process.env.NODE_ENV === 'development' && !validationResult.isValid) {
+      console.warn('🚨 图标位置验证失败:', validationResult);
+      const report = GridPositionValidator.generateReport(validationResult);
+      console.warn(report);
+    }
+  }, [icons, gridConfig.columns, gridConfig.rows]);
   const [activeIcon, setActiveIcon] = useState<IDesktopIcon | null>(null);
+  const [dragPreviewPosition, setDragPreviewPosition] = useState<IGridPosition | null>(null);
 
   // 配置拖拽传感器
   const sensors = useSensors(
@@ -88,17 +114,24 @@ const GridLayout: React.FC<GridLayoutProps> = ({
 
   // 计算像素位置对应的网格位置
   const getGridPositionFromPixel = useCallback((x: number, y: number) => {
-    const { cellWidth, cellHeight } = gridDimensions;
-    const { padding, columns, rows } = gridConfig;
+    const { padding, columns, rows, iconSize, gap } = gridConfig;
     
     const adjustedX = x - padding.left;
     const adjustedY = y - padding.top;
     
-    const col = Math.max(0, Math.min(columns - 1, Math.round(adjustedX / cellWidth)));
-    const row = Math.max(0, Math.min(rows - 1, Math.round(adjustedY / cellHeight)));
+    // 使用更精确的网格计算，考虑图标中心点
+    const centerOffsetX = iconSize / 2;
+    const centerOffsetY = iconSize / 2;
+    
+    const col = Math.max(0, Math.min(columns - 1, 
+      Math.round((adjustedX + centerOffsetX) / (iconSize + gap))
+    ));
+    const row = Math.max(0, Math.min(rows - 1, 
+      Math.round((adjustedY + centerOffsetY) / (iconSize + gap))
+    ));
     
     return { row, col };
-  }, [gridDimensions, gridConfig]);
+  }, [gridConfig]);
 
   // 检查网格位置是否被占用
   const isPositionOccupied = useCallback((position: IGridPosition, excludeIconId?: string) => {
@@ -118,26 +151,39 @@ const GridLayout: React.FC<GridLayoutProps> = ({
       return targetPosition;
     }
     
-    // 螺旋搜索最近的空闲位置
-    for (let radius = 1; radius < Math.max(columns, rows); radius++) {
-      for (let dx = -radius; dx <= radius; dx++) {
-        for (let dy = -radius; dy <= radius; dy++) {
-          if (Math.abs(dx) !== radius && Math.abs(dy) !== radius) continue;
-          
-          const newPosition = {
-            row: Math.max(0, Math.min(rows - 1, targetPosition.row + dy)),
-            col: Math.max(0, Math.min(columns - 1, targetPosition.col + dx))
-          };
-          
-          if (!isPositionOccupied(newPosition, excludeIconId)) {
-            return newPosition;
-          }
+    // 使用曼哈顿距离优先的搜索策略
+    const candidates: Array<{ position: IGridPosition; distance: number }> = [];
+    
+    // 生成所有可能的位置并计算距离
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < columns; col++) {
+        const position = { row, col };
+        if (!isPositionOccupied(position, excludeIconId)) {
+          const distance = Math.abs(row - targetPosition.row) + Math.abs(col - targetPosition.col);
+          candidates.push({ position, distance });
         }
       }
     }
     
-    // 如果没有找到空闲位置，返回原位置
-    return targetPosition;
+    // 如果没有空闲位置，返回目标位置
+    if (candidates.length === 0) {
+      return targetPosition;
+    }
+    
+    // 按距离排序，返回最近的位置
+    candidates.sort((a, b) => {
+      if (a.distance !== b.distance) {
+        return a.distance - b.distance;
+      }
+      // 距离相同时，优先选择行号较小的位置（从上到下排列）
+      if (a.position.row !== b.position.row) {
+        return a.position.row - b.position.row;
+      }
+      // 行号相同时，优先选择列号较小的位置（从左到右排列）
+      return a.position.col - b.position.col;
+    });
+    
+    return candidates[0].position;
   }, [gridConfig, isPositionOccupied]);
 
   // 处理拖拽开始
@@ -146,34 +192,65 @@ const GridLayout: React.FC<GridLayoutProps> = ({
     const icon = icons.find(icon => icon.id === active.id);
     if (icon) {
       setActiveIcon(icon);
+      setDragPreviewPosition(icon.gridPosition);
     }
   }, [icons]);
+
+  // 处理拖拽移动
+  const handleDragMove = useCallback((event: DragMoveEvent) => {
+    const { active, delta } = event;
+    
+    if (!activeIcon || !snapToGrid) return;
+    
+    const currentPixelPos = getIconPixelPosition(activeIcon.gridPosition);
+    const newPixelPos = {
+      x: currentPixelPos.x + delta.x,
+      y: currentPixelPos.y + delta.y
+    };
+    
+    const newGridPosition = getGridPositionFromPixel(newPixelPos.x, newPixelPos.y);
+    const previewPosition = findNearestFreePosition(newGridPosition, activeIcon.id);
+    
+    setDragPreviewPosition(previewPosition);
+  }, [activeIcon, snapToGrid, getIconPixelPosition, getGridPositionFromPixel, findNearestFreePosition]);
 
   // 处理拖拽结束
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, delta } = event;
     
-    if (delta.x !== 0 || delta.y !== 0) {
-      const icon = icons.find(icon => icon.id === active.id);
-      if (icon && onIconMove) {
-        const currentPixelPos = getIconPixelPosition(icon.gridPosition);
-        const newPixelPos = {
-          x: currentPixelPos.x + delta.x,
-          y: currentPixelPos.y + delta.y
-        };
-        
-        let newGridPosition = getGridPositionFromPixel(newPixelPos.x, newPixelPos.y);
-        
-        // 如果启用网格对齐，查找最近的空闲位置
-        if (snapToGrid) {
-          newGridPosition = findNearestFreePosition(newGridPosition, icon.id);
-        }
-        
+    const icon = icons.find(icon => icon.id === active.id);
+    if (!icon) {
+      setActiveIcon(null);
+      return;
+    }
+    
+    // 只有当拖拽距离超过阈值时才进行移动
+    const dragThreshold = 5; // 像素
+    const dragDistance = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+    
+    if (dragDistance > dragThreshold && onIconMove) {
+      const currentPixelPos = getIconPixelPosition(icon.gridPosition);
+      const newPixelPos = {
+        x: currentPixelPos.x + delta.x,
+        y: currentPixelPos.y + delta.y
+      };
+      
+      let newGridPosition = getGridPositionFromPixel(newPixelPos.x, newPixelPos.y);
+      
+      // 如果启用网格对齐，查找最近的空闲位置
+      if (snapToGrid) {
+        newGridPosition = findNearestFreePosition(newGridPosition, icon.id);
+      }
+      
+      // 只有当位置真正改变时才触发移动事件
+      if (newGridPosition.row !== icon.gridPosition.row || 
+          newGridPosition.col !== icon.gridPosition.col) {
         onIconMove(icon.id, newGridPosition);
       }
     }
     
     setActiveIcon(null);
+    setDragPreviewPosition(null);
   }, [icons, onIconMove, getIconPixelPosition, getGridPositionFromPixel, snapToGrid, findNearestFreePosition]);
 
   // 处理桌面点击
@@ -229,6 +306,109 @@ const GridLayout: React.FC<GridLayoutProps> = ({
     return lines;
   };
 
+  // 渲染位置冲突提示
+  const renderPositionConflicts = () => {
+    if (process.env.NODE_ENV !== 'development' || positionValidation.isValid) return null;
+    
+    const conflictIndicators: React.ReactElement[] = [];
+    
+    // 渲染位置冲突
+    positionValidation.conflicts.forEach((conflict, index) => {
+      const pixelPosition = getIconPixelPosition(conflict.position);
+      conflictIndicators.push(
+        <div
+          key={`conflict-${index}`}
+          className="absolute pointer-events-none z-40"
+          style={{
+            left: pixelPosition.x,
+            top: pixelPosition.y,
+            width: gridConfig.iconSize,
+            height: gridConfig.iconSize,
+          }}
+        >
+          {/* 冲突警告背景 */}
+          <div className="absolute inset-0 bg-red-500/30 rounded-lg border-2 border-red-500 border-dashed animate-pulse" />
+          
+          {/* 冲突图标数量 */}
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            {conflict.conflictingIcons.length}
+          </div>
+          
+          {/* 警告图标 */}
+          <div className="absolute top-1 left-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">
+            ⚠
+          </div>
+        </div>
+      );
+    });
+    
+    // 渲染超出范围的图标
+    positionValidation.outOfBounds.forEach((icon, index) => {
+      const pixelPosition = getIconPixelPosition(icon.gridPosition);
+      conflictIndicators.push(
+        <div
+          key={`outofbounds-${index}`}
+          className="absolute pointer-events-none z-40"
+          style={{
+            left: pixelPosition.x,
+            top: pixelPosition.y,
+            width: gridConfig.iconSize,
+            height: gridConfig.iconSize,
+          }}
+        >
+          {/* 超出范围警告背景 */}
+          <div className="absolute inset-0 bg-orange-500/30 rounded-lg border-2 border-orange-500 border-dashed animate-pulse" />
+          
+          {/* 超出范围图标 */}
+          <div className="absolute top-1 left-1 w-4 h-4 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs">
+            📍
+          </div>
+        </div>
+      );
+    });
+    
+    return conflictIndicators;
+  };
+
+  // 渲染拖拽预览位置
+  const renderDragPreview = () => {
+    if (!dragPreviewPosition || !activeIcon) return null;
+    
+    const previewPixelPos = getIconPixelPosition(dragPreviewPosition);
+    
+    return (
+      <div
+        className="absolute pointer-events-none z-50"
+        style={{
+          left: previewPixelPos.x,
+          top: previewPixelPos.y,
+          width: gridConfig.iconSize,
+          height: gridConfig.iconSize,
+        }}
+      >
+        {/* 预览背景 */}
+        <div className="absolute inset-0 bg-blue-200/40 rounded-lg border-2 border-blue-400 border-dashed animate-pulse" />
+        
+        {/* 预览图标轮廓 */}
+        <div 
+          className="absolute bg-blue-100/60 rounded-lg border border-blue-300"
+          style={{
+            left: '50%',
+            top: '20%',
+            transform: 'translateX(-50%)',
+            width: Math.floor(gridConfig.iconSize * 0.7),
+            height: Math.floor(gridConfig.iconSize * 0.7),
+          }}
+        />
+        
+        {/* 位置指示器 */}
+        <div className="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
+          <div className="w-1.5 h-1.5 bg-white rounded-full" />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div 
       className={cn(
@@ -247,8 +427,14 @@ const GridLayout: React.FC<GridLayoutProps> = ({
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-300 rounded-full blur-3xl" />
       </div>
 
-      {/* 网格线（开发模式） */}
+      {/* 网格线（调试用） */}
       {renderGridLines()}
+
+      {/* 拖拽预览位置 */}
+      {renderDragPreview()}
+
+      {/* 位置冲突提示 */}
+      {renderPositionConflicts()}
 
       {/* 网格尺寸控制器 */}
       <div className="absolute top-4 right-4 flex space-x-2 bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-lg">
@@ -272,6 +458,7 @@ const GridLayout: React.FC<GridLayoutProps> = ({
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
+        onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
       >
         {/* 桌面图标 */}

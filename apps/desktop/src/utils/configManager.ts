@@ -15,6 +15,18 @@ import {
 } from '../types/grid';
 
 /**
+ * JSON配置文件接口
+ */
+interface IDesktopConfigFile {
+  version: string;
+  lastUpdated: string;
+  desktop: {
+    config: IDesktopConfig;
+    icons: IDesktopIcon[];
+  };
+}
+
+/**
  * 本地存储键名常量
  */
 const STORAGE_KEYS = {
@@ -52,10 +64,81 @@ export class ConfigManager {
    */
   private initializeDefaultConfig(): void {
     if (!this.hasStoredConfig()) {
-      this.saveDesktopConfig(DEFAULT_DESKTOP_CONFIG);
-      this.saveDesktopIcons(this.getDefaultIcons());
-      this.saveApplications(this.getDefaultApplications());
+      // 首先尝试从JSON文件加载配置
+      this.loadFromJsonFile().then(success => {
+        if (!success) {
+          // 如果JSON文件加载失败，使用默认配置
+          this.saveDesktopConfig(DEFAULT_DESKTOP_CONFIG);
+          this.saveDesktopIcons(this.getDefaultIcons());
+          this.saveApplications(this.getDefaultApplications());
+        }
+      }).catch(() => {
+        // 加载失败时使用默认配置
+        this.saveDesktopConfig(DEFAULT_DESKTOP_CONFIG);
+        this.saveDesktopIcons(this.getDefaultIcons());
+        this.saveApplications(this.getDefaultApplications());
+      });
     }
+  }
+
+  /**
+   * 从JSON配置文件加载配置
+   * @returns 是否成功加载
+   */
+  public async loadFromJsonFile(): Promise<boolean> {
+    try {
+      const response = await fetch('/desktop-config.json');
+      if (!response.ok) {
+        console.warn('无法加载桌面配置文件，使用默认配置');
+        return false;
+      }
+
+      const configData: IDesktopConfigFile = await response.json();
+      
+      // 验证配置文件格式
+      if (!this.validateConfigFile(configData)) {
+        console.error('配置文件格式无效');
+        return false;
+      }
+
+      // 保存配置到本地存储
+      this.saveDesktopConfig(configData.desktop.config);
+      this.saveDesktopIcons(configData.desktop.icons);
+
+      console.log('成功从JSON文件加载桌面配置');
+      return true;
+    } catch (error) {
+      console.error('加载JSON配置文件失败:', error);
+      return false;
+    }
+  }
+
+  /**
+   * 验证配置文件格式
+   * @param configData 配置数据
+   */
+  private validateConfigFile(configData: unknown): configData is IDesktopConfigFile {
+    if (!configData || typeof configData !== 'object') {
+      return false;
+    }
+
+    const config = configData as Record<string, unknown>;
+    
+    if (typeof config.version !== 'string' || typeof config.lastUpdated !== 'string') {
+      return false;
+    }
+
+    if (!config.desktop || typeof config.desktop !== 'object') {
+      return false;
+    }
+
+    const desktop = config.desktop as Record<string, unknown>;
+    
+    return (
+      desktop.config !== undefined &&
+      typeof desktop.config === 'object' &&
+      Array.isArray(desktop.icons)
+    );
   }
 
   /**

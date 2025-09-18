@@ -62,6 +62,15 @@ const GridDesktop: React.FC = () => {
         setIsLoading(true);
         setError(null);
 
+        // 首先尝试从JSON文件加载配置
+        const jsonLoadSuccess = await configManager.loadFromJsonFile();
+        
+        if (jsonLoadSuccess) {
+          console.log('成功从JSON配置文件加载桌面设置');
+        } else {
+          console.log('使用本地存储或默认配置');
+        }
+
         // 加载桌面配置
         const desktopConfig = configManager.getDesktopConfig();
         setGridConfig(desktopConfig.gridConfig);
@@ -69,6 +78,11 @@ const GridDesktop: React.FC = () => {
         // 加载桌面图标
         const desktopIcons = configManager.getDesktopIcons();
         setIcons(desktopIcons);
+
+        console.log('桌面初始化完成:', {
+          gridConfig: desktopConfig.gridConfig,
+          iconCount: desktopIcons.length
+        });
 
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : '加载桌面数据失败';
