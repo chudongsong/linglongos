@@ -1,0 +1,50 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "./base.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": true,
+		"useDefineForClassFields": true,
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+		"lib": ["ES2022", "DOM", "DOM.Iterable", "ES6"],
+		"types": ["node", "vite/client"]
+	},
+	"include": [
+		"**/*.ts", 
+		"**/*.tsx", 
+		"**/*.js", 
+		"**/*.jsx",
+		"**/*.vue",
+		"**/*.d.ts"
+	],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"build",
+		"coverage",
+		"**/*.test.ts",
+		"**/*.test.tsx",
+		"**/*.spec.ts",
+		"**/*.spec.tsx"
+	]
+}

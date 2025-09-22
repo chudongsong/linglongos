@@ -1,12 +1,5 @@
 # 玲珑OS (LingLong OS)
 
-> 面向多面板API的统一前端操作环境 - A Unified Frontend for Multi-Panel APIs
-
-[![Version](https://img.shields.io/badge/version-2.2-blue.svg)](https://github.com/linglongos/linglongos)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Vue](https://img.shields.io/badge/Vue-3.4+-green.svg)](https://vuejs.org/)
-
 ## 🎯 项目概述
 
 玲珑OS是一个现代化的Web操作系统，旨在解决多面板管理的痛点。它并非要取代宝塔等后端面板，而是为其提供一个统一、现代、高效的"外壳"。通过一个仿原生操作系统的Web界面，将用户分散在不同服务器、不同版本的管理面板聚合到同一个工作空间中。

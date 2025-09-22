@@ -7,7 +7,8 @@
 		".": "./src/index.js",
 		"./vue": "./src/vue.js",
 		"./vitest": "./src/vitest.js",
-		"./next": "./src/next.js"
+		"./next": "./src/next.js",
+		"./react": "./src/react.js"
 	},
 	"devDependencies": {
 		"@linglongos/typescript": "workspace:*",
