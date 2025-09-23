@@ -1,19 +1,7 @@
 {
+	"extends": "@linglongos/typescript/react.json",
 	"compilerOptions": {
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-		"target": "ES2022",
-		"useDefineForClassFields": true,
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
-		"module": "ESNext",
-		"skipLibCheck": true,
-
-		/* Bundler mode */
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"verbatimModuleSyntax": true,
-		"moduleDetection": "force",
-		"noEmit": true,
-		"jsx": "react-jsx",
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"],
@@ -26,14 +14,10 @@
 			"@services/*": ["src/services/*"],
 			"@store/*": ["src/store/*"]
 		},
-
-		/* Linting */
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true
+		"exactOptionalPropertyTypes": false,
+		"strictNullChecks": false,
+		"strictPropertyInitialization": false
 	},
 	"include": ["src"]
 }

@@ -1,40 +1,40 @@
 {
-  "desktop": {
-    "gridSize": {
-      "small": { "width": 75, "height": 90, "gap": 5 },
-      "medium": { "width": 100, "height": 120, "gap": 5 },
-      "large": { "width": 125, "height": 150, "gap": 5 }
-    },
-    "padding": 10,
-    "iconSize": "small",
-    "background": {
-      "type": "image",
-      "value": "./static/images/desktop-bg.jpg",
-      "options": {
-        "size": "cover",
-        "position": "center",
-        "repeat": "no-repeat",
-        "attachment": "fixed"
-      },
-      "fallback": {
-        "type": "gradient",
-        "value": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-      }
-    },
-    "theme": {
-      "iconTextColor": "#ffffff",
-      "iconTextShadow": "1px 1px 2px rgba(0, 0, 0, 0.5)",
-      "selectionColor": "rgba(74, 144, 226, 0.3)",
-      "selectionBorder": "#4a90e2"
-    }
-  },
-  "layout": {
-    "autoArrange": true,
-    "snapToGrid": true,
-    "allowOverlap": false
-  },
-  "hotReload": {
-    "enabled": true,
-    "interval": 1000
-  }
+	"desktop": {
+		"gridSize": {
+			"small": { "width": 75, "height": 90, "gap": 5 },
+			"medium": { "width": 100, "height": 120, "gap": 5 },
+			"large": { "width": 125, "height": 150, "gap": 5 }
+		},
+		"padding": 10,
+		"iconSize": "small",
+		"background": {
+			"type": "image",
+			"value": "./static/images/desktop-bg.jpg",
+			"options": {
+				"size": "cover",
+				"position": "center",
+				"repeat": "no-repeat",
+				"attachment": "fixed"
+			},
+			"fallback": {
+				"type": "gradient",
+				"value": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+			}
+		},
+		"theme": {
+			"iconTextColor": "#ffffff",
+			"iconTextShadow": "1px 1px 2px rgba(0, 0, 0, 0.5)",
+			"selectionColor": "rgba(74, 144, 226, 0.3)",
+			"selectionBorder": "#4a90e2"
+		}
+	},
+	"layout": {
+		"autoArrange": true,
+		"snapToGrid": true,
+		"allowOverlap": false
+	},
+	"hotReload": {
+		"enabled": true,
+		"interval": 1000
+	}
 }

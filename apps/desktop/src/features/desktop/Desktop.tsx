@@ -136,7 +136,7 @@ export default function Desktop() {
 							onClick={(e) => handleIconClick(e, app.id)}
 							onDoubleClick={() => handleIconDoubleClick(app.id)}
 							onKeyDown={(e) => handleIconKeyDown(e, app.id)}
-							onMouseDown={(e) => handleIconMouseDown(e, app.id)}
+							onMouseDown={(e) => handleIconMouseDown(e)}
 							onDragStart={() => handleDragStartSelect(app.id)}
 						/>
 					</div>

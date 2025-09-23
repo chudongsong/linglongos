@@ -9,19 +9,19 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
  * App 根组件：负责应用级初始化（配置加载、主题变量预置等）
  */
 function App() {
-  useEffect(() => {
-    // 后续：在这里完成配置拉取与全局状态初始化
-  }, [])
+	useEffect(() => {
+		// 后续：在这里完成配置拉取与全局状态初始化
+	}, [])
 
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="app-root">
-        <Desktop />
-        <WindowManager />
-        <Dock />
-      </div>
-    </DndProvider>
-  )
+	return (
+		<DndProvider backend={HTML5Backend}>
+			<div className="app-root">
+				<Desktop />
+				<WindowManager />
+				<Dock />
+			</div>
+		</DndProvider>
+	)
 }
 
 export default App

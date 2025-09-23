@@ -8,10 +8,10 @@ import desktopReducer from '@store/slices/desktop.slice'
 import windowReducer from '@store/slices/window.slice'
 
 export const store = configureStore({
-  reducer: {
-    desktop: desktopReducer,
-    window: windowReducer,
-  },
+	reducer: {
+		desktop: desktopReducer,
+		window: windowReducer,
+	},
 })
 
 export type RootState = ReturnType<typeof store.getState>

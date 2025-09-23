@@ -3,8 +3,8 @@
  * - 用于桌面图标的拖拽标识
  */
 export interface IconDragItem {
-  type: 'ICON'
-  id: string
+	type: 'ICON'
+	id: string
 }
 
 /**

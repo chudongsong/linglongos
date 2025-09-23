@@ -13,24 +13,24 @@ const APPS_CONFIG_URL = '/config/apps-config.json'
  * @param url 配置文件路径（public 下）
  */
 async function readJson<T>(url: string): Promise<T> {
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`加载配置失败: ${url} status=${res.status}`)
-  return (await res.json()) as T
+	const res = await fetch(url)
+	if (!res.ok) throw new Error(`加载配置失败: ${url} status=${res.status}`)
+	return (await res.json()) as T
 }
 
 /**
  * 规范化图标路径（将 ./static/images/ 前缀替换为 /images/）
  */
 function normalizeIcon(icon: string): string {
-  if (!icon) return icon
-  return icon.replace(/^\.\/static\/images\//, '/images/')
+	if (!icon) return icon
+	return icon.replace(/^\.\/static\/images\//, '/images/')
 }
 
 /**
  * 规范化应用图标路径
  */
 function normalizeApps(apps: AppItem[]): AppItem[] {
-  return apps.map(app => ({ ...app, icon: normalizeIcon(app.icon) }))
+	return apps.map((app) => ({ ...app, icon: normalizeIcon(app.icon) }))
 }
 
 /**
@@ -39,30 +39,30 @@ function normalizeApps(apps: AppItem[]): AppItem[] {
  * @param apps 应用配置
  */
 function mergeConfig(desktop: DesktopSettings, apps: AppsConfig): FullConfig {
-  return {
-    desktop: desktop.desktop,
-    layout: desktop.layout,
-    hotReload: desktop.hotReload,
-    apps: normalizeApps(apps.apps),
-    categories: apps.categories,
-    startup: apps.startup,
-  }
+	return {
+		desktop: desktop.desktop,
+		layout: desktop.layout,
+		hotReload: desktop.hotReload,
+		apps: normalizeApps(apps.apps),
+		categories: apps.categories,
+		startup: apps.startup,
+	}
 }
 
 /**
  * 加载完整配置
  */
 export async function loadFullConfig(): Promise<FullConfig> {
-  const [desktop, apps] = await Promise.all([
-    readJson<DesktopSettings>(DESKTOP_SETTINGS_URL),
-    readJson<AppsConfig>(APPS_CONFIG_URL),
-  ])
-  return mergeConfig(desktop, apps)
+	const [desktop, apps] = await Promise.all([
+		readJson<DesktopSettings>(DESKTOP_SETTINGS_URL),
+		readJson<AppsConfig>(APPS_CONFIG_URL),
+	])
+	return mergeConfig(desktop, apps)
 }
 
 /**
  * 简单校验配置有效性
  */
 export function validateFullConfig(cfg: FullConfig): boolean {
-  return !!(cfg && cfg.desktop && cfg.layout && Array.isArray(cfg.apps))
+	return !!(cfg && cfg.desktop && cfg.layout && Array.isArray(cfg.apps))
 }
