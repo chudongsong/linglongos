@@ -1,0 +1,25 @@
+/*
+ * Tailwind v4 渐进式集成入口
+ * - 仅引入 utilities 与 theme，显式排除 preflight，避免重置影响现有 UI
+ * - 如需按需启用 base，可改为 `@import "tailwindcss";` 并在 @layer base 中覆盖
+ */
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
+
+/* 自定义主题变量与别名，可逐步迁移 public/styles.css 的 CSS 变量到此处 */
+@theme {
+  --color-brand: #3b82f6; /* 品牌主色（与 styles.css 中的强调色匹配） */
+  --radius-lg: 12px;
+}
+
+/* 基础覆写：为容器与可访问性提供最小化增强，不改变现有布局 */
+@layer utilities {
+  /* 便捷工具：毛玻璃容器 */
+  .glass {
+    @apply backdrop-saturate-150 backdrop-blur-md bg-white/60 shadow-lg;
+  }
+  /* 便捷工具：隐藏滚动条但可滚动 */
+  .scroll-slim {
+    scrollbar-width: thin;
+  }
+}

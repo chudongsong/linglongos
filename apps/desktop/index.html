@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>玲珑OS 桌面</title>
+	<link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+	<!-- 加载遮罩层 -->
+	<div class="loading-overlay" id="loadingOverlay">
+		<div class="loading-container">
+			<div class="loading-logo">
+				<div class="logo-circle"></div>
+				<h2>玲珑OS</h2>
+			</div>
+			<div class="loading-progress">
+				<div class="progress-bar">
+					<div class="progress-fill" id="progressFill"></div>
+				</div>
+				<div class="progress-text" id="progressText">正在初始化桌面... 0%</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="root"></div>
+	<script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

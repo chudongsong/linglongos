@@ -1,0 +1,569 @@
+/* styles.css */
+
+:root {
+  /* 主题变量：颜色 */
+  --theme-primary-color: #4a90e2;
+  --theme-bg-color: #2c3e50;
+  --theme-surface-color: rgba(255, 255, 255, 0.08);
+  --theme-surface-border: rgba(255, 255, 255, 0.18);
+  --theme-text-color: #ffffff;
+  --theme-text-secondary: rgba(255,255,255,0.8);
+  --theme-shadow-color: rgba(0, 0, 0, 0.5);
+  --theme-overlay-blur: 8px;
+  /* 新增：主题渐变与RGB通道变量 */
+  --theme-accent-start: #4facfe;
+  --theme-accent-end: #00f2fe;
+  --theme-overlay-start: #808080;
+  --theme-overlay-end: #A9A9A9;
+  --theme-primary-rgb: 74, 144, 226; /* 作为 rgba() 兜底用 */
+  --selection-opacity: 0.3; /* 选择背景透明度兜底 */
+
+  /* 主题变量：间距与圆角 */
+  --theme-radius-sm: 6px;
+  --theme-radius-md: 10px;
+  --theme-radius-lg: 14px;
+  --theme-spacing-1: 4px;
+  --theme-spacing-2: 8px;
+  --theme-spacing-3: 12px;
+  --theme-spacing-4: 16px;
+  --theme-spacing-6: 24px;
+
+  /* 主题变量：字体 */
+  --theme-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --theme-font-size-xs: 11px;
+  --theme-font-size-sm: 12px;
+  --theme-font-size-md: 14px;
+  --theme-font-size-lg: 16px;
+  --theme-font-weight-light: 300;
+  --theme-font-weight-normal: 400;
+  --theme-font-weight-medium: 500;
+
+  /* 组件局部变量（依赖主题） */
+  --grid-gap: 5px;
+  --icon-text-color: var(--theme-text-color);
+  --icon-text-shadow: 1px 1px 2px var(--theme-shadow-color);
+  --selection-color: color-mix(in srgb, var(--theme-primary-color) 30%, transparent);
+  --selection-border: var(--theme-primary-color);
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: var(--theme-font-family);
+  overflow: hidden;
+  color: var(--theme-text-color);
+}
+
+/* 加载遮罩层样式 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, var(--theme-overlay-start) 0%, var(--theme-overlay-end) 100%);
+  backdrop-filter: blur(var(--theme-overlay-blur));
+  -webkit-backdrop-filter: blur(var(--theme-overlay-blur));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.28s ease-out; /* 从 0.5s 缩短到 0.28s，以满足 <800ms 总周期 */
+}
+
+.loading-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-container {
+  text-align: center;
+  color: var(--theme-text-color);
+}
+
+.loading-logo {
+  margin-bottom: 40px;
+}
+
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-logo h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: var(--theme-font-weight-light);
+  letter-spacing: 2px;
+}
+
+.loading-progress {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--theme-accent-start) 0%, var(--theme-accent-end) 100%);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.2s ease; /* 略微加快进度条填充动画 */
+}
+
+.progress-text {
+  font-size: 14px;
+  opacity: 0.8;
+  font-weight: var(--theme-font-weight-light);
+}
+
+/* 桌面界面 */
+.desktop-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: var(--theme-bg-color); /* 采用主题背景色 */
+  overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+
+  /* 新增：用于尺寸联动的 CSS 变量（JS 在容器上设置） */
+  --grid-width: 100px;
+  --grid-height: 120px;
+  --grid-gap: 0px;
+  --grid-padding: 10px;
+  --img-scale: 0.64;      /* 不同档位可覆盖 */
+  --title-scale: 0.16;    /* 不同档位可覆盖 */
+}
+
+/* 不同档位：按需要覆盖比例（可微调） */
+.desktop-container.size-small {
+  --img-scale: 0.60;
+  --title-scale: 0.14;
+}
+.desktop-container.size-medium {
+  --img-scale: 0.64;
+  --title-scale: 0.16;
+}
+.desktop-container.size-large {
+  --img-scale: 0.68;
+  --title-scale: 0.18;
+}
+
+.desktop-grid {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+/* 网格单元和图标 */
+.grid-item {
+  position: absolute;
+  display: flex;
+  cursor: grab;
+  border-radius: 2px;
+  /* 使用 CSS 变量设置宽高，使占位与图标尺寸一致 */
+  width: var(--grid-width);
+  height: var(--grid-height);
+}
+
+/* 补充：容器尺寸依赖变量（由 JS 设置到 .desktop-container） */
+.icon-item {
+	display: flex;
+  flex-direction: column;
+	justify-content: space-evenly;
+  align-items: center;
+	border: 2px solid transparent;
+	height: 100%;
+	width: 	100%;
+  /* 新增：可视命中与动效 */
+  border-radius: var(--theme-radius-md);
+  cursor: default;
+  user-select: none;
+  -webkit-user-drag: none;
+  outline: none;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 160ms ease;
+}
+/* 悬停态：轻微铺底，提示可交互 */
+.icon-item:hover { background: color-mix(in srgb, var(--theme-primary-color) 14%, transparent); }
+
+/* 图标选中状态 */
+.icon-item.selected {
+  /* 兜底：不支持 color-mix 的浏览器 */
+  background: rgba(var(--theme-primary-rgb, 74, 144, 226), var(--selection-opacity, 0.3));
+  /* 首选：主题选择色 */
+  background: var(--selection-color);
+  border: 2px solid var(--selection-border);
+  border-radius: var(--theme-radius-md);
+}
+/* 键盘可达性：Tab 聚焦可见 */
+.icon-item:focus-visible {
+  outline: 2px solid var(--selection-border);
+  outline-offset: 2px;
+}
+
+/* 图标图片：按变量计算，含最小尺寸兜底，保持等比 */
+.icon-item img {
+  width: max(24px, calc(var(--grid-width) * var(--img-scale)));
+  height: max(24px, calc(var(--grid-height) * var(--img-scale)));
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--theme-radius-md);
+}
+
+/* 图标标题：字号随高度比例变化，使用 clamp 夹逼范围 */
+.icon-item span {
+  margin-top: 5px;
+  font-size: clamp(var(--theme-font-size-sm), calc(var(--grid-height) * var(--title-scale)), 18px);
+  color: var(--icon-text-color);
+  text-shadow: var(--icon-text-shadow);
+  line-height: 1.2;
+  max-width: 100%;
+  text-align: center;
+  word-break: break-word;
+  overflow: hidden;
+  display: block;
+}
+
+/* 固定图标尺寸与标题字号：按档位覆盖，保证等比缩放与布局稳定（追加覆盖） */
+.desktop-container {
+  /* 默认（medium）固定尺寸 */
+  --icon-img-size: 64px;
+  --icon-title-size: var(--theme-font-size-md);
+}
+.desktop-container.size-small {
+  --icon-img-size: 40px;
+  --icon-title-size: var(--theme-font-size-sm);
+}
+.desktop-container.size-large {
+  --icon-img-size: 80px;
+  --icon-title-size: var(--theme-font-size-lg);
+}
+
+/* 图标图片固定尺寸，保持等比缩放 */
+.desktop-container .icon-item img {
+  width: var(--icon-img-size);
+  height: var(--icon-img-size);
+  object-fit: contain; /* 保持等比例，不拉伸变形 */
+  display: block;
+  image-rendering: auto;
+}
+
+/* 标题字号随档位固定，防止过大导致错位；限制为最多两行 */
+.desktop-container .icon-item span {
+  font-size: var(--icon-title-size);
+  line-height: 1.2;
+  text-align: center;
+  margin: 0 auto 0;
+  max-width: calc(var(--grid-width, 120px) - 8px);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 最多两行，避免换行过多影响布局 */
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+/* 拖拽态与拖拽预览：锁定无缩放，固定层级与交互属性 */
+.icon-item.dragging {
+  transform: none !important;
+}
+.drag-preview {
+  transform: none !important;
+  transition: none !important;
+  pointer-events: none !important;
+  z-index: 9999 !important;
+}
+
+/* 新增：橡皮筋选择框样式，使用主题变量 */
+.selection-rectangle {
+  border: 1px solid var(--selection-border);
+  /* 兜底：不支持 color-mix 的浏览器 */
+  background: rgba(var(--theme-primary-rgb, 74, 144, 226), var(--selection-opacity, 0.3));
+  /* 首选：主题选择色 */
+  background: var(--selection-color);
+  border-radius: var(--theme-radius-sm);
+}
+
+/* 任务栏基础样式（T1.1） */
+.taskbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40px;
+  display: grid;
+  grid-template-columns: 120px 1fr 220px;
+  align-items: center;
+  gap: var(--theme-spacing-2);
+  padding: 0 var(--theme-spacing-3);
+  background: color-mix(in srgb, var(--theme-surface-color) 80%, transparent);
+  border-top: 1px solid var(--theme-surface-border);
+  backdrop-filter: blur(var(--theme-overlay-blur));
+  -webkit-backdrop-filter: blur(var(--theme-overlay-blur));
+  z-index: 1000;
+}
+
+.start-button {
+  height: 28px;
+  padding: 0 var(--theme-spacing-3);
+  border-radius: var(--theme-radius-sm);
+  border: 1px solid var(--theme-surface-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+  color: var(--theme-text-color);
+  font-size: var(--theme-font-size-sm);
+  cursor: pointer;
+}
+.start-button:hover { filter: brightness(1.05); }
+.start-button:active { filter: brightness(0.95); }
+
+.taskbar-tasks {
+  display: flex;
+  align-items: center;
+  gap: var(--theme-spacing-2);
+  height: 100%;
+}
+.taskbar-tasks .task-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--theme-spacing-1);
+  height: 28px;
+  padding: 0 var(--theme-spacing-2);
+  border-radius: var(--theme-radius-sm);
+  border: 1px solid var(--theme-surface-border);
+  background: rgba(255,255,255,0.06);
+  color: var(--theme-text-color);
+  font-size: var(--theme-font-size-sm);
+}
+
+.system-tray {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--theme-spacing-2);
+  height: 100%;
+}
+.tray-item {
+  min-width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--theme-spacing-2);
+  border-radius: var(--theme-radius-sm);
+  border: 1px solid var(--theme-surface-border);
+  background: rgba(255,255,255,0.06);
+  color: var(--theme-text-color);
+  font-size: var(--theme-font-size-sm);
+}
+.tray-item.clock { width: 64px; }
+
+/* 移除任务栏占位影响：恢复 desktop-container 的下内边距到 20px（Dock 悬浮不遮挡内容） */
+.desktop-container { padding-bottom: 20px; }
+
+/* macOS 风格 Dock */
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  background: color-mix(in srgb, rgba(255,255,255,0.18) 80%, transparent);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 14px;
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+  z-index: 1000;
+}
+
+.dock-list {
+  display: flex;
+  align-items: flex-end; /* 与图标放大基线对齐 */
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dock-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-link { position: relative; }
+.dock-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  opacity: 0; /* 初始隐藏，活跃时显示 */
+  transition: opacity 160ms ease;
+}
+.dock-link.active .dock-indicator { opacity: 1; }
+
+/* 视觉分隔符（玻璃边框 + 内阴影），与 macOS Dock 相近 */
+.dock-divider {
+  width: 1px;
+  height: 44px;
+  margin: 0 6px 0 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.55) 0%,
+    rgba(255,255,255,0.32) 50%,
+    rgba(255,255,255,0.55) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 0 0.5px rgba(0,0,0,0.25);
+  border-radius: 1px;
+}
+
+/* Dock 玻璃背景与图标细节微调（边角/阴影/动效统一） */
+.dock {
+  border-radius: 16px;
+  background: color-mix(in srgb, rgba(255,255,255,0.16) 85%, transparent);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.38);
+}
+.dock-link {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  border-radius: 12px;
+  transition: transform 120ms ease, filter 120ms ease, box-shadow 180ms ease, background-color 160ms ease;
+}
+.dock-link:hover {
+  /* background-color: rgba(255,255,255,0.08); */
+  /* box-shadow: 0 6px 18px rgba(0,0,0,0.35); */
+}
+
+.dock-link img{
+	width: 40px;
+}
+
+/* 缩放曲线更丝滑，避免过度弹跳 */
+@media (hover: hover) and (pointer: fine) {
+  .dock-link:hover { transform: translateY(-2px) scale(1.10); }
+}
+
+/* 小屏幕分隔符缩短，保证手指命中区域 */
+@media (max-width: 768px) {
+  .dock-divider { height: 36px; margin: 0 4px 0 2px; }
+}
+
+@media (max-width: 768px) {
+  .taskbar { grid-template-columns: 90px 1fr 150px; height: 36px; }
+  .tray-item.clock { width: 56px; }
+}
+
+/* 方案B：细节优化与交互体验提升 */
+/* 1) 启动轻微弹跳动效（点击后一次，避免持续动画造成干扰） */
+@keyframes dock-bounce-once {
+  0% { transform: translateY(-2px) scale(1.08); }
+  40% { transform: translateY(-8px) scale(1.06); }
+  70% { transform: translateY(-3px) scale(1.08); }
+  100% { transform: translateY(-2px) scale(1.10); }
+}
+.dock-link.launching { animation: dock-bounce-once 420ms cubic-bezier(.22,.61,.36,1); }
+
+/* 3) 指示点与可达性增强：放大时不被遮挡 */
+/* .dock { padding-bottom: 12px; } */
+.dock-indicator { z-index: 1; }
+
+/* 4) 触控优化：增大触控命中区域但不改变视觉尺寸 */
+@media (hover: none) and (pointer: coarse) {
+  .dock-link { width: 54px; height: 54px; }
+}
+
+/* 5) 轻微景深：Dock 区域上方内容有淡淡的投影衔接（更真实） */
+.dock::before {
+  content: "";
+  position: absolute;
+  left: 8px; right: 8px; bottom: -8px; height: 16px;
+  background: radial-gradient(60% 60% at 50% 0%, rgba(0,0,0,0.28), transparent 70%);
+  filter: blur(4px);
+  pointer-events: none;
+}
+/* 开始菜单样式（与主题变量保持一致） */
+.start-menu-root { position: fixed; inset: 0; z-index: 1200; display: none; }
+.start-menu-root[aria-hidden="false"] { display: block; }
+.start-menu-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.start-menu-panel {
+  position: absolute; left: 16px; bottom: 84px;
+  width: 360px; max-height: 60vh; overflow: auto;
+  padding: 12px; border-radius: 14px;
+  background: color-mix(in srgb, var(--theme-surface-color) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-surface-border) 70%, transparent);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.25), 0 2px 10px rgba(0,0,0,0.25) inset;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.start-menu-list { list-style: none; margin: 0; padding: 4px; display: grid; grid-template-columns: 1fr; gap: 6px; }
+.start-menu-item { display: contents; }
+.start-menu-link {
+  display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 10px; border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+  color: var(--theme-text-color); font-size: var(--theme-font-size-sm);
+  cursor: pointer;
+}
+.start-menu-link img { width: 22px; height: 22px; opacity: 0.9; }
+.start-menu-link .start-menu-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.start-menu-link:hover { filter: brightness(1.05); }
+.start-menu-link:active { filter: brightness(0.97); }
+.start-menu-link:focus { outline: none; border-color: var(--theme-accent-start); box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent-start) 40%, transparent); }
+
+@media (max-width: 720px) {
+  .start-menu-panel { left: 10px; right: 10px; width: auto; bottom: 76px; }
+}
+
+/* ================= Window Manager 基础样式 ================= */
+.window-root { position: fixed; inset: 0; pointer-events: none; z-index: 1100; }
+.window { position: absolute; pointer-events: auto; background: rgba(28,28,30,0.72); backdrop-filter: saturate(180%) blur(16px); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.45); overflow: hidden; color: #fff; }
+.window.active { box-shadow: 0 24px 48px rgba(0,0,0,0.55); border-color: rgba(255,255,255,0.28); }
+.window-titlebar { display:flex; align-items:center; gap:8px; height:36px; padding:0 12px; background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06)); border-bottom: 1px solid rgba(255,255,255,0.14); outline: none; cursor: default; }
+.window-controls { display:flex; gap:8px; margin-right: 8px; }
+.win-btn { width:12px; height:12px; border-radius:50%; border:none; padding:0; display:inline-block; background:#ff5f56; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
+.win-btn.btn-min { background:#ffbd2e; }
+.win-btn.btn-max { background:#27c93f; }
+.win-btn:focus { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 2px; }
+.window-title { font-size: 13px; font-weight: 600; letter-spacing: .2px; opacity:.95; }
+.window-content { width:100%; height: calc(100% - 36px); background: rgba(0,0,0,0.2); }
+.window.minimized { transform: scale(0.96); opacity: .75; }
+.window.maximized { left: 8px !important; top: 8px !important; width: calc(100vw - 16px) !important; height: calc(100vh - 16px) !important; border-radius: 10px; }
+
+.selection-rectangle {
+  /* 允许鼠标事件穿透选区覆盖层 */
+  pointer-events: none;
+}
