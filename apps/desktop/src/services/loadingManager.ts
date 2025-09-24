@@ -177,7 +177,8 @@ function collectImageUrlsFromConfig(config: FullConfig | null | undefined): stri
 			if (normalized) urls.push(normalized)
 		}
 	}
-	return urls
+	// 去重：避免重复资源被预加载多次
+	return Array.from(new Set(urls))
 }
 /**
  * 单例：加载管理器
@@ -380,3 +381,6 @@ class LoadingManager {
 export const loadingManager = new LoadingManager()
 
 export type { FullConfig }
+
+// 额外导出纯函数，便于单元测试覆盖
+export { normalizeAssetUrl, collectImageUrlsFromConfig }

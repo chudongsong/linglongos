@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
@@ -20,5 +20,22 @@ export default defineConfig({
 			'@services': fileURLToPath(new URL('./src/services', import.meta.url)),
 			'@store': fileURLToPath(new URL('./src/store', import.meta.url)),
 		},
+	},
+	// Vitest 配置：对齐 jsdom 环境、全局 API 与覆盖率输出
+	test: {
+		environment: 'jsdom',
+		// 启用 describe/test/expect/vi 全局 API
+		globals: true,
+		// 统一测试前置初始化（断言扩展、计时器与清理）
+		setupFiles: ['./src/test/setup.ts'],
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'html', 'lcov'],
+			reportsDirectory: './coverage',
+		},
+		// 仅在 src 下收集测试
+		include: ['src/**/*.{test,spec}.{ts,tsx}'],
+		// 排除构建产物
+		exclude: ['node_modules', 'dist'],
 	},
 })

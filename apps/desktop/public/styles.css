@@ -468,19 +468,11 @@ body {
 }
 
 /* 缩放曲线更丝滑，避免过度弹跳 */
-@media (hover: hover) and (pointer: fine) {
-  .dock-link:hover { transform: translateY(-2px) scale(1.10); }
-}
+.dock-link:hover { transform: translateY(-2px) scale(1.10); }
 
-/* 小屏幕分隔符缩短，保证手指命中区域 */
-@media (max-width: 768px) {
-  .dock-divider { height: 36px; margin: 0 4px 0 2px; }
-}
 
-@media (max-width: 768px) {
-  .taskbar { grid-template-columns: 90px 1fr 150px; height: 36px; }
-  .tray-item.clock { width: 56px; }
-}
+
+
 
 /* 方案B：细节优化与交互体验提升 */
 /* 1) 启动轻微弹跳动效（点击后一次，避免持续动画造成干扰） */
@@ -566,4 +558,60 @@ body {
 .selection-rectangle {
   /* 允许鼠标事件穿透选区覆盖层 */
   pointer-events: none;
+}
+
+/* 应用中心筛选 Chip：默认仅显示图标，移入/聚焦时显示文字 */
+.app-center-overlay .app-chip .chip-label {
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+.app-center-overlay .app-chip:hover .chip-label,
+.app-center-overlay .app-chip:focus-visible .chip-label,
+.app-center-overlay .app-chip:focus-within .chip-label,
+.app-center-overlay .app-chip[aria-selected="true"] .chip-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* App Center Chip 响应式与强调 */
+.app-center-overlay .app-chip {
+  /* 基础尺寸：移动优先 */
+  height: 32px;
+  padding: 0 10px;
+  gap: 8px;
+}
+.app-center-overlay .app-chip .chip-icon {
+  width: 24px;
+  height: 24px;
+}
+@media (min-width: 640px) {
+  /* sm 及以上：更舒适的点击面积与图标尺寸 */
+  .app-center-overlay .app-chip {
+    height: 36px;
+    padding: 0 12px;
+    gap: 10px;
+  }
+  .app-center-overlay .app-chip .chip-icon {
+    width: 26px;
+    height: 26px;
+  }
+}
+/* 选中态颜色强调（边框内阴影）在 TSX 中通过 inline style 设置 box-shadow，这里补充过渡效果 */
+.app-center-overlay .app-chip {
+  transition: box-shadow 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+/* 保留文字显示控制：默认隐藏标题，悬停/聚焦/选中时显示 */
+.app-center-overlay .app-chip .chip-label {
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  will-change: opacity, transform;
+}
+.app-center-overlay .app-chip:hover .chip-label,
+.app-center-overlay .app-chip:focus-visible .chip-label,
+.app-center-overlay .app-chip:focus-within .chip-label,
+.app-center-overlay .app-chip[aria-selected="true"] .chip-label {
+  opacity: 1;
+  transform: translateY(0);
 }

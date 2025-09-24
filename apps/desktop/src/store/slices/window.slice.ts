@@ -111,7 +111,6 @@ const windowSlice = createSlice({
 				title: app.name || app.id,
 				appId: app.id,
 				icon: app.icon,
-				url: isUrl ? target : undefined,
 				left,
 				top,
 				width: 860,
@@ -120,6 +119,10 @@ const windowSlice = createSlice({
 				isActive: true,
 				isMinimized: false,
 				isMaximized: false,
+			}
+			// 仅在存在有效 URL 时赋值，避免将 undefined 写入（exactOptionalPropertyTypes）
+			if (isUrl) {
+				(rec as WindowRecord & { url: string }).url = target as string
 			}
 			state.windows.push(rec)
 			state.openCount += 1

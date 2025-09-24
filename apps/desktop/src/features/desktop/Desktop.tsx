@@ -17,9 +17,10 @@ import { useContainerDrop } from '@hooks/useContainerDrop'
 import { useDragPreview } from '@hooks/useDragPreview'
 import { useAppLauncher } from '@hooks/useAppLauncher'
 import { useDesktopIconDrag } from '@hooks/useDesktopIconDrag'
+import { loadingManager } from '@services/loadingManager'
+
 import type { CSSProperties } from 'react'
 import type { AppItem } from '@/types/config'
-import { loadingManager } from '@/services/loadingManager'
 
 export default function Desktop() {
 	const dispatch = useAppDispatch()

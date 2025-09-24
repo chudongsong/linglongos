@@ -1,25 +1,20 @@
 /**
  * ConfigService：负责加载 public/config 下的 JSON 配置并合并
  * - 提供类型安全的加载与校验
- * - 支持后续扩展热重载（基于轮询或 EventSource）
+ * - 统一改用 Axios 实例（services/api.ts）进行请求
+ * - 规范化资源路径，避免静态路径前缀差异导致的 404
  */
+import { getJson } from '@services/api'
 import type { AppsConfig, DesktopSettings, FullConfig, AppItem } from '@/types/config'
 
 const DESKTOP_SETTINGS_URL = '/config/desktop-settings.json'
 const APPS_CONFIG_URL = '/config/apps-config.json'
 
 /**
- * 读取 JSON 工具函数
- * @param url 配置文件路径（public 下）
- */
-async function readJson<T>(url: string): Promise<T> {
-	const res = await fetch(url)
-	if (!res.ok) throw new Error(`加载配置失败: ${url} status=${res.status}`)
-	return (await res.json()) as T
-}
-
-/**
- * 规范化图标路径（将 ./static/images/ 前缀替换为 /images/）
+ * normalizeIcon - 规范化应用图标 URL
+ *
+ * @param icon 原始图标路径
+ * @returns 替换 ./static/images/ 前缀为 /images/ 的结果
  */
 function normalizeIcon(icon: string): string {
 	if (!icon) return icon
@@ -27,16 +22,21 @@ function normalizeIcon(icon: string): string {
 }
 
 /**
- * 规范化应用图标路径
+ * normalizeApps - 批量规范化应用图标 URL
+ *
+ * @param apps 应用列表
+ * @returns 处理后的应用列表
  */
 function normalizeApps(apps: AppItem[]): AppItem[] {
 	return apps.map((app) => ({ ...app, icon: normalizeIcon(app.icon) }))
 }
 
 /**
- * 合并两个配置为 FullConfig
+ * mergeConfig - 合并两个配置为 FullConfig
+ *
  * @param desktop 桌面设置
  * @param apps 应用配置
+ * @returns 合并后的完整配置对象
  */
 function mergeConfig(desktop: DesktopSettings, apps: AppsConfig): FullConfig {
 	return {
@@ -50,18 +50,23 @@ function mergeConfig(desktop: DesktopSettings, apps: AppsConfig): FullConfig {
 }
 
 /**
- * 加载完整配置
+ * loadFullConfig - 加载完整配置（桌面设置 + 应用列表）
+ *
+ * @returns Promise<FullConfig> 完整合并后的配置
  */
 export async function loadFullConfig(): Promise<FullConfig> {
 	const [desktop, apps] = await Promise.all([
-		readJson<DesktopSettings>(DESKTOP_SETTINGS_URL),
-		readJson<AppsConfig>(APPS_CONFIG_URL),
+		getJson<DesktopSettings>(DESKTOP_SETTINGS_URL),
+		getJson<AppsConfig>(APPS_CONFIG_URL),
 	])
 	return mergeConfig(desktop, apps)
 }
 
 /**
- * 简单校验配置有效性
+ * validateFullConfig - 简单校验配置有效性
+ *
+ * @param cfg 待校验的配置对象
+ * @returns boolean 是否有效
  */
 export function validateFullConfig(cfg: FullConfig): boolean {
 	return !!(cfg && cfg.desktop && cfg.layout && Array.isArray(cfg.apps))
