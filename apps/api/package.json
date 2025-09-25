@@ -1,0 +1,40 @@
+{
+	"name": "@linglongos/api",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsx src/app.ts",
+		"build": "tsc -p tsconfig.json",
+		"start": "node dist/app.js",
+		"lint": "eslint . --ext .ts",
+		"test": "echo \"No tests yet\""
+	},
+	"dependencies": {
+		"@koa/cors": "^5.0.0",
+		"@koa/router": "^14.0.0",
+		"@types/qrcode": "^1.5.5",
+		"@types/ws": "^8.18.1",
+		"axios": "^1.12.2",
+		"koa": "^3.0.1",
+		"koa-bodyparser": "^4.4.1",
+		"koa-static": "^5.0.0",
+		"md5": "^2.3.0",
+		"otplib": "^12.0.1",
+		"qrcode": "^1.5.4",
+		"uuid": "^13.0.0",
+		"ws": "^8.18.3",
+		"zod": "^4.1.11"
+	},
+	"devDependencies": {
+		"@types/koa": "^3.0.0",
+		"@types/koa-bodyparser": "^4.3.12",
+		"@types/koa-static": "^4.0.4",
+		"@types/koa__cors": "^5.0.0",
+		"@types/koa__router": "^12.0.4",
+		"@types/md5": "^2.3.5",
+		"eslint": "^9.36.0",
+		"tsx": "^4.20.5",
+		"typescript": "^5.9.2"
+	}
+}

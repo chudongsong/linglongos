@@ -1,0 +1,161 @@
+import Router from '@koa/router'
+import type { Middleware } from 'koa'
+import { z } from 'zod'
+import { authMiddleware } from '../middlewares/authMiddleware.js'
+import { formatError } from '../middlewares/commonMiddleware.js'
+import { getPanelBinding, setPanelBinding } from '../services/authService.js'
+import { proxyRequest } from '../services/proxyService.js'
+
+export const proxyRoutes = new Router({ prefix: '/proxy' })
+
+/** 面板密钥绑定请求参数验证模式 */
+const bindPanelKeySchema = z.object({
+	type: z.enum(['bt', '1panel']),
+	url: z.string().url(),
+	key: z.string().min(32).max(64),
+})
+
+/**
+ * 面板密钥绑定处理器
+ *
+ * 为当前会话绑定面板的访问信息，包括面板类型、URL 和 API 密钥。
+ * 绑定后用户可以通过代理接口访问对应的面板 API。
+ *
+ * 支持的面板类型：
+ * - 'bt': 宝塔面板
+ * - '1panel': 1Panel 面板
+ *
+ * @param ctx - Koa 上下文对象，需要包含有效的会话信息
+ *
+ * @example
+ * 请求格式：
+ * ```json
+ * {
+ *   "type": "bt",
+ *   "url": "http://panel.example.com:8888",
+ *   "key": "your-32-character-api-key"
+ * }
+ * ```
+ *
+ * 成功响应：
+ * ```json
+ * {
+ *   "code": 200,
+ *   "message": "Panel key bound successfully."
+ * }
+ * ```
+ */
+const bindPanelKey: Middleware = async (ctx) => {
+	const sessionId: string = (ctx.state as any).sessionId
+	const parsed = bindPanelKeySchema.safeParse(ctx.request.body)
+	if (!parsed.success) {
+		ctx.status = 400
+		ctx.body = formatError(400, 'Invalid parameters', parsed.error.flatten())
+		return
+	}
+	const { type, url, key } = parsed.data
+	setPanelBinding(sessionId, type, url, key)
+	ctx.body = { code: 200, message: 'Panel key bound successfully.' }
+}
+
+/** 代理请求参数验证模式 */
+const proxyRequestSchema = z.object({
+	url: z.string().min(1),
+	panelType: z.enum(['bt', '1panel']),
+	params: z.record(z.string(), z.any()).optional(),
+	ignoreSslErrors: z.boolean().optional(),
+})
+
+/**
+ * 代理请求处理器
+ *
+ * 将客户端请求代理到指定的面板 API，自动处理认证参数。
+ *
+ * 处理流程：
+ * 1. 验证请求参数
+ * 2. 获取会话对应的面板绑定信息
+ * 3. 根据面板类型自动添加认证参数
+ * 4. 发送请求到目标面板
+ * 5. 返回面板响应数据
+ *
+ * @param ctx - Koa 上下文对象，需要包含有效的会话信息
+ *
+ * @example
+ * GET 请求：
+ * ```
+ * GET /api/v1/proxy/request?url=/api/panel/get_sys_info&panelType=bt
+ * ```
+ *
+ * POST 请求：
+ * ```json
+ * {
+ *   "url": "/api/panel/get_sys_info",
+ *   "panelType": "bt",
+ *   "params": {
+ *     "action": "get_sys_info"
+ *   }
+ * }
+ * ```
+ *
+ * 成功响应：
+ * ```json
+ * {
+ *   "code": 200,
+ *   "message": "success",
+ *   "data": {
+ *     // 面板返回的数据
+ *   }
+ * }
+ * ```
+ */
+const doProxy: Middleware = async (ctx) => {
+	const sessionId: string = (ctx.state as any).sessionId
+	const method = ctx.method.toUpperCase()
+	const parsed = proxyRequestSchema.safeParse(method === 'GET' ? ctx.request.query : ctx.request.body)
+	if (!parsed.success) {
+		ctx.status = 400
+		ctx.body = formatError(400, 'Invalid parameters', parsed.error.flatten())
+		return
+	}
+	const { url: path, panelType, params = {}, ignoreSslErrors = false } = parsed.data
+	const binding = getPanelBinding(sessionId, panelType)
+	if (!binding) {
+		ctx.status = 400
+		ctx.body = formatError(400, 'Panel binding not found')
+		return
+	}
+
+	try {
+		const data = await proxyRequest({
+			method: method === 'GET' ? 'GET' : 'POST',
+			path,
+			panelType,
+			params,
+			binding,
+			ignoreSslErrors,
+		})
+		ctx.body = { code: 200, message: 'success', data }
+	} catch (error: any) {
+		// 检查是否为SSL证书错误
+		const errorMessage = error?.message || 'Proxy request failed'
+		if (errorMessage.includes('SSL证书验证失败') && !ignoreSslErrors) {
+			ctx.status = 400
+			ctx.body = formatError(400, 'SSL证书验证失败', {
+				message: errorMessage,
+				suggestion: '您可以在请求中添加 "ignoreSslErrors": true 来跳过SSL证书验证，但这会降低安全性。',
+				example: {
+					ignoreSslErrors: true
+				}
+			})
+			return
+		}
+
+		ctx.status = error?.response?.status || 500
+		ctx.body = formatError(ctx.status, errorMessage, error?.response?.data)
+	}
+}
+
+// 注册路由（所有代理路由都需要认证）
+proxyRoutes.post('/bind-panel-key', authMiddleware, bindPanelKey)
+proxyRoutes.get('/request', authMiddleware, doProxy)
+proxyRoutes.post('/request', authMiddleware, doProxy)

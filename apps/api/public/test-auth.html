@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Auth 鉴权测试页面</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .step {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 2px solid #f0f0f0;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .step.active {
+      border-color: #667eea;
+      background: #f8f9ff;
+    }
+
+    .step.completed {
+      border-color: #4caf50;
+      background: #f1f8e9;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .step-number {
+      background: #667eea;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+
+    .step.completed .step-number {
+      background: #4caf50;
+    }
+
+    .qr-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .qr-code {
+      max-width: 200px;
+      height: 200px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      margin: 0 auto 15px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #f9f9f9;
+    }
+
+    .secret-display {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      word-break: break-all;
+      margin: 15px 0;
+      display: none;
+    }
+
+    .input-group {
+      margin: 15px 0;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .btn:hover {
+      background: #5a6fd8;
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn.secondary {
+      background: #6c757d;
+    }
+
+    .btn.secondary:hover {
+      background: #5a6268;
+    }
+
+    .status {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-weight: 500;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .panel-test {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .panel-test.show {
+      display: block;
+    }
+
+    .response-display {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .instructions {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      color: #856404;
+    }
+
+    .instructions ol {
+      margin-left: 20px;
+    }
+
+    .instructions li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔐 Google Auth 鉴权测试</h1>
+      <p>测试 LingLongOS API 的 Google Authenticator 双重认证功能</p>
+    </div>
+
+    <!-- 步骤 1: 获取绑定信息 -->
+    <div class="step active" id="step1">
+      <div class="step-title">
+        <span class="step-number">1</span>
+        获取 Google Authenticator 绑定信息
+      </div>
+      <div style="margin-bottom: 15px;">
+        <button class="btn" onclick="getBindInfo()" id="getBindBtn">🔗 获取Google Authenticator绑定信息</button>
+      </div>
+
+      <div class="qr-container">
+        <div class="qr-code" id="qrCode">
+          <span>点击上方按钮获取绑定信息</span>
+        </div>
+        <div class="secret-display" id="secretDisplay"></div>
+        <div id="configCompleteContainer" style="display: none; margin-top: 15px; text-align: center;">
+          <button class="btn" onclick="markConfigComplete()" id="markCompleteBtn" style="background: #10b981; font-size: 14px;">
+            ✅ 已完成Google Auth配置
+          </button>
+          <div style="margin-top: 10px; font-size: 12px; color: #666;">
+            点击此按钮表示您已在Google Authenticator中成功添加了账户
+          </div>
+        </div>
+      </div>
+
+      <div class="instructions" id="instructions" style="display: none;">
+        <strong>📋 设置步骤：</strong>
+        <ol>
+          <li>在手机上打开 <strong>Google Authenticator</strong> 应用</li>
+          <li>点击 <strong>"+"</strong> 号添加新账户</li>
+          <li>选择 <strong>"扫描二维码"</strong> 或 <strong>"手动输入密钥"</strong></li>
+          <li>扫描上方二维码、点击认证URL链接，或手动输入显示的密钥</li>
+          <li>完成后，应用会显示 6 位数验证码，每30秒更新一次</li>
+        </ol>
+        <div
+          style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 6px; border: 1px solid #ffeaa7;">
+          <strong>💡 提示：</strong> 如果无法扫描二维码，可以点击"复制URL"按钮，然后在浏览器中打开该链接，系统会自动跳转到认证器应用。
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤 2: 验证令牌 -->
+    <div class="step" id="step2">
+      <div class="step-title">
+        <span class="step-number">2</span>
+        验证 Google Authenticator 令牌
+      </div>
+      <div class="input-group">
+        <label for="tokenInput">输入 Google Authenticator 中的 6 位数验证码：</label>
+        <input type="text" id="tokenInput" placeholder="例如：123456" maxlength="6" pattern="[0-9]{6}">
+      </div>
+      <button class="btn" onclick="verifyToken()" disabled id="verifyBtn">验证令牌</button>
+    </div>
+
+    <!-- 步骤 3: 测试受保护接口 -->
+    <div class="step" id="step3">
+      <div class="step-title">
+        <span class="step-number">3</span>
+        测试受保护的 API 接口
+      </div>
+      <div class="panel-test" id="panelTest">
+        <h4>面板绑定测试</h4>
+        <div class="input-group">
+          <label for="panelType">面板类型：</label>
+          <select id="panelType" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;">
+            <option value="bt">宝塔面板 (bt)</option>
+            <option value="1panel">1Panel</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="panelUrl">面板地址：</label>
+          <input type="url" id="panelUrl" placeholder="http://panel.example.com:8888">
+        </div>
+        <div class="input-group">
+          <label for="panelKey">API 密钥：</label>
+          <input type="text" id="panelKey" placeholder="32位字符的API密钥">
+        </div>
+        <button class="btn secondary" onclick="bindPanel()">绑定面板</button>
+
+        <h4 style="margin-top: 20px;">代理请求测试</h4>
+        <div class="input-group">
+          <label for="proxyUrl">请求路径：</label>
+          <input type="text" id="proxyUrl" placeholder="/api/panel/get_sys_info">
+        </div>
+        <div class="input-group">
+          <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" id="ignoreSslErrors" style="margin-right: 8px;">
+            忽略SSL证书验证错误（降低安全性，仅用于测试）
+          </label>
+          <small style="color: #666; margin-top: 5px; display: block;">
+            ⚠️ 启用此选项将跳过SSL证书验证，可能存在安全风险。仅在测试环境或信任的网络中使用。
+          </small>
+        </div>
+        <button class="btn secondary" onclick="testProxy()">🔄 测试代理请求</button>
+      </div>
+    </div>
+
+    <!-- 状态显示 -->
+    <div id="statusDisplay"></div>
+
+    <!-- 响应显示 -->
+    <div class="response-display" id="responseDisplay" style="display: none;"></div>
+  </div>
+
+  <script>
+    const API_BASE = '/api/v1';
+    let currentStep = 1;
+
+    // 页面初始化
+    async function initializePage() {
+      try {
+        // 检查Google Auth配置状态
+        const response = await fetch(`${API_BASE}/auth/google-auth-config`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.code === 200 && data.data.isConfigured) {
+            // 已配置，跳过第一步
+            showConfiguredState(data.data);
+            return;
+          }
+        }
+      } catch (error) {
+        console.log('检查配置状态失败，继续正常流程:', error);
+      }
+      
+      // 未配置或检查失败，显示正常的配置流程
+      showNormalConfigFlow();
+    }
+
+    // 显示已配置状态
+    function showConfiguredState(config) {
+      const step1 = document.getElementById('step1');
+      step1.innerHTML = `
+        <div class="step-title">
+          <span class="step-number">1</span>
+          Google Authenticator 已配置
+        </div>
+        <div style="padding: 20px; background: #d1fae5; border: 1px solid #10b981; border-radius: 8px; color: #065f46;">
+          <div style="text-align: center; margin-bottom: 15px;">
+            <span style="font-size: 48px;">✅</span>
+          </div>
+          <div style="text-align: center; font-size: 16px; font-weight: 500; margin-bottom: 10px;">
+            Google Auth 已完成配置
+          </div>
+          <div style="text-align: center; font-size: 14px; color: #047857;">
+            配置时间：${new Date(config.configuredAt).toLocaleString()}
+          </div>
+          <div style="margin-top: 15px; text-align: center;">
+            <button class="btn" onclick="resetConfig()" style="background: #f59e0b; font-size: 14px;">
+              🔄 重新配置
+            </button>
+          </div>
+        </div>
+      `;
+      
+      // 更新步骤状态
+      updateStepStatus(1, 'completed');
+      updateStepStatus(2, 'active');
+      currentStep = 2;
+      
+      // 启用令牌输入
+      document.getElementById('verifyBtn').disabled = false;
+      
+      showStatus('✅ 系统检测到您已完成Google Auth配置，可以直接进行令牌验证。', 'success');
+    }
+
+    // 显示正常配置流程
+    function showNormalConfigFlow() {
+      // 保持原有的界面不变
+      showStatus('📱 请点击按钮开始配置Google Authenticator。', 'info');
+    }
+
+    // 重置配置
+    async function resetConfig() {
+      try {
+        showStatus('🔄 正在重置配置...', 'info');
+
+        const response = await fetch(`${API_BASE}/auth/google-auth-config/reset`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+        if (response.ok && data.code === 200) {
+          showStatus('✅ 配置已重置，请重新配置Google Auth。', 'success');
+          // 刷新页面以显示正常配置流程
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          showStatus(`❌ 重置配置失败：${data.message}`, 'error');
+        }
+      } catch (error) {
+        showStatus(`❌ 请求失败：${error.message}`, 'error');
+      }
+    }
+
+    // 更新步骤状态
+    function updateStepStatus(stepNum, status) {
+      const step = document.getElementById(`step${stepNum}`);
+      step.classList.remove('active', 'completed');
+      if (status === 'completed') {
+        step.classList.add('completed');
+      } else if (status === 'active') {
+        step.classList.add('active');
+      }
+    }
+
+    // 显示状态消息
+    function showStatus(message, type = 'info') {
+      const statusDiv = document.getElementById('statusDisplay');
+      statusDiv.className = `status ${type}`;
+      statusDiv.textContent = message;
+      statusDiv.style.display = 'block';
+    }
+
+    // 显示响应数据
+    function showResponse(data) {
+      const responseDiv = document.getElementById('responseDisplay');
+      responseDiv.textContent = JSON.stringify(data, null, 2);
+      responseDiv.style.display = 'block';
+    }
+
+    // 存储绑定信息
+    let bindingData = null;
+
+    // 获取绑定信息
+    async function getBindInfo() {
+      try {
+        showStatus('🔄 正在获取Google Authenticator绑定信息...', 'info');
+
+        const response = await fetch(`${API_BASE}/auth/google-auth-bind`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+        showResponse(data);
+
+        if (response.ok && data.code === 200) {
+          // 存储绑定数据
+          bindingData = data.data;
+
+          // 解析认证URL
+          const authUrl = data.data.qrCodeUrl;
+          const urlParams = parseAuthUrl(authUrl);
+
+          // 显示密钥信息
+          const secretDisplay = document.getElementById('secretDisplay');
+          secretDisplay.innerHTML = `
+                        <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; border: 1px solid #bae6fd;">
+                            <strong>🔑 手动输入密钥：</strong><br>
+                            <code style="font-size: 16px; color: #0369a1; background: white; padding: 5px 8px; border-radius: 4px; display: inline-block; margin-top: 5px;">${data.data.secret}</code>
+                            <div style="margin-top: 10px; font-size: 14px; color: #0369a1;">
+                                <strong>账户信息：</strong><br>
+                                • 服务名称：${urlParams.issuer || 'LingLongOS'}<br>
+                                • 账户名称：${urlParams.label || 'user'}<br>
+                                • 算法：${urlParams.algorithm || 'SHA1'}<br>
+                                • 位数：${urlParams.digits || '6'}<br>
+                                • 周期：${urlParams.period || '30'}秒
+                            </div>
+                        </div>
+                    `;
+          secretDisplay.style.display = 'block';
+
+          // 立即生成并显示二维码
+          generateQRCode();
+
+          // 显示"已完成配置"按钮
+          document.getElementById('configCompleteContainer').style.display = 'block';
+
+          // 显示说明
+          document.getElementById('instructions').style.display = 'block';
+
+          showStatus('✅ 绑定信息获取成功！请在 Google Authenticator 中添加账户。', 'success');
+
+          // 更新步骤状态
+          updateStepStatus(1, 'completed');
+          updateStepStatus(2, 'active');
+          currentStep = 2;
+
+          // 启用令牌输入
+          document.getElementById('verifyBtn').disabled = false;
+        } else {
+          showStatus(`❌ 获取绑定信息失败：${data.message}`, 'error');
+        }
+      } catch (error) {
+        showStatus(`❌ 请求失败：${error.message}`, 'error');
+        showResponse({ error: error.message });
+      }
+    }
+
+    // 解析认证URL参数
+    function parseAuthUrl(url) {
+      try {
+        const urlObj = new URL(url);
+        const params = {};
+
+        // 解析路径中的标签和发行者
+        const pathParts = urlObj.pathname.split('/');
+        if (pathParts.length > 1) {
+          const labelPart = decodeURIComponent(pathParts[pathParts.length - 1]);
+          if (labelPart.includes(':')) {
+            const [issuer, label] = labelPart.split(':');
+            params.issuer = issuer;
+            params.label = label;
+          } else {
+            params.label = labelPart;
+          }
+        }
+
+        // 解析查询参数
+        urlObj.searchParams.forEach((value, key) => {
+          params[key] = value;
+        });
+
+        return params;
+      } catch (error) {
+        console.error('解析认证URL失败:', error);
+        return {};
+      }
+    }
+
+    // 生成二维码
+    function generateQRCode() {
+      if (!bindingData) {
+        showStatus('❌ 请先获取绑定信息', 'error');
+        return;
+      }
+
+      const qrCode = document.getElementById('qrCode');
+      qrCode.innerHTML = `
+                <div style="padding: 20px; text-align: center;">
+                    <div style="margin-bottom: 15px;">
+                        <strong>📱 二维码（点击链接在移动设备上打开）</strong>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #e5e7eb; display: inline-block;">
+                        <div style="font-family: monospace; font-size: 10px; line-height: 1; letter-spacing: 1px; color: #000;">
+                            ${generateTextQR(bindingData.qrCodeUrl)}
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <a href="${bindingData.qrCodeUrl}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold;">
+                            🔗 点击此链接在移动设备上打开
+                        </a>
+                    </div>
+                </div>
+            `;
+      qrCode.style.display = 'block';
+
+      showStatus('📱 二维码已生成！您可以使用Google Authenticator扫描或点击链接。', 'success');
+    }
+
+    // 生成文本二维码（简化版）
+    function generateTextQR(text) {
+      // 这是一个简化的文本二维码表示
+      // 在实际项目中，建议使用专业的QR码库如qrcode.js
+      const lines = [
+        '█████████████████████████████',
+        '█ ▄▄▄▄▄ █▀█ █▄█▀▀▀▄█ ▄▄▄▄▄ █',
+        '█ █   █ █▀▀▀█ ▄▄█▄▄█ █   █ █',
+        '█ █▄▄▄█ █▀ █▀▀▄█▀▄▀█ █▄▄▄█ █',
+        '█▄▄▄▄▄▄▄█▄▀ ▀▄█ █▄█▄▄▄▄▄▄▄█',
+        '█▄▄█▄▀▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█',
+        '█ ▄▄▄▄▄ █▄█▄█▄█▄█▄█ ▄▄▄▄▄ █',
+        '█ █   █ █▄▄▄▄▄▄▄▄▄█ █   █ █',
+        '█ █▄▄▄█ █▄▄▄▄▄▄▄▄▄█ █▄▄▄█ █',
+        '█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█'
+      ];
+      return lines.join('<br>');
+    }
+
+
+
+    // 标记Google Auth配置完成
+    async function markConfigComplete() {
+      try {
+        showStatus('🔄 正在保存配置状态...', 'info');
+
+        const response = await fetch(`${API_BASE}/auth/google-auth-config/complete`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({ userId: 'user' })
+        });
+
+        const data = await response.json();
+        showResponse(data);
+
+        if (response.ok && data.code === 200) {
+          showStatus('✅ Google Auth配置状态已保存！下次启动时将跳过配置步骤。', 'success');
+          
+          // 隐藏配置完成按钮
+          document.getElementById('configCompleteContainer').style.display = 'none';
+          
+          // 可以选择性地显示一个确认信息
+          const confirmDiv = document.createElement('div');
+          confirmDiv.style.cssText = 'margin-top: 15px; padding: 10px; background: #d1fae5; border: 1px solid #10b981; border-radius: 8px; color: #065f46; text-align: center; font-size: 14px;';
+          confirmDiv.innerHTML = '🎉 配置已完成！系统已记录您的Google Auth设置状态。';
+          document.getElementById('qrCode').parentNode.appendChild(confirmDiv);
+        } else {
+          showStatus(`❌ 保存配置状态失败：${data.message}`, 'error');
+        }
+      } catch (error) {
+        showStatus(`❌ 请求失败：${error.message}`, 'error');
+        showResponse({ error: error.message });
+      }
+    }
+
+    // 验证令牌
+    async function verifyToken() {
+      const token = document.getElementById('tokenInput').value.trim();
+
+      if (!token || token.length !== 6) {
+        showStatus('请输入 6 位数验证码', 'error');
+        return;
+      }
+
+      try {
+        showStatus('正在验证令牌...', 'info');
+
+        const response = await fetch(`${API_BASE}/auth/google-auth-verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({ token })
+        });
+
+        const data = await response.json();
+        showResponse(data);
+
+        if (response.ok && data.code === 200) {
+          showStatus('令牌验证成功！会话已创建，现在可以访问受保护的接口。', 'success');
+
+          // 更新步骤状态
+          updateStepStatus(2, 'completed');
+          updateStepStatus(3, 'active');
+          currentStep = 3;
+
+          // 显示面板测试区域
+          document.getElementById('panelTest').classList.add('show');
+        } else {
+          showStatus(`令牌验证失败：${data.message}`, 'error');
+        }
+      } catch (error) {
+        showStatus(`请求失败：${error.message}`, 'error');
+        showResponse({ error: error.message });
+      }
+    }
+
+    // 绑定面板
+    async function bindPanel() {
+      const type = document.getElementById('panelType').value;
+      const url = document.getElementById('panelUrl').value.trim();
+      const key = document.getElementById('panelKey').value.trim();
+
+      if (!url || !key) {
+        showStatus('请填写完整的面板信息', 'error');
+        return;
+      }
+
+      try {
+        showStatus('正在绑定面板...', 'info');
+
+        const response = await fetch(`${API_BASE}/proxy/bind-panel-key`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({ type, url, key })
+        });
+
+        const data = await response.json();
+        showResponse(data);
+
+        if (response.ok && data.code === 200) {
+          showStatus('面板绑定成功！', 'success');
+        } else {
+          showStatus(`面板绑定失败：${data.message}`, 'error');
+        }
+      } catch (error) {
+        showStatus(`请求失败：${error.message}`, 'error');
+        showResponse({ error: error.message });
+      }
+    }
+
+    // 测试代理请求
+    async function testProxy() {
+      const panelType = document.getElementById('panelType').value;
+      const proxyUrl = document.getElementById('proxyUrl').value.trim();
+      const ignoreSslErrors = document.getElementById('ignoreSslErrors').checked;
+
+      if (!proxyUrl) {
+        showStatus('❌ 请输入请求路径', 'error');
+        return;
+      }
+
+      try {
+        showStatus('🔄 正在测试代理请求...', 'info');
+
+        const requestBody = {
+          url: proxyUrl,
+          panelType: panelType,
+          params: {}
+        };
+
+        // 如果启用了忽略SSL错误，添加到请求体中
+        if (ignoreSslErrors) {
+          requestBody.ignoreSslErrors = true;
+          showStatus('⚠️ 正在测试代理请求（已忽略SSL证书验证）...', 'info');
+        }
+
+        const response = await fetch(`${API_BASE}/proxy/request`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+        showResponse(data);
+
+        if (response.ok && data.code === 200) {
+          showStatus('✅ 代理请求成功！', 'success');
+        } else {
+          // 检查是否为SSL证书错误
+          if (data.message && data.message.includes('SSL证书验证失败')) {
+            showStatus(`🔒 SSL证书验证失败：${data.message}`, 'error');
+
+            // 显示SSL错误的详细信息和建议
+            if (data.data && data.data.suggestion) {
+              const errorDetails = document.createElement('div');
+              errorDetails.style.cssText = 'margin-top: 10px; padding: 15px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; color: #92400e;';
+              errorDetails.innerHTML = `
+                                <strong>💡 解决建议：</strong><br>
+                                ${data.data.suggestion}<br><br>
+                                <strong>示例：</strong> 勾选上方的"忽略SSL证书验证错误"选项，然后重新测试。
+                            `;
+
+              const statusDiv = document.getElementById('statusDisplay');
+              statusDiv.appendChild(errorDetails);
+            }
+          } else {
+            showStatus(`❌ 代理请求失败：${data.message}`, 'error');
+          }
+        }
+      } catch (error) {
+        showStatus(`❌ 请求失败：${error.message}`, 'error');
+        showResponse({ error: error.message });
+      }
+    }
+
+    // 页面加载时初始化
+    window.addEventListener('DOMContentLoaded', initializePage);
+
+    // 监听令牌输入
+    document.getElementById('tokenInput').addEventListener('input', function (e) {
+      const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+      e.target.value = value;
+
+      const verifyBtn = document.getElementById('verifyBtn');
+      verifyBtn.disabled = value.length !== 6;
+    });
+
+    // 监听回车键
+    document.getElementById('tokenInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter' && !document.getElementById('verifyBtn').disabled) {
+        verifyToken();
+      }
+    });
+  </script>
+</body>
+
+</html>
