@@ -2,9 +2,10 @@ import Router from '@koa/router'
 import type { Middleware } from 'koa'
 import { z } from 'zod'
 import { authMiddleware } from '../middlewares/authMiddleware.js'
-import { formatError } from '../middlewares/commonMiddleware.js'
+import { formatError, formatSuccess } from '../middlewares/commonMiddleware.js'
 import { getPanelBinding, setPanelBinding } from '../services/authService.js'
 import { proxyRequest } from '../services/proxyService.js'
+import { withResponse, HttpError } from '../middlewares/commonMiddleware.js'
 
 export const proxyRoutes = new Router({ prefix: '/proxy' })
 
@@ -50,12 +51,12 @@ const bindPanelKey: Middleware = async (ctx) => {
 	const parsed = bindPanelKeySchema.safeParse(ctx.request.body)
 	if (!parsed.success) {
 		ctx.status = 400
-		ctx.body = formatError(400, 'Invalid parameters', parsed.error.flatten())
+		ctx.body = formatError(400, '参数无效', parsed.error.flatten())
 		return
 	}
 	const { type, url, key } = parsed.data
 	setPanelBinding(sessionId, type, url, key)
-	ctx.body = { code: 200, message: 'Panel key bound successfully.' }
+	ctx.body = formatSuccess(null, '面板密钥绑定成功')
 }
 
 /** 代理请求参数验证模式 */
@@ -108,21 +109,17 @@ const proxyRequestSchema = z.object({
  * }
  * ```
  */
-const doProxy: Middleware = async (ctx) => {
+const doProxy: Middleware = withResponse(async (ctx) => {
 	const sessionId: string = (ctx.state as any).sessionId
 	const method = ctx.method.toUpperCase()
 	const parsed = proxyRequestSchema.safeParse(method === 'GET' ? ctx.request.query : ctx.request.body)
 	if (!parsed.success) {
-		ctx.status = 400
-		ctx.body = formatError(400, 'Invalid parameters', parsed.error.flatten())
-		return
+		throw new HttpError(400, '参数无效', parsed.error.flatten())
 	}
 	const { url: path, panelType, params = {}, ignoreSslErrors = false } = parsed.data
 	const binding = getPanelBinding(sessionId, panelType)
 	if (!binding) {
-		ctx.status = 400
-		ctx.body = formatError(400, 'Panel binding not found')
-		return
+		throw new HttpError(400, '未找到面板绑定')
 	}
 
 	try {
@@ -134,26 +131,24 @@ const doProxy: Middleware = async (ctx) => {
 			binding,
 			ignoreSslErrors,
 		})
-		ctx.body = { code: 200, message: 'success', data }
+		// 统一成功返回
+		return data
 	} catch (error: any) {
-		// 检查是否为SSL证书错误
-		const errorMessage = error?.message || 'Proxy request failed'
+		const errorMessage = error?.message || '代理请求失败'
 		if (errorMessage.includes('SSL证书验证失败') && !ignoreSslErrors) {
 			ctx.status = 400
 			ctx.body = formatError(400, 'SSL证书验证失败', {
 				message: errorMessage,
 				suggestion: '您可以在请求中添加 "ignoreSslErrors": true 来跳过SSL证书验证，但这会降低安全性。',
 				example: {
-					ignoreSslErrors: true
-				}
+					ignoreSslErrors: true,
+				},
 			})
 			return
 		}
-
-		ctx.status = error?.response?.status || 500
-		ctx.body = formatError(ctx.status, errorMessage, error?.response?.data)
+		throw new HttpError(error?.response?.status || 500, errorMessage, error?.response?.data)
 	}
-}
+})
 
 // 注册路由（所有代理路由都需要认证）
 proxyRoutes.post('/bind-panel-key', authMiddleware, bindPanelKey)

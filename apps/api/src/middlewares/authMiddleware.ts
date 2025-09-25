@@ -28,13 +28,13 @@ export const authMiddleware: Middleware = async (ctx, next) => {
 	const sessionId = ctx.cookies.get(SESSION_COOKIE_NAME)
 	if (!sessionId) {
 		ctx.status = 401
-		ctx.body = formatError(401, 'AUTH_REQUIRED')
+		ctx.body = formatError(401, '需要认证')
 		return
 	}
 	const session = getSession(sessionId)
 	if (!session || session.expiresAt < Date.now()) {
 		ctx.status = 401
-		ctx.body = formatError(401, 'AUTH_REQUIRED')
+		ctx.body = formatError(401, '需要认证')
 		return
 	}
 	ctx.state.sessionId = sessionId

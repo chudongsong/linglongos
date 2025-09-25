@@ -23,6 +23,7 @@ import cors from '@koa/cors'
 import serve from 'koa-static'
 import path from 'path'
 import { router as apiRouter } from './routes/index.js'
+import { formatError } from './middlewares/commonMiddleware.js'
 
 const app = new Koa()
 const router = new Router()
@@ -53,11 +54,8 @@ const errorHandler: Middleware = async (ctx, next) => {
 	try {
 		await next()
 	} catch (err: any) {
-		ctx.status = err.status || 500
-		ctx.body = {
-			code: ctx.status,
-			message: err.message || 'Internal Server Error',
-		}
+		ctx.status = err?.status || 500
+		ctx.body = formatError(ctx.status, err?.message || '内部服务器错误')
 	}
 }
 app.use(errorHandler)

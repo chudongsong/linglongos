@@ -1,19 +1,14 @@
 import Router from '@koa/router'
 import type { Middleware } from 'koa'
-import { formatError, formatSuccess } from '../middlewares/commonMiddleware.js'
+import { formatSuccess, withResponse, HttpError } from '../middlewares/commonMiddleware'
 import {
 	BIND_COOKIE_NAME,
 	SESSION_COOKIE_NAME,
 	createSession,
 	generateBindSecret,
 	verifyTokenWithBindId,
-} from '../services/authService.js'
-import {
-	isGoogleAuthConfigured,
-	markGoogleAuthConfigured,
-	readGoogleAuthConfig,
-	resetGoogleAuthConfig,
-} from '../config/auth.config.js'
+} from '../services/authService'
+import { markGoogleAuthConfigured, readGoogleAuthConfig, resetGoogleAuthConfig } from '../config/auth.config'
 
 export const authRoutes = new Router({ prefix: '/auth' })
 
@@ -30,6 +25,7 @@ export const authRoutes = new Router({ prefix: '/auth' })
  * ```json
  * {
  *   "code": 200,
+ *   "status": "success",
  *   "message": "success",
  *   "data": {
  *     "qrCodeUrl": "otpauth://totp/LingLongOS:user?secret=...",
@@ -38,7 +34,7 @@ export const authRoutes = new Router({ prefix: '/auth' })
  * }
  * ```
  */
-const googleAuthBind: Middleware = async (ctx) => {
+const googleAuthBind: Middleware = withResponse(async (ctx) => {
 	const { bindId, secret, otpauthUrl } = generateBindSecret('LingLongOS')
 	ctx.cookies.set(BIND_COOKIE_NAME, bindId, {
 		httpOnly: true,
@@ -46,8 +42,8 @@ const googleAuthBind: Middleware = async (ctx) => {
 		secure: false,
 		maxAge: 10 * 60 * 1000, // 10 minutes to verify
 	})
-	ctx.body = formatSuccess({ qrCodeUrl: otpauthUrl, secret })
-}
+	return { qrCodeUrl: otpauthUrl, secret }
+})
 
 /**
  * Google 身份验证器令牌验证处理器
@@ -75,28 +71,23 @@ const googleAuthBind: Middleware = async (ctx) => {
  * ```json
  * {
  *   "code": 200,
- *   "message": "Authentication successful, session created."
+ *   "status": "success",
+ *   "message": "认证成功，会话已创建"
  * }
  * ```
  */
-const googleAuthVerify: Middleware = async (ctx) => {
+const googleAuthVerify: Middleware = withResponse(async (ctx) => {
 	const token: string | undefined = (ctx.request.body as any)?.token
 	if (!token) {
-		ctx.status = 400
-		ctx.body = formatError(400, 'Token is required')
-		return
+		throw new HttpError(400, '需要令牌')
 	}
 	const bindId = ctx.cookies.get(BIND_COOKIE_NAME)
 	if (!bindId) {
-		ctx.status = 401
-		ctx.body = formatError(401, 'Invalid token or session expired.')
-		return
+		throw new HttpError(401, '令牌无效或会话已过期')
 	}
 	const ok = verifyTokenWithBindId(bindId, token)
 	if (!ok) {
-		ctx.status = 401
-		ctx.body = formatError(401, 'Invalid token or session expired.')
-		return
+		throw new HttpError(401, '令牌无效或会话已过期')
 	}
 	const session = createSession(4)
 	ctx.cookies.set(SESSION_COOKIE_NAME, session.id, {
@@ -105,8 +96,9 @@ const googleAuthVerify: Middleware = async (ctx) => {
 		secure: false,
 		maxAge: session.expiresAt - Date.now(),
 	})
-	ctx.body = { code: 200, message: 'Authentication successful, session created.' }
-}
+	// 需要自定义消息，直接设置 body，withResponse 将尊重它
+	ctx.body = formatSuccess(null, '认证成功，会话已创建')
+})
 
 /**
  * 检查Google Auth配置状态处理器
@@ -120,6 +112,7 @@ const googleAuthVerify: Middleware = async (ctx) => {
  * ```json
  * {
  *   "code": 200,
+ *   "status": "success",
  *   "message": "success",
  *   "data": {
  *     "isConfigured": true,
@@ -128,15 +121,14 @@ const googleAuthVerify: Middleware = async (ctx) => {
  * }
  * ```
  */
-const checkGoogleAuthConfig: Middleware = async (ctx) => {
+const checkGoogleAuthConfig: Middleware = withResponse(async (ctx) => {
 	try {
 		const config = await readGoogleAuthConfig()
-		ctx.body = formatSuccess(config)
+		return config
 	} catch (error) {
-		ctx.status = 500
-		ctx.body = formatError(500, `Failed to read config: ${error instanceof Error ? error.message : 'Unknown error'}`)
+		throw new HttpError(500, `读取配置失败: ${error instanceof Error ? error.message : '未知错误'}`)
 	}
-}
+})
 
 /**
  * 标记Google Auth配置完成处理器
@@ -157,20 +149,23 @@ const checkGoogleAuthConfig: Middleware = async (ctx) => {
  * ```json
  * {
  *   "code": 200,
+ *   "status": "success",
  *   "message": "Google Auth configuration marked as completed."
  * }
  * ```
  */
-const markGoogleAuthComplete: Middleware = async (ctx) => {
+const markGoogleAuthComplete: Middleware = withResponse(async (ctx) => {
 	try {
 		const { userId } = (ctx.request.body as any) || {}
 		await markGoogleAuthConfigured(userId)
-		ctx.body = formatSuccess(null, 'Google Auth configuration marked as completed.')
+		ctx.body = formatSuccess(null, '已标记 Google 身份验证配置完成')
 	} catch (error) {
-		ctx.status = 500
-		ctx.body = formatError(500, `Failed to mark config as completed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+		throw new HttpError(
+			500,
+			`Failed to mark config as completed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		)
 	}
-}
+})
 
 /**
  * 重置Google Auth配置处理器
@@ -184,19 +179,19 @@ const markGoogleAuthComplete: Middleware = async (ctx) => {
  * ```json
  * {
  *   "code": 200,
+ *   "status": "success",
  *   "message": "Google Auth configuration has been reset."
  * }
  * ```
  */
-const resetGoogleAuthConfigHandler: Middleware = async (ctx) => {
+const resetGoogleAuthConfigHandler: Middleware = withResponse(async (ctx) => {
 	try {
 		await resetGoogleAuthConfig()
-		ctx.body = formatSuccess(null, 'Google Auth configuration has been reset.')
+		ctx.body = formatSuccess(null, 'Google 身份验证配置已重置')
 	} catch (error) {
-		ctx.status = 500
-		ctx.body = formatError(500, `Failed to reset config: ${error instanceof Error ? error.message : 'Unknown error'}`)
+		throw new HttpError(500, `重置配置失败: ${error instanceof Error ? error.message : '未知错误'}`)
 	}
-}
+})
 
 // 注册路由
 authRoutes.get('/google-auth-bind', googleAuthBind)

@@ -12,6 +12,7 @@
 import Router from '@koa/router'
 import { authRoutes } from '../controllers/authController.js'
 import { proxyRoutes } from '../controllers/proxyController.js'
+import { btpanelRoutes } from '../btpanel/index.js'
 
 /** 主路由实例，包含 API 版本前缀 */
 export const router = new Router({ prefix: '/api/v1' })
@@ -21,3 +22,6 @@ router.use(authRoutes.routes(), authRoutes.allowedMethods())
 
 // 注册代理路由
 router.use(proxyRoutes.routes(), proxyRoutes.allowedMethods())
+
+// 注册 btpanel 路由
+router.use(btpanelRoutes.routes(), btpanelRoutes.allowedMethods())

@@ -11,7 +11,6 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 import { useDrag } from 'react-dnd'
-import { getEmptyImage } from 'react-dnd-html5-backend'
 import { DOCK_APP_TYPE } from '@/types/dnd'
 import type { AppItem, CategoryMap, GridSize } from '@/types/config'
 import type { LucideIcon } from 'lucide-react'
@@ -455,7 +454,7 @@ function Chip(props: {
  */
 function AppTile(props: { app: AppItem; unitW: number; unitH: number; onOpen: () => void }) {
 	const { app, unitW, unitH, onOpen } = props
-	const [{ isDragging }, dragRef, dragPreview] = useDrag(
+	const [{ isDragging }, dragRef] = useDrag(
 		() => ({
 			type: DOCK_APP_TYPE,
 			item: { type: 'DOCK_APP', id: app.id, source: 'CENTER' },
@@ -463,16 +462,6 @@ function AppTile(props: { app: AppItem; unitW: number; unitH: number; onOpen: ()
 		}),
 		[app.id],
 	)
-
-	/**
-	 * 隐藏默认拖拽预览，避免元素在存在 CSS transform（如缩放）时被浏览器截图导致的拖拽预览变形。
-	 * - 原理：使用 HTML5Backend 的空预览图像（getEmptyImage），让浏览器不显示默认拖拽预览。
-	 * - 依赖：captureDraggingState=true 确保拖拽状态变化时预览正确更新。
-	 */
-	useEffect(() => {
-		dragPreview(getEmptyImage(), { captureDraggingState: true })
-	}, [dragPreview])
-
 	const setDragRef = (node: HTMLDivElement | null) => {
 		if (node) dragRef(node)
 	}
@@ -490,8 +479,7 @@ function AppTile(props: { app: AppItem; unitW: number; unitH: number; onOpen: ()
 			className={clsx(
 				'flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all duration-200 hover:bg-white/5 hover:scale-105',
 				'min-h-0 min-w-0', // 确保flex子项可以收缩
-				// 拖拽时保持与 hover 相同的缩放，避免视觉上出现“变小”
-				isDragging && 'opacity-60 scale-105',
+				isDragging && 'opacity-60 scale-95',
 			)}
 			onDoubleClick={onOpen}
 			role="gridcell"
@@ -522,10 +510,6 @@ function AppTile(props: { app: AppItem; unitW: number; unitH: number; onOpen: ()
 						alt={app.name}
 						className="w-full h-full object-contain transition-transform duration-200"
 						style={{ maxWidth: '100%', maxHeight: '100%' }}
-						// 设置固有宽高以保持拖拽时的预览尺寸一致
-						width={iconSize}
-						height={iconSize}
-						draggable={false}
 					/>
 				) : (
 					<div
