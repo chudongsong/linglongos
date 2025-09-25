@@ -211,7 +211,7 @@ function AppCenterButton(props: {
 			title="应用中心"
 			onClick={onClick}
 			className={clsx(
-				'grid place-items-center w-10 h-10 bg-black/30 border-none cursor-pointer rounded-xl transition-colors',
+				'grid place-items-center w-10 h-10 bg-white/10 border-none cursor-pointer rounded-xl transition-colors',
 			)}
 		>
 			{/* 内联 3x3 圆点图标（SVG），无外部资源依赖 */}

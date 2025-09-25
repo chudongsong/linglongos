@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 import { useDrag } from 'react-dnd'
+import { getEmptyImage } from 'react-dnd-html5-backend'
 import { DOCK_APP_TYPE } from '@/types/dnd'
 import type { AppItem, CategoryMap, GridSize } from '@/types/config'
 import type { LucideIcon } from 'lucide-react'
@@ -54,8 +55,6 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 	const [query, setQuery] = useState('')
 	const [categoryKey, setCategoryKey] = useState<string>('')
 	const [page, setPage] = useState(0)
-	// 新增：键盘选择高亮索引（当前页面内）
-	const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
 
 	// 视口尺寸：用于计算内容区域与网格容量
 	const [viewport, setViewport] = useState<{ w: number; h: number }>({ w: window.innerWidth, h: window.innerHeight })
@@ -84,10 +83,10 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 	const contentTop = Math.floor((viewport.h - contentH) / 2)
 
 	// 根据图标尺寸（使用网格尺寸）自动计算每页显示数量
-	// 以 grid.width/grid.height + gap 为单元尺寸，避免挤压
-	const unitW = grid.width
-	const unitH = grid.height
-	const gap = Math.max(grid.gap, 8) // 保底间距，保证扁平化设计的留白
+	// 图标尺寸与桌面图标保持一致
+	const unitW = grid.width // 使用桌面图标的原始宽度
+	const unitH = grid.height // 使用桌面图标的原始高度
+	const gap = Math.max(grid.gap * 1.5, 12) // 适当增加间距，最小12px
 	const cols = Math.max(1, Math.floor((contentW - gap) / (unitW + gap))) // 计算每页列数，确保不小于 1
 	const rows = Math.max(1, Math.floor((contentH - 120 - gap) / (unitH + gap))) // 额外预留顶部控件区域 120
 	const capacity = Math.max(1, cols * rows)
@@ -100,11 +99,6 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pageCount])
 	const pageItems = filtered.slice(clampedPage * capacity, clampedPage * capacity + capacity)
-
-	// 新增：根据筛选/分页变化重置选中项
-	useEffect(() => {
-		setSelectedIdx(pageItems.length ? 0 : null)
-	}, [query, categoryKey, clampedPage, pageItems.length])
 
 	// 打开/关闭过渡动画控制
 	const [mounted, setMounted] = useState(open)
@@ -187,41 +181,8 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 	}
 
 	// 修复 Hooks 调用顺序：将 useRef 放在任何条件 return 之前
+	// 动画框引用：用于过渡动画和事件处理
 	const frameRef = useRef<HTMLDivElement | null>(null)
-
-	// 新增：打开后自动聚焦以启用键盘导航
-	useEffect(() => {
-		if (animOpen && frameRef.current) {
-			frameRef.current.focus()
-		}
-	}, [animOpen])
-
-	// 新增：键盘导航与快捷键（Esc 关闭、Enter 打开、方向键移动选择）
-	function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-		if (!pageItems.length) return
-		const key = e.key
-		if (key === 'Escape') {
-			onClose()
-			return
-		}
-		if (key === 'Enter' && selectedIdx != null) {
-			const item = pageItems[selectedIdx] as AppItem | undefined
-			if (item) onOpen(item.id)
-			return
-		}
-		if (selectedIdx == null) {
-			setSelectedIdx(0)
-			return
-		}
-		let next = selectedIdx
-		if (key === 'ArrowLeft') next = Math.max(0, selectedIdx - 1)
-		else if (key === 'ArrowRight') next = Math.min(pageItems.length - 1, selectedIdx + 1)
-		else if (key === 'ArrowUp') next = Math.max(0, selectedIdx - cols)
-		else if (key === 'ArrowDown') next = Math.min(pageItems.length - 1, selectedIdx + cols)
-		else return
-		setSelectedIdx(next)
-		e.preventDefault()
-	}
 
 	// 若未挂载则直接不渲染（注意：所有 Hooks 已在上方声明）
 	if (!mounted) return null
@@ -287,12 +248,10 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 						setMounted(false)
 					}
 				}}
-				onKeyDown={handleKeyDown}
-				tabIndex={-1}
 			>
 				<div className={contentClass} style={contentInnerStyle}>
 					{/* 顶部：搜索与操作 */}
-					<div className="relative flex-1 group mb-[1rem] ">
+					<div className="relative flex-1 group w-[32rem] mb-[1rem] ">
 						<Search
 							className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60 transition-colors"
 							aria-hidden="true"
@@ -319,7 +278,7 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 							</button>
 						)}
 					</div>
-					<div className="flex items-center gap-2 mb-3 overflow-x-auto p-1">
+					<div className="flex items-center justify-center w-full gap-6 mb-4 overflow-x-auto p-1">
 						<Chip
 							active={!categoryKey}
 							color="#ffffff"
@@ -350,7 +309,7 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 					</div>
 
 					{/* 应用网格展示区域 */}
-					<div className="relative p-[2rem] bg-white/10 w-full rounded-sm" style={{ height: contentH - 120 }}>
+					<div className="relative p-[2rem] bg-white/5 w-full rounded-2xl" style={{ height: contentH - 120 }}>
 						<div
 							className="grid"
 							style={{
@@ -364,9 +323,10 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 									app={app}
 									unitW={unitW}
 									unitH={unitH}
-									onOpen={() => onOpen(app.id)}
-									selected={selectedIdx === i}
-									onSelect={() => setSelectedIdx(i)}
+									onOpen={() => {
+										onOpen(app.id)
+										onClose()
+									}}
 								/>
 							))}
 						</div>
@@ -418,6 +378,10 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
  * - 可访问性：通过 aria-label 与 title 暴露原始文本；focus-visible 时也显示文字；aria-selected 表示选中态
  * - 交互保持：点击行为与 active 态样式保持不变；支持点击已选中的分类再次取消选中
  */
+/**
+ * Chip 组件 - 分类筛选按钮
+ * 优化选中效果，采用背景色高亮显示以增强视觉区分度
+ */
 function Chip(props: {
 	active?: boolean
 	color?: string | undefined
@@ -430,16 +394,34 @@ function Chip(props: {
 	const labelText = typeof children === 'string' ? children : ''
 	const mono = labelText ? labelText.trim().slice(0, 1) : ''
 	const IconComp = icon
+
+	// 优化选中状态的背景色配置
+	const getActiveStyles = () => {
+		if (!active) return {}
+
+		// 如果有自定义颜色，使用该颜色作为背景
+		if (color) {
+			return {
+				backgroundColor: `${color}33`, // 20% 透明度
+			}
+		}
+
+		// 默认使用白色高亮
+		return {
+			backgroundColor: 'rgba(255, 255, 255, 0.25)',
+		}
+	}
+
 	return (
 		<button
 			className={clsx(
 				'app-chip',
-				'px-3 h-8 rounded-full text-sm border transition-colors inline-flex items-center gap-2',
+				'px-3 h-6 rounded-sm text-sm border-none transition-all duration-200 inline-flex items-center gap-2',
 				active
-					? 'bg-white/20 text-white border-white/30'
-					: 'bg-white/10 text-white/80 hover:bg-white/15 border-transparent',
+					? 'text-white font-medium'
+					: 'bg-white/10 text-white/80 hover:bg-white/15 border-transparent hover:text-white/90',
 			)}
-			style={active && color ? { boxShadow: `inset 0 0 0 1.5px ${color}` } : undefined}
+			style={getActiveStyles()}
 			onClick={onClick}
 			aria-label={labelText || undefined}
 			title={labelText || undefined}
@@ -448,15 +430,22 @@ function Chip(props: {
 			<span
 				className={clsx(
 					'chip-icon',
-					IconComp ? 'bg-transparent' : 'bg-gradient-to-b from-white/90 to-white/70',
-					'w-6 h-6 rounded-md text-gray-800 grid place-items-center text-xs font-semibold shrink-0',
+					IconComp ? 'bg-transparent' : active ? 'bg-white/20' : 'bg-gradient-to-b from-white/90 to-white/70',
+					'w-6 h-6 rounded-md grid place-items-center text-xs font-semibold shrink-0 transition-all duration-200',
+					active ? 'text-white' : 'text-gray-800',
 				)}
-				style={color ? { boxShadow: `inset 0 0 0 1px ${color}` } : undefined}
 				aria-hidden="true"
 			>
-				{IconComp ? <IconComp className="w-4 h-4" style={{ color: active ? '#fff' : color || '#fff' }} /> : mono || '•'}
+				{IconComp ? (
+					<IconComp
+						className="w-4 h-4 transition-colors duration-200"
+						style={{ color: active ? '#ffffff' : color || '#ffffff' }}
+					/>
+				) : (
+					mono || '•'
+				)}
 			</span>
-			<span className="chip-label select-none">{children}</span>
+			<span className="chip-label select-none transition-colors duration-200">{children}</span>
 		</button>
 	)
 }
@@ -464,16 +453,9 @@ function Chip(props: {
 /**
  * AppTile 子组件：应用图标项（拖拽源 + 双击打开 + 选中高亮）
  */
-function AppTile(props: {
-	app: AppItem
-	unitW: number
-	unitH: number
-	onOpen: () => void
-	selected?: boolean
-	onSelect?: () => void
-}) {
-	const { app, unitW, unitH, onOpen, selected, onSelect } = props
-	const [{ isDragging }, dragRef] = useDrag(
+function AppTile(props: { app: AppItem; unitW: number; unitH: number; onOpen: () => void }) {
+	const { app, unitW, unitH, onOpen } = props
+	const [{ isDragging }, dragRef, dragPreview] = useDrag(
 		() => ({
 			type: DOCK_APP_TYPE,
 			item: { type: 'DOCK_APP', id: app.id, source: 'CENTER' },
@@ -481,35 +463,96 @@ function AppTile(props: {
 		}),
 		[app.id],
 	)
+
+	/**
+	 * 隐藏默认拖拽预览，避免元素在存在 CSS transform（如缩放）时被浏览器截图导致的拖拽预览变形。
+	 * - 原理：使用 HTML5Backend 的空预览图像（getEmptyImage），让浏览器不显示默认拖拽预览。
+	 * - 依赖：captureDraggingState=true 确保拖拽状态变化时预览正确更新。
+	 */
+	useEffect(() => {
+		dragPreview(getEmptyImage(), { captureDraggingState: true })
+	}, [dragPreview])
+
 	const setDragRef = (node: HTMLDivElement | null) => {
 		if (node) dragRef(node)
 	}
+
+	/**
+	 * 计算图标尺寸：与桌面图标保持一致的尺寸
+	 * 根据桌面配置，small: 40px, medium: 64px, large: 80px
+	 * 这里使用容器高度的合适比例来匹配桌面图标尺寸
+	 */
+	const iconSize = Math.min(Math.max(unitH * 0.53, 40), 80) // 调整比例以匹配桌面图标尺寸
 
 	return (
 		<div
 			ref={setDragRef}
 			className={clsx(
-				'flex flex-col items-center gap-2 p-2 rounded-sm transition-colors',
-				selected && 'bg-white/10 justify-center',
-				isDragging && 'opacity-60',
+				'flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all duration-200 hover:bg-white/5 hover:scale-105',
+				'min-h-0 min-w-0', // 确保flex子项可以收缩
+				// 拖拽时保持与 hover 相同的缩放，避免视觉上出现“变小”
+				isDragging && 'opacity-60 scale-105',
 			)}
-			onClick={onSelect}
 			onDoubleClick={onOpen}
 			role="gridcell"
-			aria-selected={!!selected}
 			title={app.name}
-			style={{ width: unitW, height: unitH }}
+			style={{
+				width: unitW,
+				height: unitH,
+				// 确保容器内容完美居中
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+			}}
 		>
-			<div className="grid place-items-center">
+			{/* 图标容器：使用flex确保图标完美居中 */}
+			<div
+				className="flex items-center justify-center flex-shrink-0"
+				style={{
+					width: iconSize,
+					height: iconSize,
+					minWidth: iconSize,
+					minHeight: iconSize,
+				}}
+			>
 				{app.icon ? (
-					<img src={app.icon} alt={app.name} className="w-[3rem] h-[3rem] object-contain" />
+					<img
+						src={app.icon}
+						alt={app.name}
+						className="w-full h-full object-contain transition-transform duration-200"
+						style={{ maxWidth: '100%', maxHeight: '100%' }}
+						// 设置固有宽高以保持拖拽时的预览尺寸一致
+						width={iconSize}
+						height={iconSize}
+						draggable={false}
+					/>
 				) : (
-					<div className="w-[3rem] h-[3rem] rounded-xl bg-gradient-to-b from-white/90 to-white/70 text-gray-800 grid place-items-center text-base font-semibold">
+					<div
+						className="w-full h-full rounded-xl bg-gradient-to-b from-white/90 to-white/70 text-gray-800 flex items-center justify-center font-semibold transition-transform duration-200"
+						style={{ fontSize: `${iconSize * 0.3}px` }} // 字体大小为图标尺寸的30%
+					>
 						{app.name.slice(0, 1)}
 					</div>
 				)}
 			</div>
-			<div className="text-xs text-white/80 truncate w-full text-center">{app.name}</div>
+
+			{/* 应用名称：自适应字体大小和容器宽度 */}
+			<div
+				className="text-white/80 text-center leading-tight flex-shrink-0 transition-all duration-200"
+				style={{
+					fontSize: `${Math.min(Math.max(unitW * 0.08, 10), 14)}px`, // 字体大小基于容器宽度自适应
+					maxWidth: '100%',
+					wordBreak: 'break-word',
+					overflow: 'hidden',
+					display: '-webkit-box',
+					WebkitLineClamp: 2, // 最多显示2行
+					WebkitBoxOrient: 'vertical',
+					lineHeight: 1.2,
+				}}
+			>
+				{app.name}
+			</div>
 		</div>
 	)
 }

@@ -47,7 +47,6 @@ declare module '$env/static/private' {
 	export const ICUBE_VSCODE_VERSION: string;
 	export const LANG: string;
 	export const LOGNAME: string;
-	export const LaunchInstanceID: string;
 	export const MallocNanoZone: string;
 	export const OLDPWD: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
@@ -55,7 +54,6 @@ declare module '$env/static/private' {
 	export const PATH: string;
 	export const PNPM_HOME: string;
 	export const PWD: string;
-	export const SECURITYSESSIONID: string;
 	export const SHELL: string;
 	export const SHLVL: string;
 	export const SSH_AUTH_SOCK: string;
@@ -141,7 +139,6 @@ declare module '$env/dynamic/private' {
 		ICUBE_VSCODE_VERSION: string;
 		LANG: string;
 		LOGNAME: string;
-		LaunchInstanceID: string;
 		MallocNanoZone: string;
 		OLDPWD: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
@@ -149,7 +146,6 @@ declare module '$env/dynamic/private' {
 		PATH: string;
 		PNPM_HOME: string;
 		PWD: string;
-		SECURITYSESSIONID: string;
 		SHELL: string;
 		SHLVL: string;
 		SSH_AUTH_SOCK: string;

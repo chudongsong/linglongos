@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import clsx from 'clsx'
 import { useAppDispatch, useAppSelector } from '@store/index'
 import {
@@ -9,9 +9,11 @@ import {
 	toggleMinimize,
 	resizeWindow,
 } from '@store/slices/window.slice'
+import { Settings } from '@features/settings'
 
 import type { CSSProperties } from 'react'
-import { SNAP_THRESHOLD, GRID_SIZE, snapTo, snapToGrid, computeBestSnapX, computeBestSnapY } from '@/utils/snap'
+// 已移除吸附与定位线相关工具导入
+// import { SNAP_THRESHOLD, GRID_SIZE, snapTo, snapToGrid, computeBestSnapX, computeBestSnapY } from '@/utils/snap'
 
 /**
  * WindowManager：最小可用版本 + 缩放
@@ -19,15 +21,28 @@ import { SNAP_THRESHOLD, GRID_SIZE, snapTo, snapToGrid, computeBestSnapX, comput
  * - 支持 8 向（N/E/S/W/NE/NW/SE/SW）边缘与角点缩放，带最小尺寸约束
  * - 仅支持 iframe 加载 URL；后续可扩展为内部应用组件
  */
+/**
+ * WindowManager - 桌面窗口管理控制器（Controller）
+ *
+ * 用途：
+ * - 管理窗口的创建、聚焦、拖拽与缩放（8向）
+ * - 移除坐标定位线与吸附逻辑，使用 requestAnimationFrame 优化拖拽性能
+ * - 控制窗口标题栏与操作按钮的视觉与行为
+ *
+ * 返回值：React 组件的 JSX.Element
+ */
 export default function WindowManager() {
 	const { windows } = useAppSelector((s) => s.window)
 	const dispatch = useAppDispatch()
 
 	// 维护最新的 windows 引用，避免事件回调闭包中获取到过期值
-	const windowsRef = useRef<typeof windows>(windows)
-	useEffect(() => {
-		windowsRef.current = windows
-	}, [windows])
+	// 已移除吸附与定位线相关工具导入
+	// 已移除：保留 windows 直接使用，避免未使用引用与闭包混淆
+	// const windowsRef = useRef<typeof windows>(windows)
+	// useEffect(() => {
+	// 	windowsRef.current = windows
+	// }, [windows])
+	
 	// 标题栏拖拽引用
 	const draggingRef = useRef<{
 		id: string
@@ -38,6 +53,7 @@ export default function WindowManager() {
 		originWidth: number
 		originHeight: number
 	} | null>(null)
+	
 	// 缩放引用
 	const resizingRef = useRef<{
 		id: string
@@ -50,15 +66,19 @@ export default function WindowManager() {
 		originHeight: number
 	} | null>(null)
 
-	const [guides, setGuides] = useState<{ v: number[]; h: number[] }>({ v: [], h: [] })
+	// rAF 合帧调度引用，提升拖拽流畅度
+	const frameIdRef = useRef<number | null>(null)
+	const pendingPositionRef = useRef<{ id: string; left: number; top: number } | null>(null)
 
 	useEffect(() => {
 		/**
 		 * 处理全局鼠标移动：优先处理缩放，其次处理拖拽。
-		 * 增强：加入边缘吸附、网格吸附、中心线吸附，以及“窗口间吸附”；并渲染引导线。
+		 * 重构：移除吸附/引导线逻辑，使用 requestAnimationFrame 合帧调度位置更新，提升拖拽流畅度与实时性。
 		 */
 		const onMove = (e: MouseEvent) => {
-			// 缩放逻辑
+			e.preventDefault()
+
+			// 缩放逻辑（保持原有实现，去除引导线相关调用）
 			if (resizingRef.current) {
 				const r = resizingRef.current
 				const dx = e.clientX - r.startX
@@ -90,134 +110,20 @@ export default function WindowManager() {
 				const vw = window.innerWidth
 				const vh = window.innerHeight
 
-				// 吸附规则：对正在调整的边做边缘与网格吸附 + 窗口间吸附
-				const gV: number[] = []
-				const gH: number[] = []
-
-				// 预计算：其他窗口的对齐目标线（跳过最小化与自身）
-				const others = windowsRef.current.filter((w) => w.id !== r.id && !w.isMinimized)
-				const xTargets: number[] = []
-				const yTargets: number[] = []
-				for (const ow of others) {
-					xTargets.push(ow.left, ow.left + ow.width, ow.left + Math.round(ow.width / 2))
-					yTargets.push(ow.top, ow.top + ow.height, ow.top + Math.round(ow.height / 2))
-				}
-
-				// 右边缘
-				if (r.edge.includes('e')) {
-					const right = newLeft + newWidth
-					// 屏幕边缘与网格
-					const { value: snappedRight, guide: edgeGuide } = snapTo(right, [vw], SNAP_THRESHOLD)
-					const gridRight = snapToGrid(right, GRID_SIZE, SNAP_THRESHOLD)
-					// 窗口间吸附
-					const winSnap = xTargets.length ? snapTo(right, xTargets, SNAP_THRESHOLD) : { value: right, guide: null }
-					// 在候选项中选择位移最小者
-					const candidates: Array<{ final: number; guide: number | null; delta: number }> = []
-					if (snappedRight !== right)
-						candidates.push({ final: snappedRight, guide: edgeGuide, delta: Math.abs(snappedRight - right) })
-					if (gridRight !== right)
-						candidates.push({ final: gridRight, guide: gridRight, delta: Math.abs(gridRight - right) })
-					if (winSnap.value !== right)
-						candidates.push({ final: winSnap.value, guide: winSnap.guide, delta: Math.abs(winSnap.value - right) })
-					if (candidates.length) {
-						candidates.sort((a, b) => a.delta - b.delta)
-						const best = candidates[0]!
-						const finalRight = best.final
-						newWidth = Math.max(MIN_W, finalRight - newLeft)
-						if (best.guide != null) gV.push(best.guide)
-					}
-				}
-				// 左边缘
-				if (r.edge.includes('w')) {
-					const left = newLeft
-					// 屏幕边缘与网格
-					const { value: snappedLeft, guide: edgeGuide } = snapTo(left, [0], SNAP_THRESHOLD)
-					const gridLeft = snapToGrid(left, GRID_SIZE, SNAP_THRESHOLD)
-					// 窗口间吸附
-					const winSnap = xTargets.length ? snapTo(left, xTargets, SNAP_THRESHOLD) : { value: left, guide: null }
-					// 候选项选择
-					const candidates: Array<{ final: number; guide: number | null; delta: number }> = []
-					if (snappedLeft !== left)
-						candidates.push({ final: snappedLeft, guide: edgeGuide, delta: Math.abs(snappedLeft - left) })
-					if (gridLeft !== left) candidates.push({ final: gridLeft, guide: gridLeft, delta: Math.abs(gridLeft - left) })
-					if (winSnap.value !== left)
-						candidates.push({ final: winSnap.value, guide: winSnap.guide, delta: Math.abs(winSnap.value - left) })
-					if (candidates.length) {
-						candidates.sort((a, b) => a.delta - b.delta)
-						const best = candidates[0]!
-						const finalLeft = best.final
-						const delta = newLeft - finalLeft
-						newLeft = finalLeft
-						newWidth = Math.max(MIN_W, newWidth + delta)
-						if (best.guide != null) gV.push(best.guide)
-					}
-				}
-				// 下边缘
-				if (r.edge.includes('s')) {
-					const bottom = newTop + newHeight
-					// 屏幕边缘与网格
-					const { value: snappedBottom, guide: edgeGuide } = snapTo(bottom, [vh], SNAP_THRESHOLD)
-					const gridBottom = snapToGrid(bottom, GRID_SIZE, SNAP_THRESHOLD)
-					// 窗口间吸附
-					const winSnap = yTargets.length ? snapTo(bottom, yTargets, SNAP_THRESHOLD) : { value: bottom, guide: null }
-					// 候选项选择
-					const candidates: Array<{ final: number; guide: number | null; delta: number }> = []
-					if (snappedBottom !== bottom)
-						candidates.push({ final: snappedBottom, guide: edgeGuide, delta: Math.abs(snappedBottom - bottom) })
-					if (gridBottom !== bottom)
-						candidates.push({ final: gridBottom, guide: gridBottom, delta: Math.abs(gridBottom - bottom) })
-					if (winSnap.value !== bottom)
-						candidates.push({ final: winSnap.value, guide: winSnap.guide, delta: Math.abs(winSnap.value - bottom) })
-					if (candidates.length) {
-						candidates.sort((a, b) => a.delta - b.delta)
-						const best = candidates[0]!
-						const finalBottom = best.final
-						newHeight = Math.max(MIN_H, finalBottom - newTop)
-						if (best.guide != null) gH.push(best.guide)
-					}
-				}
-				// 上边缘
-				if (r.edge.includes('n')) {
-					const top = newTop
-					// 屏幕边缘与网格
-					const { value: snappedTop, guide: edgeGuide } = snapTo(top, [0], SNAP_THRESHOLD)
-					const gridTop = snapToGrid(top, GRID_SIZE, SNAP_THRESHOLD)
-					// 窗口间吸附
-					const winSnap = yTargets.length ? snapTo(top, yTargets, SNAP_THRESHOLD) : { value: top, guide: null }
-					// 候选项选择
-					const candidates: Array<{ final: number; guide: number | null; delta: number }> = []
-					if (snappedTop !== top)
-						candidates.push({ final: snappedTop, guide: edgeGuide, delta: Math.abs(snappedTop - top) })
-					if (gridTop !== top) candidates.push({ final: gridTop, guide: gridTop, delta: Math.abs(gridTop - top) })
-					if (winSnap.value !== top)
-						candidates.push({ final: winSnap.value, guide: winSnap.guide, delta: Math.abs(winSnap.value - top) })
-					if (candidates.length) {
-						candidates.sort((a, b) => a.delta - b.delta)
-						const best = candidates[0]!
-						const finalTop = best.final
-						const delta = newTop - finalTop
-						newTop = finalTop
-						newHeight = Math.max(MIN_H, newHeight + delta)
-						if (best.guide != null) gH.push(best.guide)
-					}
-				}
-
 				// 视口边界裁剪
 				const MARGIN = 0
 				newLeft = Math.max(MARGIN, Math.min(newLeft, vw - newWidth - MARGIN))
 				newTop = Math.max(MARGIN, Math.min(newTop, vh - newHeight - MARGIN))
-
-				// 渲染引导线（若无命中则清空）
-				setGuides({ v: gV, h: gH })
 
 				dispatch(moveWindow({ id: r.id, left: Math.round(newLeft), top: Math.round(newTop) }))
 				dispatch(resizeWindow({ id: r.id, width: Math.round(newWidth), height: Math.round(newHeight) }))
 				return
 			}
 
-			// 拖拽逻辑
+			// 拖拽逻辑（高性能：使用 rAF 合帧更新位置）
 			const d = draggingRef.current
 			if (!d) return
+
 			const dx = e.clientX - d.startX
 			const dy = e.clientY - d.startY
 
@@ -227,99 +133,30 @@ export default function WindowManager() {
 			let left = d.originLeft + dx
 			let top = d.originTop + dy
 
-			// 先限制在可视区（允许部分越界可放宽）
-			left = Math.min(Math.max(left, 0), vw - 100)
-			top = Math.min(Math.max(top, 0), vh - 48)
+			// 拖拽垂直边界：修正为根据窗口高度限制，保证不越界
+			left = Math.min(Math.max(left, 0), vw - d.originWidth)
+			top = Math.min(Math.max(top, 0), vh - d.originHeight)
 
-			// 吸附到边缘 + 网格 + 屏幕中心
-			const gV: number[] = []
-			const gH: number[] = []
-
-			// 屏幕中心线吸附（基于窗口中心）
-			// 计算当前中心点
-			const centerX = left + d.originWidth / 2
-			const centerY = top + d.originHeight / 2
-			// 吸附到屏幕中心（垂直/水平）
-			const { value: snapCX, guide: guideCX } = snapTo(centerX, [vw / 2], SNAP_THRESHOLD)
-			if (snapCX !== centerX) {
-				left = Math.round(snapCX - d.originWidth / 2)
-				if (guideCX != null) gV.push(guideCX)
+			// 使用 requestAnimationFrame 合帧调度，减少多次 dispatch 造成的抖动
+			pendingPositionRef.current = { id: d.id, left, top }
+			if (frameIdRef.current == null) {
+				frameIdRef.current = requestAnimationFrame(() => {
+					const p = pendingPositionRef.current
+					if (p) {
+						dispatch(moveWindow({ id: p.id, left: p.left, top: p.top }))
+						pendingPositionRef.current = null
+					}
+					frameIdRef.current = null
+				})
 			}
-			const { value: snapCY, guide: guideCY } = snapTo(centerY, [vh / 2], SNAP_THRESHOLD)
-			if (snapCY !== centerY) {
-				top = Math.round(snapCY - d.originHeight / 2)
-				if (guideCY != null) gH.push(guideCY)
-			}
-
-			// 边缘吸附（左/右）
-			const { value: leftSnap, guide: lGuide } = snapTo(left, [0], SNAP_THRESHOLD)
-			if (leftSnap !== left) {
-				left = leftSnap
-				if (lGuide != null) gV.push(lGuide)
-			}
-			// 右边缘需要窗口宽度；这里以保守 100 宽度来画参考线，真正视觉参考线对用户即为视口边
-			const rightEdge = vw - 100
-			const { value: rightSnap, guide: rGuide } = snapTo(left, [rightEdge], SNAP_THRESHOLD)
-			if (rightSnap !== left) {
-				left = rightSnap
-				if (rGuide != null) gV.push(vw)
-			}
-
-			// 网格吸附（left/top）
-			const gridLeft = snapToGrid(left, GRID_SIZE, SNAP_THRESHOLD)
-			if (gridLeft !== left) left = gridLeft
-			const gridTop = snapToGrid(top, GRID_SIZE, SNAP_THRESHOLD)
-			if (gridTop !== top) top = gridTop
-
-			// 边缘吸附（上/下）
-			const { value: topSnap, guide: tGuide } = snapTo(top, [0], SNAP_THRESHOLD)
-			if (topSnap !== top) {
-				top = topSnap
-				if (tGuide != null) gH.push(tGuide)
-			}
-			const bottomEdge = vh - 48
-			const { value: bottomSnap, guide: bGuide } = snapTo(top, [bottomEdge], SNAP_THRESHOLD)
-			if (bottomSnap !== top) {
-				top = bottomSnap
-				if (bGuide != null) gH.push(vh)
-			}
-
-			// 窗口间吸附（对齐其他窗口的左/右/中心线）
-			const others = windowsRef.current.filter((w) => w.id !== d.id && !w.isMinimized)
-			if (others.length) {
-				const xTargets: number[] = []
-				const yTargets: number[] = []
-				for (const ow of others) {
-					xTargets.push(ow.left, ow.left + ow.width, ow.left + Math.round(ow.width / 2))
-					yTargets.push(ow.top, ow.top + ow.height, ow.top + Math.round(ow.height / 2))
-				}
-				// 计算 X 轴最佳吸附（基于 left/right/centerX 三种方式选最近）
-				const snapX = computeBestSnapX(left, d.originWidth, xTargets, SNAP_THRESHOLD)
-				if (snapX && snapX.hit) {
-					left = snapX.left
-					if (snapX.guide != null) gV.push(snapX.guide)
-				}
-				// 计算 Y 轴最佳吸附（基于 top/bottom/centerY）
-				const snapY = computeBestSnapY(top, d.originHeight, yTargets, SNAP_THRESHOLD)
-				if (snapY && snapY.hit) {
-					top = snapY.top
-					if (snapY.guide != null) gH.push(snapY.guide)
-				}
-			}
-
-			// 渲染引导线（若无命中则清空）
-			setGuides({ v: gV, h: gH })
-
-			dispatch(moveWindow({ id: d.id, left, top }))
 		}
 
 		/**
-		 * 处理鼠标松开：结束任何进行中的拖拽或缩放，并清空引导线。
+		 * 处理鼠标松开：结束任何进行中的拖拽或缩放。
 		 */
 		const onUp = () => {
 			draggingRef.current = null
 			resizingRef.current = null
-			setGuides({ v: [], h: [] })
 		}
 
 		window.addEventListener('mousemove', onMove)
@@ -327,6 +164,12 @@ export default function WindowManager() {
 		return () => {
 			window.removeEventListener('mousemove', onMove)
 			window.removeEventListener('mouseup', onUp)
+			// 释放可能残留的 rAF 与位置引用，避免内存泄漏
+			if (frameIdRef.current != null) {
+				cancelAnimationFrame(frameIdRef.current)
+				frameIdRef.current = null
+			}
+			pendingPositionRef.current = null
 		}
 	}, [dispatch])
 
@@ -336,7 +179,45 @@ export default function WindowManager() {
 	)
 
 	/**
+	 * 渲染窗口内容（View）
+	 *
+	 * @param w 当前窗口对象（包含 appId、url、title 等关键信息）
+	 * @returns JSX.Element - 根据 URL（iframe）或 appId（React 组件）进行内容渲染
+	 */
+	function renderWindowContent(w: typeof windows[0]) {
+		if (w.url) {
+			return (
+				<iframe
+					src={w.url}
+					title={w.title}
+					style={{ width: '100%', height: '100%', border: 'none', background: 'white' }}
+				/>
+			)
+		}
+
+		// 根据appId渲染对应的React组件
+		switch (w.appId) {
+			case 'settings':
+				return (
+					<div style={{ width: '100%', height: '100%', background: 'white', overflow: 'auto' }}>
+						<Settings />
+					</div>
+				)
+			default:
+				return (
+					<div style={{ padding: 16, background: 'white' }}>
+						应用内容待接入：{w.appId}
+					</div>
+				)
+		}
+	}
+
+	/**
 	 * 渲染 8 向缩放手柄
+	 *
+	 * @param winId 窗口唯一 ID
+	 * @param isMaximized 当前窗口是否最大化（最大化时不显示缩放手柄）
+	 * @returns 缩放手柄的 JSX.Element 列表或 null
 	 */
 	function renderResizeHandles(winId: string, isMaximized: boolean) {
 		if (isMaximized) return null
@@ -401,64 +282,47 @@ export default function WindowManager() {
 	}
 
 	return (
-		<div className="window-root fixed inset-0 pointer-events-none z-[1100]" style={layerStyle}>
-			{/* 引导线渲染：竖线与横线 */}
-			{guides.v.map((x) => (
-				<div
-					key={`gv-${x}`}
-					style={{
-						position: 'fixed',
-						top: 0,
-						left: x,
-						width: 1,
-						height: '100%',
-						background: 'rgba(59,130,246,0.8)',
-						pointerEvents: 'none',
-						zIndex: 1150,
-					}}
-				/>
-			))}
-			{guides.h.map((y) => (
-				<div
-					key={`gh-${y}`}
-					style={{
-						position: 'fixed',
-						left: 0,
-						top: y,
-						height: 1,
-						width: '100%',
-						background: 'rgba(59,130,246,0.8)',
-						pointerEvents: 'none',
-						zIndex: 1150,
-					}}
-				/>
-			))}
+		<div style={layerStyle}>
+			{/* 坐标定位线功能已移除 */}
 
+			{/* 窗口层 */}
 			{windows.map((w) => {
+				if (w.isMinimized) return null
+
 				const style: CSSProperties = {
 					left: w.left,
 					top: w.top,
 					width: w.width,
 					height: w.height,
 					zIndex: w.zIndex,
-					pointerEvents: 'auto',
 				}
-				const className = `window${w.isActive ? ' active' : ''}${w.isMinimized ? ' minimized' : ''}${w.isMaximized ? ' maximized' : ''}`
+
+				if (w.isMaximized) {
+					style.left = 0
+					style.top = 0
+					style.width = '100vw'
+					style.height = '100vh'
+				}
+
+				const className = w.isActive ? 'window window-focused' : 'window'
 				/**
-				 * Tailwind 渐进式迁移说明：
+				 * 窗口样式说明：
 				 * - 保留原有 .window 类的视觉定义，新增原子类仅表达布局/圆角/可读性
 				 * - 与 public/styles.css 的同值设置保持一致以避免视觉偏差
 				 */
 				const windowClass = clsx(className, 'absolute pointer-events-auto rounded-xl overflow-hidden text-white')
 				return (
 					<div key={w.id} className={windowClass} style={style} onMouseDown={() => dispatch(focusWindow(w.id))}>
+						{/* Ubuntu风格扁平化标题栏 */}
 						<div
-							className="window-titlebar flex items-center gap-2 h-9 px-3 cursor-default outline-none border-b border-white/15 select-none"
+							className="window-titlebar flex items-center bg-gray-800 border-b border-gray-600/30 select-none"
+							style={{ height: '60px' }}
 							onMouseDown={(e) => {
 								// 仅左键拖拽
 								if (e.button !== 0) return
 								// 最大化时不允许拖动（与真实系统一致，双击已提供切换）
 								if (w.isMaximized) return
+								e.preventDefault()
 								draggingRef.current = {
 									id: w.id,
 									startX: e.clientX,
@@ -472,49 +336,81 @@ export default function WindowManager() {
 							onDoubleClick={() => dispatch(toggleMaximize(w.id))}
 							tabIndex={0}
 						>
-							<div className="window-controls flex gap-2 mr-2">
+							{/* 左侧：应用图标和名称 */}
+							<div className="flex items-center gap-2 px-3 min-w-0">
+								{w.icon && (
+									<img 
+										src={w.icon} 
+										alt="" 
+										className="w-4 h-4 flex-shrink-0" 
+									/>
+								)}
+								<span className="text-sm font-medium text-gray-200 truncate">
+									{w.title}
+								</span>
+							</div>
+
+							{/* 中间：自定义内容区域（预留给应用内容，如搜索、排序等） */}
+							<div className="flex-1 flex items-center justify-center px-2">
+								{/* 这里可以由应用自定义内容，如搜索框、排序按钮等 */}
+								<div className="text-xs text-gray-400 opacity-50">
+									{/* 应用可在此区域添加自定义控件 */}
+								</div>
+							</div>
+
+							{/* 右侧：窗口控制按钮（设计更新：按钮背景白色10%，图标黑色，尺寸200%） */}
+							<div className="flex items-center gap-1 px-2">
+								{/* 最小化 */}
 								<button
-									aria-label="minimize"
+									className="w-8 h-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
 									onClick={(e) => {
 										e.stopPropagation()
 										dispatch(toggleMinimize(w.id))
 									}}
+									title="最小化"
 								>
-									12
+									<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
+									</svg>
 								</button>
+								{/* 最大化/还原 */}
 								<button
-									aria-label="maximize"
+									className="w-8 h-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
 									onClick={(e) => {
 										e.stopPropagation()
 										dispatch(toggleMaximize(w.id))
 									}}
+									title={w.isMaximized ? '还原' : '最大化'}
 								>
-									10
+									{w.isMaximized ? (
+										<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M15 15v4.5M15 15h4.5M15 15l5.25 5.25" />
+										</svg>
+									) : (
+										<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+										</svg>
+									)}
 								</button>
+								{/* 关闭 */}
 								<button
-									aria-label="close"
+									className="w-8 h-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
 									onClick={(e) => {
 										e.stopPropagation()
 										dispatch(closeWindow(w.id))
 									}}
+									title="关闭"
 								>
-									0F
+									<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+									</svg>
 								</button>
 							</div>
-							<div className="window-title">{w.title}</div>
 						</div>
 						{/* 缩放手柄 */}
 						{renderResizeHandles(w.id, w.isMaximized)}
 						<div className="window-content w-full" style={{ pointerEvents: 'auto' }}>
-							{w.url ? (
-								<iframe
-									src={w.url}
-									title={w.title}
-									style={{ width: '100%', height: '100%', border: 'none', background: 'white' }}
-								/>
-							) : (
-								<div style={{ padding: 16 }}>应用内容待接入</div>
-							)}
+							{renderWindowContent(w)}
 						</div>
 					</div>
 				)

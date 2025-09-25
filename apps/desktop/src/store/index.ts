@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
 import desktopReducer from '@store/slices/desktop.slice'
 import windowReducer from '@store/slices/window.slice'
+import settingsReducer from '@store/slices/settings.slice'
 
 export const store = configureStore({
 	reducer: {
 		desktop: desktopReducer,
 		window: windowReducer,
+		settings: settingsReducer,
 	},
 })
 
