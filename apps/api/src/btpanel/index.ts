@@ -5,6 +5,7 @@ import { authMiddleware } from '../middlewares/authMiddleware.js'
 import { formatError, formatSuccess, withResponse, HttpError } from '../middlewares/commonMiddleware.js'
 import { getPanelBinding } from '../services/authService.js'
 import { proxyRequest } from '../services/proxyService.js'
+import type { RouteDocMeta } from '../docs/openapi.js'
 
 /**
  * btpanel 路由 - 固定面板类型为宝塔（bt）的转发代理
@@ -17,7 +18,7 @@ export const btpanelRoutes = new Router({ prefix: '/btpanel' })
 /**
  * 请求参数校验模式
  */
-const btProxySchema = z.object({
+export const btProxySchema = z.object({
   url: z.string().min(1),
   params: z.record(z.string(), z.any()).optional(),
   ignoreSslErrors: z.boolean().optional(),
@@ -73,3 +74,20 @@ const btProxyHandler: Middleware = withResponse(async (ctx) => {
 // 注册路由（需要认证）
 btpanelRoutes.get('/request', authMiddleware, btProxyHandler)
 btpanelRoutes.post('/request', authMiddleware, btProxyHandler)
+
+/**
+ * btpanelRouteDocs - BtPanel 路由文档元数据导出
+ *
+ * 提供 /btpanel 下的接口文档描述，用于文档生成自动聚合。
+ * - 覆盖 POST /btpanel/request 的请求体模式
+ * - GET /btpanel/request 的查询参数暂不在聚合器中自动注入（保留显式 parameters）
+ */
+/** GET /btpanel/request 查询参数验证模式 */
+export const btProxyQuerySchema = z.object({
+  url: z.string().min(1),
+  ignoreSslErrors: z.boolean().optional(),
+})
+export const btpanelRouteDocs: RouteDocMeta[] = [
+  { tag: 'BtPanel', method: 'post', path: '/btpanel/request', requestSchema: btProxySchema },
+  { tag: 'BtPanel', method: 'get', path: '/btpanel/request', querySchema: btProxyQuerySchema },
+]

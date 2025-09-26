@@ -76,9 +76,9 @@ declare module '$env/static/private' {
 	export const __CFBundleIdentifier: string;
 	export const __CF_USER_TEXT_ENCODING: string;
 	export const ELECTRON_RUN_AS_NODE: string;
-	export const POSTHOG_API_KEY: string;
 	export const CLOUDIDE_PROVIDER_REGION: string;
 	export const CLOUDIDE_APISERVER_BASE_URL: string;
+	export const POSTHOG_API_KEY: string;
 	export const VITEST_VSCODE_LOG: string;
 	export const VITEST_VSCODE: string;
 	export const TEST: string;
@@ -168,9 +168,9 @@ declare module '$env/dynamic/private' {
 		__CFBundleIdentifier: string;
 		__CF_USER_TEXT_ENCODING: string;
 		ELECTRON_RUN_AS_NODE: string;
-		POSTHOG_API_KEY: string;
 		CLOUDIDE_PROVIDER_REGION: string;
 		CLOUDIDE_APISERVER_BASE_URL: string;
+		POSTHOG_API_KEY: string;
 		VITEST_VSCODE_LOG: string;
 		VITEST_VSCODE: string;
 		TEST: string;

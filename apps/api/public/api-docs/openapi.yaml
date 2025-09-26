@@ -1,0 +1,807 @@
+openapi: 3.0.3
+info:
+  title: LingLongOS API
+  description: 基于 Koa 的接口服务，支持 Google Auth 认证与多面板代理。该文档由代码生成，确保与路由实现一致。
+  version: 1.0.0
+  contact:
+    name: LingLongOS Team
+servers:
+  - url: /api/v1
+    description: API v1 前缀
+tags:
+  - name: Auth
+    description: 认证相关接口
+  - name: Proxy
+    description: 通用代理接口（支持宝塔与 1Panel）
+  - name: BtPanel
+    description: 宝塔面板专用快捷代理接口
+paths:
+  /auth/google-auth-bind:
+    get:
+      tags:
+        - Auth
+      summary: 获取 Google 身份验证器绑定信息
+      description: 返回 otpauth 二维码 URL 与密钥。
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      qrCodeUrl:
+                        type: string
+                      secret:
+                        type: string
+                required:
+                  - code
+                  - status
+                  - message
+  /auth/google-auth-verify:
+    post:
+      tags:
+        - Auth
+      summary: 验证 Google 身份验证器令牌
+      responses:
+        "200":
+          description: 认证成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: "null"
+                required:
+                  - code
+                  - status
+                  - message
+        "400":
+          description: 需要令牌
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+        "401":
+          description: 令牌无效或会话已过期
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  minLength: 6
+                  maxLength: 6
+              required:
+                - token
+              additionalProperties: false
+  /auth/google-auth-config:
+    get:
+      tags:
+        - Auth
+      summary: 检查 Google Auth 配置状态
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      isConfigured:
+                        type: boolean
+                      configuredAt:
+                        type: number
+                        nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+        "500":
+          description: 读取配置失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+  /auth/google-auth-config/complete:
+    post:
+      tags:
+        - Auth
+      summary: 标记 Google Auth 配置完成
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: "null"
+                required:
+                  - code
+                  - status
+                  - message
+        "500":
+          description: 内部错误
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+              required:
+                - userId
+              additionalProperties: false
+  /auth/google-auth-config/reset:
+    post:
+      tags:
+        - Auth
+      summary: 重置 Google Auth 配置
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: "null"
+                required:
+                  - code
+                  - status
+                  - message
+        "500":
+          description: 内部错误
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+  /proxy/bind-panel-key:
+    post:
+      tags:
+        - Proxy
+      summary: 绑定面板密钥
+      responses:
+        "200":
+          description: 绑定成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: "null"
+                required:
+                  - code
+                  - status
+                  - message
+        "400":
+          description: 参数无效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+      security:
+        - CookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - bt
+                    - 1panel
+                url:
+                  type: string
+                  format: uri
+                key:
+                  type: string
+                  minLength: 32
+                  maxLength: 64
+              required:
+                - type
+                - url
+                - key
+              additionalProperties: false
+  /proxy/request:
+    get:
+      tags:
+        - Proxy
+      summary: 代理 GET 请求
+      parameters:
+        - in: query
+          name: url
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: panelType
+          schema:
+            type: string
+            enum:
+              - bt
+              - 1panel
+          required: true
+        - in: query
+          name: ignoreSslErrors
+          schema:
+            type: boolean
+          required: false
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                required:
+                  - code
+                  - status
+                  - message
+        "400":
+          description: 参数无效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+        "401":
+          description: 需要认证
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+      security:
+        - CookieAuth: []
+    post:
+      tags:
+        - Proxy
+      summary: 代理 POST 请求
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                required:
+                  - code
+                  - status
+                  - message
+        "400":
+          description: 参数无效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+        "401":
+          description: 需要认证
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+      security:
+        - CookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  minLength: 1
+                panelType:
+                  type: string
+                  enum:
+                    - bt
+                    - 1panel
+                params:
+                  type: object
+                  additionalProperties: {}
+                ignoreSslErrors:
+                  type: boolean
+              required:
+                - url
+                - panelType
+              additionalProperties: false
+  /btpanel/request:
+    get:
+      tags:
+        - BtPanel
+      summary: 宝塔快捷代理（GET）
+      parameters:
+        - in: query
+          name: url
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: ignoreSslErrors
+          schema:
+            type: boolean
+          required: false
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                required:
+                  - code
+                  - status
+                  - message
+        "400":
+          description: 参数无效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+        "401":
+          description: 需要认证
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+      security:
+        - CookieAuth: []
+    post:
+      tags:
+        - BtPanel
+      summary: 宝塔快捷代理（POST）
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                required:
+                  - code
+                  - status
+                  - message
+        "400":
+          description: 参数无效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+        "401":
+          description: 需要认证
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 错误信息
+                  data:
+                    type: object
+                    nullable: true
+                required:
+                  - code
+                  - status
+                  - message
+      security:
+        - CookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  minLength: 1
+                params:
+                  type: object
+                  additionalProperties: {}
+                ignoreSslErrors:
+                  type: boolean
+              required:
+                - url
+              additionalProperties: false
+components:
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: ll_session
+      description: 会话 Cookie 鉴权
+  schemas:
+    ApiResponseSuccess:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success
+        data:
+          type: object
+      required:
+        - code
+        - status
+        - message
+    ApiResponseError:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 400
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: 错误信息
+        data:
+          type: object
+          nullable: true
+      required:
+        - code
+        - status
+        - message

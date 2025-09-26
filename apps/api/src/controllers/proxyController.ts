@@ -6,11 +6,12 @@ import { formatError, formatSuccess } from '../middlewares/commonMiddleware.js'
 import { getPanelBinding, setPanelBinding } from '../services/authService.js'
 import { proxyRequest } from '../services/proxyService.js'
 import { withResponse, HttpError } from '../middlewares/commonMiddleware.js'
+import type { RouteDocMeta } from '../docs/openapi.js'
 
 export const proxyRoutes = new Router({ prefix: '/proxy' })
 
 /** 面板密钥绑定请求参数验证模式 */
-const bindPanelKeySchema = z.object({
+export const bindPanelKeySchema = z.object({
 	type: z.enum(['bt', '1panel']),
 	url: z.string().url(),
 	key: z.string().min(32).max(64),
@@ -60,10 +61,16 @@ const bindPanelKey: Middleware = async (ctx) => {
 }
 
 /** 代理请求参数验证模式 */
-const proxyRequestSchema = z.object({
+export const proxyRequestSchema = z.object({
 	url: z.string().min(1),
 	panelType: z.enum(['bt', '1panel']),
 	params: z.record(z.string(), z.any()).optional(),
+	ignoreSslErrors: z.boolean().optional(),
+})
+/** GET /proxy/request 查询参数验证模式 */
+export const proxyRequestQuerySchema = z.object({
+	url: z.string().min(1),
+	panelType: z.enum(['bt', '1panel']),
 	ignoreSslErrors: z.boolean().optional(),
 })
 
@@ -154,3 +161,16 @@ const doProxy: Middleware = withResponse(async (ctx) => {
 proxyRoutes.post('/bind-panel-key', authMiddleware, bindPanelKey)
 proxyRoutes.get('/request', authMiddleware, doProxy)
 proxyRoutes.post('/request', authMiddleware, doProxy)
+
+/**
+ * proxyRouteDocs - Proxy 路由文档元数据导出
+ *
+ * 提供 /proxy 下的接口文档描述，用于文档生成自动聚合。
+ * - 覆盖 POST /proxy/bind-panel-key 与 POST /proxy/request 的请求体模式
+ * - GET /proxy/request 的查询参数暂不在聚合器中自动注入（保留显式 parameters）
+ */
+export const proxyRouteDocs: RouteDocMeta[] = [
+  { tag: 'Proxy', method: 'post', path: '/proxy/bind-panel-key', requestSchema: bindPanelKeySchema },
+  { tag: 'Proxy', method: 'post', path: '/proxy/request', requestSchema: proxyRequestSchema },
+  { tag: 'Proxy', method: 'get', path: '/proxy/request', querySchema: proxyRequestQuerySchema },
+]

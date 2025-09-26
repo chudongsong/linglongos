@@ -13,6 +13,8 @@ import Router from '@koa/router'
 import { authRoutes } from '../controllers/authController.js'
 import { proxyRoutes } from '../controllers/proxyController.js'
 import { btpanelRoutes } from '../btpanel/index.js'
+import YAML from 'yaml'
+import { getOpenApiSpec } from '../docs/openapi.js'
 
 /** 主路由实例，包含 API 版本前缀 */
 export const router = new Router({ prefix: '/api/v1' })
@@ -25,3 +27,26 @@ router.use(proxyRoutes.routes(), proxyRoutes.allowedMethods())
 
 // 注册 btpanel 路由
 router.use(btpanelRoutes.routes(), btpanelRoutes.allowedMethods())
+
+/**
+ * GET /api/v1/docs/openapi.json - 提供 OpenAPI 3.0 JSON 文档
+ *
+ * 返回标准化的接口文档，供前端或第三方工具（如 Swagger UI、Postman）使用。
+ */
+router.get('/docs/openapi.json', async (ctx) => {
+  // 生成并返回 OpenAPI 规范对象
+  ctx.type = 'application/json'
+  ctx.body = getOpenApiSpec()
+})
+
+/**
+ * GET /api/v1/docs/openapi.yaml - 提供 OpenAPI 3.0 YAML 文档
+ *
+ * 便于开发团队以 YAML 格式下载与查看接口文档。
+ */
+router.get('/docs/openapi.yaml', async (ctx) => {
+  const spec = getOpenApiSpec()
+  const yaml = YAML.stringify(spec)
+  ctx.type = 'text/yaml'
+  ctx.body = yaml
+})

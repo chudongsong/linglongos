@@ -1,20 +1,4 @@
-/**
- * LingLongOS API 服务器
- *
- * 基于 Koa.js 的 API 代理服务，支持 Google 身份验证器 2FA 认证
- * 和多面板（宝塔、1Panel）的统一代理访问。
- *
- * 主要功能：
- * - Google Authenticator TOTP 双重认证
- * - 基于 Cookie 的会话管理
- * - 宝塔面板和 1Panel 的 API 代理
- * - 统一的错误处理和响应格式
- * - 静态文件服务（测试页面）
- *
- * @author LingLongOS Team
- * @version 1.0.0
- */
-
+import { koaSwagger } from 'koa2-swagger-ui'
 import Koa from 'koa'
 import type { Middleware } from 'koa'
 import Router from '@koa/router'
@@ -70,3 +54,13 @@ app.listen(PORT, () => {
 	console.log(`API server running at http://localhost:${PORT}`)
 	console.log(`Test page available at http://localhost:${PORT}/test-auth.html`)
 })
+
+// Swagger UI 文档页面（/docs）
+app.use(
+  koaSwagger({
+    routePrefix: '/docs',
+    swaggerOptions: {
+      url: '/api/v1/docs/openapi.json',
+    },
+  })
+)

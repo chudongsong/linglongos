@@ -9,8 +9,41 @@ import {
 	verifyTokenWithBindId,
 } from '../services/authService'
 import { markGoogleAuthConfigured, readGoogleAuthConfig, resetGoogleAuthConfig } from '../config/auth.config'
+import { z } from 'zod'
+import type { RouteDocMeta } from '../docs/openapi.js'
 
 export const authRoutes = new Router({ prefix: '/auth' })
+
+/**
+ * googleAuthVerifySchema - Google Auth 验证请求体 Zod 模式
+ *
+ * 字段：
+ * - token: 6 位字符串（TOTP 验证码）
+ */
+export const googleAuthVerifySchema = z.object({
+  token: z.string().min(6).max(6),
+})
+
+/**
+ * googleAuthCompleteSchema - Google Auth 配置完成请求体 Zod 模式
+ *
+ * 字段：
+ * - userId: 用户 ID 字符串
+ */
+export const googleAuthCompleteSchema = z.object({
+  userId: z.string(),
+})
+
+/**
+ * authRouteDocs - Auth 路由文档元数据导出
+ *
+ * 提供 /auth 下的接口文档描述，用于文档生成自动聚合。
+ * - 覆盖 POST /auth/google-auth-verify 与 POST /auth/google-auth-config/complete 的请求体模式
+ */
+export const authRouteDocs: RouteDocMeta[] = [
+  { tag: 'Auth', method: 'post', path: '/auth/google-auth-verify', requestSchema: googleAuthVerifySchema },
+  { tag: 'Auth', method: 'post', path: '/auth/google-auth-config/complete', requestSchema: googleAuthCompleteSchema },
+]
 
 /**
  * Google 身份验证器绑定处理器
