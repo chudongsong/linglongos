@@ -8,14 +8,14 @@
 
 #### 项目概述
 
-本项目是一个基于 **Node.js、Koa.js、TypeScript** 的通用 **API 代理库**。它采用可配置化的设计，能够统一管理不同面板（如宝塔、1Panel）的 API 请求。为确保安全性，所有 API 请求都需通过 **Google 身份验证器** 进行双重认证（2FA），并在会话失效时强制用户重新认证。
+本项目是一个基于 **Node.js、Egg.js、TypeScript** 的通用 **API 代理库**。它采用可配置化的设计，能够统一管理不同面板（如宝塔、1Panel）的 API 请求。为确保安全性，所有 API 请求都需通过 **Google 身份验证器** 进行双重认证（2FA），并在会话失效时强制用户重新认证。
 
 #### 项目技术栈
 
-  * **后端核心**: Node.js, Koa.js
+  * **后端核心**: Node.js, Egg.js
   * **语言**: TypeScript
   * **代码规范**: Prettier (格式化), ESLint (规范)
-  * **单元测试**: Jest
+  * **单元测试**: Vitest
   * **认证**: `google-auth-library`
   * **代理请求**: `axios`
   * **加密**: `md5`
@@ -120,49 +120,52 @@
 #### 1\. 项目结构
 
 ```
-/src
-├── config/
-│   └── proxy.config.ts    // 面板代理规则配置文件
-├── controllers/
-│   ├── authController.ts  // 认证控制器
-│   └── proxyController.ts // 代理控制器
-├── services/
-│   ├── authService.ts     // 认证服务，处理 2FA 逻辑
-│   └── proxyService.ts    // 核心代理服务，读取配置并执行代理
-├── middlewares/
-│   ├── authMiddleware.ts  // 核心：会话鉴权中间件
-│   ├── btMiddleware.ts    // 宝塔代理数据处理中间件
-│   └── commonMiddleware.ts // 通用数据处理中间件
-├── utils/
-│   └── crypto.ts
-├── routes/
-│   └── index.ts
-├── app.ts                 // 应用入口文件
+/app
+├── controller/
+│   ├── auth.ts            // 认证控制器
+│   └── proxy.ts           // 代理控制器
+├── service/
+│   ├── auth.ts            // 认证服务，处理 2FA 逻辑
+│   └── proxy.ts           // 核心代理服务，读取配置并执行代理
+├── middleware/
+│   ├── auth.ts            // 核心：会话鉴权中间件
+│   ├── bt.ts              // 宝塔代理数据处理中间件
+│   └── common.ts          // 通用数据处理中间件
+├── router.ts              // 路由配置
+└── extend/
+    └── helper.ts          // 工具函数扩展
+/config
+├── config.default.ts     // 默认配置
+├── config.prod.ts        // 生产环境配置
+└── plugin.ts             // 插件配置
+/typings
+└── app/
+    └── index.d.ts         // 类型定义
 ```
 
 #### 2\. 核心逻辑实现
 
-##### **会话鉴权中间件 (`authMiddleware.ts`)**
+##### **会话鉴权中间件 (`auth.ts`)**
 
 这是整个系统的核心安全层。所有受保护的路由都将通过这个中间件。
 
   * **功能**: 检查用户请求的会话状态。
   * **逻辑**:
-    1.  在 **Koa** 路由前，`authMiddleware` 会检查请求头或 Cookie 中的会话 ID。
+    1.  在 **Egg.js** 路由处理前，`auth` 中间件会检查请求头或 Cookie 中的会话 ID。
     2.  根据会话 ID 在服务器端查找对应的会话数据。
     3.  如果会话不存在，或者已过期，或者用户未完成 2FA 验证，中间件将中断请求。
     4.  服务器返回统一的 **401 Unauthorized** 状态码，并附带一个特定的错误码（例如 `AUTH_REQUIRED`）。
     5.  前端接收到此特定错误码后，**立即重定向** 到 `/auth` 或其他 Google Auth 验证页面，强制用户重新登录。
     6.  如果会话有效，请求将继续传递给下一个中间件或控制器。
 
-##### **代理中间件 (`btMiddleware.ts` / `commonMiddleware.ts`)**
+##### **代理中间件 (`bt.ts` / `common.ts`)**
 
   * **功能**: 在代理请求前后处理数据。
   * **逻辑**:
     1.  **宝塔代理**:
-          * `btMiddleware` 在请求发送到宝塔面板前，根据配置文件中的密钥，自动计算并注入 `request_time` 和 `request_token` 这两个参数。
+          * `bt` 中间件在请求发送到宝塔面板前，根据配置文件中的密钥，自动计算并注入 `request_time` 和 `request_token` 这两个参数。
           * 接收到宝塔面板的响应后，也可以在这里进行统一的格式化处理，确保返回给前端的数据结构一致。
     2.  **通用代理**:
-          * `commonMiddleware` 用于处理所有面板代理的通用逻辑，例如请求参数的验证、数据格式的统一转换等。
+          * `common` 中间件用于处理所有面板代理的通用逻辑，例如请求参数的验证、数据格式的统一转换等。
 
 这种设计确保了后端服务的健壮性和安全性。**会话管理与业务逻辑解耦**，所有业务控制器无需关心鉴权问题，大大简化了代码复杂度。

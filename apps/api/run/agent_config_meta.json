@@ -1,0 +1,379 @@
+{
+  "keys": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+  "middleware": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+  "security": {
+    "csrf": {
+      "enable": "/Users/chudong/Project/linglongos/apps/api/config/config.local.ts",
+      "type": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "ignoreJSON": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "useSession": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "cookieName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "sessionName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "headerName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "bodyName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "queryName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "rotateWhenInvalid": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "supportedRequests": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "refererWhiteList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "cookieOptions": {
+        "signed": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+      }
+    },
+    "domainWhiteList": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "protocolWhiteList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+    "defaultMiddleware": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+    "xframe": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "value": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "hsts": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.local.js",
+      "maxAge": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "includeSubdomains": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "dta": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "methodnoallow": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "noopen": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "nosniff": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "referrerPolicy": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "value": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "xssProtection": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "value": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "csp": {
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "policy": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    },
+    "ssrf": {
+      "ipBlackList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "ipExceptionList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "hostnameExceptionList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js",
+      "checkAddress": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+    }
+  },
+  "cors": {
+    "origin": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "allowMethods": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "credentials": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+  },
+  "bodyParser": {
+    "jsonLimit": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "formLimit": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "encoding": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "textLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "strict": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "queryString": {
+      "arrayLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "depth": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "parameterLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "onerror": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "static": {
+    "prefix": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "dir": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "dynamic": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-static@2.3.1/node_modules/egg-static/config/config.default.js",
+    "preload": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-static@2.3.1/node_modules/egg-static/config/config.default.js",
+    "buffer": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-static@2.3.1/node_modules/egg-static/config/config.default.js",
+    "maxFiles": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-static@2.3.1/node_modules/egg-static/config/config.default.js"
+  },
+  "logger": {
+    "level": "/Users/chudong/Project/linglongos/apps/api/config/config.local.ts",
+    "consoleLevel": "/Users/chudong/Project/linglongos/apps/api/config/config.local.ts",
+    "dir": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "appLogName": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "coreLogName": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "agentLogName": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "errorLogName": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "encoding": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "env": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "disableConsoleAfterReady": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "outputJSON": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "buffer": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "coreLogger": {
+      "consoleLevel": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.local.js"
+    },
+    "allowDebugAtProd": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "enablePerformanceTimer": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "enableFastContextLogger": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "cluster": {
+    "listen": {
+      "port": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "hostname": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    }
+  },
+  "agentApi": {
+    "session": {
+      "timeout": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "cookieName": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+    },
+    "binding": {
+      "cookieName": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "timeout": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+    },
+    "security": {
+      "maxLoginAttempts": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "lockoutDuration": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+    },
+    "api": {
+      "timeout": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "maxRequestSize": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+    },
+    "proxy": {
+      "timeout": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "maxRedirects": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "ignoreSslErrors": "/Users/chudong/Project/linglongos/apps/api/config/config.local.ts"
+    }
+  },
+  "session": {
+    "maxAge": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-session@3.3.0/node_modules/egg-session/config/config.default.js",
+    "key": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-session@3.3.0/node_modules/egg-session/config/config.default.js",
+    "httpOnly": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-session@3.3.0/node_modules/egg-session/config/config.default.js",
+    "encrypt": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-session@3.3.0/node_modules/egg-session/config/config.default.js",
+    "logValue": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-session@3.3.0/node_modules/egg-session/config/config.default.js"
+  },
+  "helper": {
+    "shtml": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-security@3.7.0/node_modules/egg-security/config/config.default.js"
+  },
+  "jsonp": {
+    "limit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-jsonp@2.0.0/node_modules/egg-jsonp/config/config.default.js",
+    "callback": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-jsonp@2.0.0/node_modules/egg-jsonp/config/config.default.js",
+    "csrf": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-jsonp@2.0.0/node_modules/egg-jsonp/config/config.default.js"
+  },
+  "onerror": {
+    "errorPageUrl": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-onerror@2.4.0/node_modules/egg-onerror/config/config.default.js",
+    "appErrorFilter": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-onerror@2.4.0/node_modules/egg-onerror/config/config.default.js",
+    "templatePath": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-onerror@2.4.0/node_modules/egg-onerror/config/config.default.js"
+  },
+  "i18n": {
+    "defaultLocale": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-i18n@2.1.1/node_modules/egg-i18n/config/config.default.js",
+    "dirs": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-i18n@2.1.1/node_modules/egg-i18n/config/config.default.js",
+    "queryField": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-i18n@2.1.1/node_modules/egg-i18n/config/config.default.js",
+    "cookieField": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-i18n@2.1.1/node_modules/egg-i18n/config/config.default.js",
+    "cookieDomain": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-i18n@2.1.1/node_modules/egg-i18n/config/config.default.js",
+    "cookieMaxAge": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-i18n@2.1.1/node_modules/egg-i18n/config/config.default.js"
+  },
+  "watcher": {
+    "type": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-watcher@3.1.1/node_modules/egg-watcher/config/config.local.js",
+    "eventSources": {
+      "default": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-watcher@3.1.1/node_modules/egg-watcher/config/config.default.js",
+      "development": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-watcher@3.1.1/node_modules/egg-watcher/config/config.default.js"
+    }
+  },
+  "customLogger": {
+    "scheduleLogger": {
+      "consoleLevel": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-schedule@4.0.1/node_modules/egg-schedule/config/config.default.js",
+      "file": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-schedule@4.0.1/node_modules/egg-schedule/config/config.default.js"
+    }
+  },
+  "schedule": {
+    "directory": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-schedule@4.0.1/node_modules/egg-schedule/config/config.default.js"
+  },
+  "multipart": {
+    "mode": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "autoFields": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "defaultCharset": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "defaultParamCharset": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "fieldNameSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "fieldSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "fields": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "fileSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "files": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "fileExtensions": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "whitelist": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "allowArrayField": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "tmpdir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+    "cleanSchedule": {
+      "cron": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js",
+      "disable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-multipart@3.5.0/node_modules/egg-multipart/config/config.default.js"
+    }
+  },
+  "development": {
+    "watchDirs": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-development@3.0.2/node_modules/egg-development/config/config.default.js",
+    "ignoreDirs": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-development@3.0.2/node_modules/egg-development/config/config.default.js",
+    "fastReady": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-development@3.0.2/node_modules/egg-development/config/config.default.js",
+    "reloadOnDebug": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-development@3.0.2/node_modules/egg-development/config/config.default.js",
+    "overrideDefault": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-development@3.0.2/node_modules/egg-development/config/config.default.js",
+    "overrideIgnore": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-development@3.0.2/node_modules/egg-development/config/config.default.js"
+  },
+  "logrotator": {
+    "filesRotateByHour": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-logrotator@3.2.0/node_modules/egg-logrotator/config/config.default.js",
+    "hourDelimiter": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-logrotator@3.2.0/node_modules/egg-logrotator/config/config.default.js",
+    "filesRotateBySize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-logrotator@3.2.0/node_modules/egg-logrotator/config/config.default.js",
+    "maxFileSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-logrotator@3.2.0/node_modules/egg-logrotator/config/config.default.js",
+    "maxFiles": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-logrotator@3.2.0/node_modules/egg-logrotator/config/config.default.js",
+    "rotateDuration": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-logrotator@3.2.0/node_modules/egg-logrotator/config/config.default.js",
+    "maxDays": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-logrotator@3.2.0/node_modules/egg-logrotator/config/config.default.js"
+  },
+  "view": {
+    "root": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-view@2.1.4/node_modules/egg-view/config/config.default.js",
+    "cache": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-view@2.1.4/node_modules/egg-view/config/config.local.js",
+    "defaultExtension": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-view@2.1.4/node_modules/egg-view/config/config.default.js",
+    "defaultViewEngine": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-view@2.1.4/node_modules/egg-view/config/config.default.js",
+    "mapping": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-view@2.1.4/node_modules/egg-view/config/config.default.js"
+  },
+  "validate": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-validate@2.0.2/node_modules/egg-validate/config/config.default.js",
+  "swaggerdoc": {
+    "dirScanner": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "basePath": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "apiInfo": {
+      "title": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+      "description": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+      "version": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js"
+    },
+    "schemes": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "consumes": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "produces": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "securityDefinitions": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "enableSecurity": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "routerMap": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js",
+    "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg-swagger-doc@2.3.2/node_modules/egg-swagger-doc/config/config.default.js"
+  },
+  "env": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "name": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "cookies": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "proxy": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "maxIpsCount": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "maxProxyCount": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "protocolHeaders": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "ipHeaders": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "hostHeaders": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "pkg": {
+    "name": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "version": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "private": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "description": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "egg": {
+      "typescript": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "declarations": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "scripts": {
+      "start": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "stop": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "dev": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "debug": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "test": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "test:watch": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "test:coverage": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "test:ui": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "cov": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "lint": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "ci": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "autod": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "clean": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "build": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "declarations": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "docs:export": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "dependencies": {
+      "axios": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-cors": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-scripts": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-security": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-swagger-doc": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-validate": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "md5": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "otplib": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "uuid": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "yaml": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "zod": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "zod-to-json-schema": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "devDependencies": {
+      "@types/md5": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "@types/uuid": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "@vitest/coverage-v8": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "@vitest/ui": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "autod": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "autod-egg": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-bin": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-ci": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-mock": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "egg-ts-helper": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "eslint": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "eslint-config-egg": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "typescript": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "vitest": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "engines": {
+      "node": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "repository": {
+      "type": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "url": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "author": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "license": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "baseDir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "HOME": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "rundir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "dump": {
+    "ignore": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "timing": {
+      "slowBootActionMinDuration": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    }
+  },
+  "confusedConfigurations": {
+    "bodyparser": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "notFound": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "sitefile": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "middlewares": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "httpClient": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "notfound": {
+    "pageUrl": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "siteFile": {
+    "/favicon.ico": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "cacheControl": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "httpclient": {
+    "enableDNSCache": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "dnsCacheLookupInterval": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "dnsCacheMaxLength": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "request": {
+      "timeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "httpAgent": {
+      "keepAlive": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "freeSocketTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "maxSockets": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "maxFreeSockets": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "httpsAgent": {
+      "keepAlive": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "freeSocketTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "maxSockets": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+      "maxFreeSockets": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+    },
+    "useHttpClientNext": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "meta": {
+    "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "logging": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "coreMiddleware": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "workerStartTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "serverTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+  "clusterClient": {
+    "maxWaitTime": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js",
+    "responseTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+  },
+  "onClientError": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@3.31.0/node_modules/egg/config/config.default.js"
+}
