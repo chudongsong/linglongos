@@ -1,585 +1,153 @@
 # 玲珑OS (LingLong OS)
 
-## 🎯 项目概述
-
-玲珑OS是一个现代化的Web操作系统，旨在解决多面板管理的痛点。它并非要取代宝塔等后端面板，而是为其提供一个统一、现代、高效的"外壳"。通过一个仿原生操作系统的Web界面，将用户分散在不同服务器、不同版本的管理面板聚合到同一个工作空间中。
-
-### 🌟 核心特色
-
-- **🎨 现代化UI设计** - 采用半透明、模糊效果等现代UI设计语言
-- **🖥️ 完整桌面体验** - 提供窗口管理、任务栏、文件管理等完整OS功能
-- **🔧 统一操作界面** - 解决多面板UI不一致的问题
-- **⚡ 高性能架构** - 基于Vue 3 + TypeScript的现代化技术栈
-- **🧩 模块化设计** - Monorepo架构，便于维护和扩展
-
-### 🎯 目标用户
-
-- **中小型企业运维工程师** - 在一个界面中高效管理多个客户或项目的服务器
-- **独立开发者/站长** - 简化多台服务器的日常维护工作，降低心智负担
-- **技术团队** - 获得一个统一、可扩展的运维操作平台
-
-## 🏗️ 项目架构
-
-### 📁 目录结构
-
-```
-linglongos/
-├── apps/                          # 应用层
-│   └── desktop/                   # 主桌面应用
-│       ├── src/
-│       │   ├── components/        # Vue组件
-│       │   ├── views/            # 页面视图
-│       │   ├── stores/           # Pinia状态管理
-│       │   └── utils/            # 工具函数
-│       ├── public/               # 静态资源
-│       └── package.json
-├── packages/                      # 包管理层
-│   ├── shared-types/             # 共享类型定义
-│   ├── ui/                       # UI组件库
-│   ├── services/                 # 核心服务
-│   └── utils/                    # 工具库
-├── demo/                         # 演示版本
-├── pnpm-workspace.yaml          # Monorepo配置
-├── turbo.json                   # Turborepo配置
-└── package.json                 # 根包配置
-```
-
-### 🎯 架构设计原则
-
-- **领域驱动设计 (DDD)** - 按业务领域划分模块，降低耦合度
-- **依赖注入 (DI)** - 通过统一容器管理依赖，便于测试和替换
-- **事件驱动架构 (EDA)** - 模块间通过事件总线进行低耦合通信
-- **适配器模式** - 核心逻辑与具体API实现解耦，保证扩展性
-
-## 📦 核心模块详解
-
-### 🖥️ 1. 桌面系统 (Desktop System)
-
-**位置**: `apps/desktop/src/components/Desktop/`
-
-**核心功能**:
-- 桌面环境渲染和管理
-- 图标网格系统和自由布局
-- 桌面壁纸和主题管理
-- 小组件系统
-
-**调用方式**:
-```typescript
-// 桌面配置管理
-import { useDesktopStore } from '@/stores/desktop'
-
-const desktopStore = useDesktopStore()
-
-// 添加桌面图标
-desktopStore.addIcon({
-  id: 'file-manager',
-  type: 'app',
-  position: { x: 0, y: 0 },
-  appId: 'file-manager'
-})
-
-// 添加小组件
-desktopStore.addWidget({
-  id: 'clock-widget',
-  type: 'clock',
-  position: { x: 5, y: 0 },
-  size: { width: 2, height: 1 }
-})
-```
-
-### 🪟 2. 窗口系统 (Window System)
-
-**位置**: `apps/desktop/src/components/Window/`
-
-**核心功能**:
-- 窗口创建、销毁和管理
-- 窗口拖拽、缩放、最大化/最小化
-- 窗口层级管理和焦点控制
-- 窗口布局管理（分屏等）
-
-**调用方式**:
-```typescript
-// 窗口管理
-import { useWindowStore } from '@/stores/window'
-
-const windowStore = useWindowStore()
-
-// 创建新窗口
-const windowId = windowStore.createWindow({
-  title: '文件管理器',
-  component: 'FileManager',
-  width: 800,
-  height: 600,
-  resizable: true,
-  maximizable: true
-})
-
-// 窗口操作
-windowStore.minimizeWindow(windowId)
-windowStore.maximizeWindow(windowId)
-windowStore.closeWindow(windowId)
-```
-
-### 📊 3. 系统栏 (System Bars)
-
-**位置**: `apps/desktop/src/components/SystemBar/`
-
-**核心功能**:
-- 顶部信息栏（时间、通知、用户菜单）
-- 底部任务栏（应用启动器、运行中应用）
-- 开始菜单和系统托盘
-
-**调用方式**:
-```typescript
-// 任务栏管理
-import { useTaskbarStore } from '@/stores/taskbar'
-
-const taskbarStore = useTaskbarStore()
-
-// 添加应用到任务栏
-taskbarStore.pinApp('file-manager')
-
-// 显示通知
-taskbarStore.showNotification({
-  title: '系统通知',
-  message: '操作完成',
-  type: 'success'
-})
-```
-
-### 📁 4. 文件管理器 (File Manager)
-
-**位置**: `packages/apps/file-manager/`
-
-**核心功能**:
-- 多标签页文件浏览
-- 文件基础操作（增删改查）
-- 文件搜索和过滤
-- 文件预览和编辑
-
-**调用方式**:
-```typescript
-// 文件操作服务
-import { FileService } from '@linglongos/services'
-
-const fileService = new FileService()
-
-// 获取文件列表
-const files = await fileService.listFiles('/home/user')
-
-// 文件操作
-await fileService.createFolder('/home/user/新建文件夹')
-await fileService.copyFile('/path/source.txt', '/path/target.txt')
-await fileService.deleteFile('/path/file.txt')
-```
-
-### 💻 5. 终端模拟器 (Terminal)
-
-**位置**: `packages/apps/terminal/`
-
-**核心功能**:
-- 多标签页终端会话
-- 命令执行和输出显示
-- 终端主题和字体配置
-- SSH连接管理
-
-**调用方式**:
-```typescript
-// 终端服务
-import { TerminalService } from '@linglongos/services'
-
-const terminalService = new TerminalService()
-
-// 创建终端会话
-const sessionId = await terminalService.createSession({
-  host: 'localhost',
-  shell: '/bin/bash'
-})
-
-// 执行命令
-await terminalService.executeCommand(sessionId, 'ls -la')
-```
-
-### ⚙️ 6. 任务管理器 (Task Manager)
-
-**位置**: `packages/apps/task-manager/`
-
-**核心功能**:
-- 进程列表和监控
-- 系统资源使用情况
-- 服务管理（启动/停止/重启）
-- 性能图表展示
-
-**调用方式**:
-```typescript
-// 系统监控服务
-import { SystemService } from '@linglongos/services'
-
-const systemService = new SystemService()
-
-// 获取进程列表
-const processes = await systemService.getProcessList()
-
-// 获取系统资源
-const resources = await systemService.getSystemResources()
-
-// 服务管理
-await systemService.restartService('nginx')
-```
-
-### 🛠️ 7. 工具库 (@linglongos/utils)
-
-**位置**: `packages/utils/`
-
-**核心功能**:
-- 数据类型判断和处理
-- 文件操作和路径处理
-- URL解析和参数处理
-- 正则表达式和验证
-- 格式化工具
-
-**调用方式**:
-```typescript
-// 工具库使用
-import { 
-  DataType, 
-  FileUtils, 
-  Validator, 
-  NumberFormat 
-} from '@linglongos/utils'
-
-// 数据类型判断
-if (DataType.isString(data)) {
-  // 处理字符串
-}
-
-// 文件处理
-const fileType = FileUtils.getFileType('document.pdf')
-const fileSize = FileUtils.formatSize(1024 * 1024)
-
-// 数据验证
-const isValidEmail = Validator.isEmail('user@example.com')
-
-// 数字格式化
-const formattedNumber = NumberFormat.toThousands(1234567)
-```
-
-### 🎨 8. UI组件库 (@linglongos/ui)
-
-**位置**: `packages/ui/`
-
-**核心功能**:
-- 基础组件（Button、Input、Modal等）
-- 布局组件（Grid、Flex、Container等）
-- 表单组件（Form、Select、DatePicker等）
-- 数据展示组件（Table、Chart、Tree等）
-
-**调用方式**:
-```vue
-<template>
-  <l-button type="primary" @click="handleClick">
-    点击按钮
-  </l-button>
-  
-  <l-modal v-model:visible="modalVisible" title="对话框">
-    <p>对话框内容</p>
-  </l-modal>
-  
-  <l-table :data="tableData" :columns="columns" />
-</template>
-
-<script setup lang="ts">
-import { LButton, LModal, LTable } from '@linglongos/ui'
-</script>
-```
-
-### 🔧 9. 核心服务 (@linglongos/services)
-
-**位置**: `packages/services/`
-
-**核心功能**:
-- API网关和适配器管理
-- 用户认证和权限管理
-- 数据持久化服务
-- 事件总线和通信
-
-**调用方式**:
-```typescript
-// 服务注入和使用
-import { ServiceContainer } from '@linglongos/services'
-
-// 获取服务实例
-const apiService = ServiceContainer.get('ApiService')
-const authService = ServiceContainer.get('AuthService')
-
-// 用户认证
-const user = await authService.login('username', 'password')
-
-// API调用
-const response = await apiService.request('/api/files', {
-  method: 'GET',
-  params: { path: '/home' }
-})
-```
-
-## 🚀 开发思路
-
-### 1. 渐进式开发策略
-
-**第一阶段 - MVP核心功能**
-- ✅ 基础桌面环境
-- ✅ 窗口管理系统
-- ✅ 文件管理器
-- ✅ 用户认证系统
-
-**第二阶段 - 功能完善**
-- 🔄 终端模拟器完善
-- 🔄 任务管理器增强
-- 🔄 系统设置中心
-- 🔄 应用商店框架
-
-**第三阶段 - 生态扩展**
-- 📋 适配器平台开放
-- 📋 插件系统开发
-- 📋 AI助手集成
-- 📋 多租户支持
-
-### 2. 技术架构演进
-
-**当前架构特点**:
-- 基于Vue 3 + TypeScript的现代化前端架构
-- Monorepo管理，模块化开发
-- 事件驱动的松耦合设计
-- 适配器模式支持多后端
-
-**架构优势**:
-- 🎯 **高内聚低耦合** - 每个模块职责单一，依赖清晰
-- 🔧 **易于测试** - 依赖注入使得单元测试更容易
-- 🚀 **高性能** - 基于Vue 3的响应式系统和虚拟DOM
-- 📈 **可扩展** - 适配器模式支持接入任意后端API
-
-### 3. 数据流设计
-
-```
-用户操作 → UI组件 → Store状态管理 → Service服务层 → Adapter适配器 → 后端API
-    ↓         ↓          ↓            ↓           ↓
-  事件触发 → 状态更新 → 业务逻辑 → 数据转换 → API调用
-```
-
-## 🔮 扩展思路
-
-### 1. 适配器生态扩展
-
-**当前支持**:
-- 宝塔面板适配器
-- 1Panel适配器（规划中）
-
-**扩展方向**:
-```typescript
-// 适配器接口标准化
-interface PanelAdapter {
-  // 基础信息
-  name: string
-  version: string
-  
-  // 文件操作
-  listFiles(path: string): Promise<FileItem[]>
-  createFile(path: string, content: string): Promise<void>
-  deleteFile(path: string): Promise<void>
-  
-  // 系统监控
-  getSystemInfo(): Promise<SystemInfo>
-  getProcessList(): Promise<Process[]>
-  
-  // 服务管理
-  getServices(): Promise<Service[]>
-  controlService(name: string, action: 'start' | 'stop' | 'restart'): Promise<void>
-}
-
-// 新适配器注册
-AdapterRegistry.register('cpanel', new CpanelAdapter())
-AdapterRegistry.register('plesk', new PleskAdapter())
-AdapterRegistry.register('directadmin', new DirectAdminAdapter())
-```
-
-### 2. 插件系统架构
-
-**插件生命周期**:
-```typescript
-interface Plugin {
-  name: string
-  version: string
-  
-  // 生命周期钩子
-  install(app: App): void
-  activate(): Promise<void>
-  deactivate(): Promise<void>
-  uninstall(): Promise<void>
-  
-  // 扩展点
-  contributes?: {
-    commands?: Command[]
-    menus?: MenuItem[]
-    views?: ViewContribution[]
-    themes?: Theme[]
-  }
-}
-
-// 插件管理器
-class PluginManager {
-  async installPlugin(pluginUrl: string): Promise<void>
-  async enablePlugin(pluginId: string): Promise<void>
-  async disablePlugin(pluginId: string): Promise<void>
-  getInstalledPlugins(): Plugin[]
-}
-```
-
-### 3. AI助手集成
-
-**智能运维助手**:
-```typescript
-interface AIAssistant {
-  // 自然语言命令解析
-  parseCommand(input: string): Promise<Command>
-  
-  // 智能建议
-  getSuggestions(context: OperationContext): Promise<Suggestion[]>
-  
-  // 异常诊断
-  diagnoseIssue(logs: LogEntry[]): Promise<Diagnosis>
-  
-  // 自动化脚本生成
-  generateScript(description: string): Promise<Script>
-}
-
-// 使用示例
-const ai = new AIAssistant()
-const command = await ai.parseCommand("重启nginx服务")
-// 解析为: { action: 'restart', service: 'nginx' }
-```
-
-### 4. 微前端架构演进
-
-**当前**: 单体前端应用
-**目标**: 微前端架构
-
-```typescript
-// 微前端应用注册
-interface MicroApp {
-  name: string
-  entry: string
-  container: string
-  activeRule: string | ((location: Location) => boolean)
-}
-
-// 应用注册
-registerMicroApps([
-  {
-    name: 'file-manager',
-    entry: '//localhost:3001',
-    container: '#file-manager-container',
-    activeRule: '/file-manager'
-  },
-  {
-    name: 'terminal',
-    entry: '//localhost:3002', 
-    container: '#terminal-container',
-    activeRule: '/terminal'
-  }
-])
-```
-
-### 5. 多租户支持
-
-**租户隔离**:
-```typescript
-interface Tenant {
-  id: string
-  name: string
-  domain: string
-  config: TenantConfig
-  resources: ResourceQuota
-}
-
-interface TenantConfig {
-  theme: ThemeConfig
-  features: FeatureFlags
-  integrations: Integration[]
-}
-
-// 租户上下文
-class TenantContext {
-  getCurrentTenant(): Tenant
-  switchTenant(tenantId: string): Promise<void>
-  getTenantConfig(): TenantConfig
-}
-```
-
-### 6. 性能优化方向
-
-**代码分割**:
-```typescript
-// 路由级别的代码分割
-const routes = [
-  {
-    path: '/file-manager',
-    component: () => import('@/views/FileManager.vue')
-  },
-  {
-    path: '/terminal', 
-    component: () => import('@/views/Terminal.vue')
-  }
-]
-
-// 组件级别的懒加载
-const LazyComponent = defineAsyncComponent(() => import('./HeavyComponent.vue'))
-```
-
-**虚拟滚动**:
-```typescript
-// 大数据量列表优化
-import { VirtualList } from '@linglongos/ui'
-
-// 处理万级数据的文件列表
-<VirtualList
-  :items="fileList"
-  :item-height="32"
-  :visible-count="20"
-/>
-```
-
-## 🎯 技术栈总结
-
-| 层级 | 技术选型 | 作用 |
-|------|----------|------|
-| **项目管理** | pnpm + Turborepo | Monorepo管理，依赖优化，构建加速 |
-| **前端框架** | Vue 3 + TypeScript | 响应式UI，类型安全，开发体验 |
-| **状态管理** | Pinia | 轻量级状态管理，TypeScript友好 |
-| **路由管理** | Vue Router 4 | SPA路由，懒加载，导航守卫 |
-| **UI框架** | 自研组件库 + UnoCSS | 统一设计语言，原子化CSS |
-| **构建工具** | Vite + tsup | 快速开发构建，模块打包 |
-| **代码质量** | ESLint + Prettier + Husky | 代码规范，自动格式化，提交检查 |
-| **测试框架** | Vitest + Vue Test Utils | 单元测试，组件测试 |
-
-## 📈 项目状态
-
-- **当前版本**: v2.2
-- **开发状态**: 核心功能完成，持续迭代中
-- **部署状态**: ✅ 已部署到CloudStudio
-- **预览地址**: http://aec33874335b4f0badc1e81f63f37095.ap-singapore.myide.io
-
-## 🤝 贡献指南
-
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'feat: Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
-
-## 📄 许可证
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
----
-
-**玲珑OS** - 让服务器管理变得简单而优雅 ✨
+## 项目简介
+玲珑OS是一个基于 Monorepo 的现代化 Web 操作环境，通过统一界面整合多种后端面板与服务，提升多服务器与多面板的运维效率与一致性。
+
+## 目录
+- [项目简介](#项目简介)
+- [项目介绍](#项目介绍)
+- [核心特色](#核心特色)
+- [架构设计优点](#架构设计优点)
+- [项目计划表](#项目计划表)
+- [工作区结构](#工作区结构)
+- [技术栈与版本要求](#技术栈与版本要求)
+- [安装与启动](#安装与启动)
+- [构建与预览](#构建与预览)
+- [测试与代码质量](#测试与代码质量)
+- [API 文档与路由](#api-文档与路由)
+- [常用根脚本](#常用根脚本)
+- [贡献指南](#贡献指南)
+- [许可证](#许可证)
+
+## 项目介绍
+- 背景：传统服务器面板（或多面板并存）在不同服务器、不同版本之间的操作体验差异较大，导致运维流程分散、成本高、难以统一管理与审计。玲珑OS以统一的 Web 操作环境为核心，通过聚合与适配多个面板与服务，提供一致的交互与流程，提高效率与可维护性。
+- 目标：在不替代现有面板的前提下，提供一个现代、统一、可扩展的“外壳”，让运维人员与开发者在单一工作空间内完成跨面板、跨服务器的日常操作。
+- 应用场景：多台服务器、多种面板混合场景下的统一管理；团队内规范化运维操作与审计；个人/小团队的轻量化集中管理；面向外部客户的标准化操作门户。
+- 定位与价值：作为“前端统一操作层”，以最小侵入的方式整合既有面板与服务；价值主张为“统一界面、标准流程、可扩展生态、提高效率与一致性”。
+
+## 核心特色
+- 统一工作空间：跨面板的统一界面与操作流程，减少上下文切换，降低心智负担。
+- 现代化技术栈：React 19 + Redux Toolkit + Vite 7 + Tailwind CSS 4，开发体验与性能兼顾。
+- 可扩展代理层：API 服务以 Koa 3 + TypeScript 实现，可通过适配器与代理机制接入不同面板与服务，并内置 Swagger UI 文档。
+- Monorepo 架构：pnpm + Turborepo 管理 apps 与 packages，统一规范、快速构建、稳定缓存。
+- 文档与规范：统一 ESLint/Prettier/TypeScript 配置，配合 Vitest 进行单元与组件测试，保障质量。
+- 与同类的差异化：强调“前端统一操作层”的定位，不替代现有面板；以代理与适配器连接后端生态，避免强耦合；在多面板场景下提供统一的 UI 与流程，降低学习与维护成本。
+
+## 架构设计优点
+- 主要组成：
+  - 应用层：apps/desktop（桌面应用，React 19）、apps/api（API 服务，Koa 3 + TS）、apps/web（SvelteKit 实验性应用）。
+  - 包与共享：packages/shared-types（类型共享）、packages/utils（工具库，tsup 构建、vitest 测试）。
+  - 环境与规范：env/ 统一 ESLint/Prettier/TypeScript 配置；根级 Turbo、Workspace 管理任务与依赖。
+- 可扩展性：模块化与适配器设计，API 通过代理机制接入不同面板类型；Monorepo 支持多应用并行演进与共享能力复用。
+- 稳定性：统一规范与类型系统（TS 5.9），通过 ESLint/Prettier/Husky 保证一致性；Turbo 缓存与任务编排降低构建波动。
+- 性能优势：Vite 7 快速开发与构建、按需模块；React 19 减少不必要渲染；Koa 中间件轻量高效；pnpm workspace 高效依赖管理。
+- 技术选型理由：
+  - React 19 + Redux Toolkit：成熟生态、类型友好、状态管理简单且可维护，适合复杂桌面级 UI。
+  - Koa 3 + TypeScript：中间件模型简洁、易扩展，类型安全提升重构与协作效率。
+  - Vite 7 + Turborepo + pnpm：提升开发与构建速度、共享缓存、跨项目一致的工作流。
+  - Tailwind CSS 4：原子化样式与设计一致性，结合 tailwind-merge 简化条件样式。
+
+## 项目计划表
+- 当前进度（已完成里程碑与成果）：
+  - Monorepo 工作区与统一规范（ESLint/Prettier/TS）建立，脚本与任务编排完善（Turbo、pnpm workspace）。
+  - 桌面应用基础框架：React 19 + Redux Toolkit + Router + Tailwind 搭建；基础路由与状态管理上线；单元测试框架接入（Vitest + React Testing Library）。
+  - API 服务：Koa 3 + TS 基础服务、CORS/静态资源、中间件与错误处理；Google Auth 绑定/验证流程；OpenAPI 文档生成与 Swagger UI 集成；代理请求与面板密钥绑定接口初版。
+  - 工具库：tsup 构建与 vitest 测试流程完善，URL/验证等通用工具落地。
+- 近期计划（未来 1-3 个月重点）：
+  - 联通桌面应用与 API 代理能力：完善“面板绑定→代理请求→结果展示”的端到端流程与 UI。
+  - 扩展代理能力：补齐 1Panel 等面板适配与策略；优化 SSL 相关容错与诊断信息。
+  - 测试与质量：提高覆盖率至核心模块 ≥80%，补充集成测试与端到端用例；完善 CI 检查。
+  - 文档与规范：补充开发规范与贡献指南细节；完善运维与部署说明。
+- 待办事项（按优先级）
+  - [高] 桌面应用-面板绑定与代理请求 UI 流完善（描述：实现绑定状态、错误提示与结果展示，打通端到端）
+    - 负责人：Frontend Team
+    - 预计完成时间：2025-10-15
+    - 当前状态：in_progress
+  - [高] API-代理服务支持 1Panel（描述：补齐面板类型、认证策略与路由文档）
+    - 负责人：API Team
+    - 预计完成时间：2025-10-31
+    - 当前状态：pending
+  - [中] 工具库-测试覆盖率至 85%（描述：补齐 URL/Validator 边界用例与异常分支）
+    - 负责人：Library Maintainer
+    - 预计完成时间：2025-10-10
+    - 当前状态：in_progress
+  - [中] 文档-补充桌面应用开发规范与最佳实践（描述：完善 README 与模块规范）
+    - 负责人：Docs Maintainer
+    - 预计完成时间：2025-10-05
+    - 当前状态：pending
+  - [低] Web 应用-初始 Landing 页面（描述：SvelteKit 基础页面与路由结构）
+    - 负责人：Web Team
+    - 预计完成时间：2025-11-15
+    - 当前状态：pending
+  - [低] CI 集成与检查（描述：加入覆盖率门槛与 lint、type-check 阶段门禁）
+    - 负责人：Infra Maintainer
+    - 预计完成时间：2025-10-20
+    - 当前状态：pending
+
+## 工作区结构
+- apps/
+  - desktop/：React 19 + Redux Toolkit + React Router + Tailwind CSS + Vite
+  - api/：Node.js + Koa 3 + TypeScript（内置 Swagger UI 文档）
+  - web/：SvelteKit + Vite（实验性应用）
+- packages/
+  - shared-types/：共享类型定义
+  - utils/：通用工具库（tsup 构建、vitest 测试）
+- env/：ESLint/Prettier/TypeScript 等统一配置
+- pnpm-workspace.yaml：工作区配置
+- turbo.json：构建与任务编排（Turbo）
+- package.json：根脚本与依赖
+
+## 技术栈与版本要求
+- Node.js ≥ 18.0.0
+- pnpm ≥ 8.0.0（项目使用 pnpm@8.12.1）
+- Monorepo：pnpm + Turborepo
+- 代码质量：ESLint + Prettier + Husky + lint-staged
+
+## 安装与启动
+1) 安装依赖
+- pnpm install
+
+2) 启动所有应用（并行）
+- pnpm dev
+
+3) 按应用启动（推荐在开发阶段分别启动）
+- 桌面应用：pnpm --filter desktop dev
+- API 服务：pnpm --filter @linglongos/api dev（默认端口：4000，可用环境变量 PORT 覆盖）
+- Web 应用：pnpm --filter web dev
+
+## 构建与预览
+- 全量构建：pnpm build
+- 单应用构建：
+  - 桌面应用：pnpm --filter desktop build；预览：pnpm --filter desktop preview
+  - Web 应用：pnpm --filter web build；预览：pnpm --filter web preview
+  - API 服务：pnpm --filter @linglongos/api build；启动：pnpm --filter @linglongos/api start
+
+## 测试与代码质量
+- 统一运行：pnpm test / pnpm lint / pnpm type-check / pnpm format
+- 桌面应用：Vitest + React Testing Library（支持 coverage）
+- 工具库（packages/utils）：Vitest + @vitest/coverage-v8；构建使用 tsup
+- API 服务：当前无测试占位（后续补充）
+
+## API 文档与路由
+- 运行 API 服务后访问 Swagger UI：
+  - http://localhost:4000/docs
+  - OpenAPI JSON：/api/v1/docs/openapi.json
+- CORS 默认允许所有来源（origin: '*'），静态资源位于 public/
+
+## 常用根脚本
+- dev：turbo run dev（并行开发）
+- build：turbo run build（并行构建并缓存）
+- lint：turbo run lint
+- test：turbo run test
+- type-check：turbo run type-check
+- format：prettier 统一格式化
+- prepare：husky 安装钩子
+- clean：清理 node_modules（bash scripts/clean-modules.sh）
+
+## 贡献指南
+1. Fork 仓库并创建特性分支（feature/your-feature）
+2. 提交变更（使用规范化提交消息）
+3. 发起 Pull Request 并补充说明
+
+## 许可证
+本项目采用 MIT 许可证。详见 LICENSE。
