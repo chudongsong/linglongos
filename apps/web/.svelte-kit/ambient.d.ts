@@ -45,12 +45,10 @@ declare module '$env/static/private' {
 	export const ICUBE_QUALITY: string;
 	export const ICUBE_USE_IPV6: string;
 	export const ICUBE_VSCODE_VERSION: string;
-	export const LANG: string;
 	export const LOGNAME: string;
 	export const MallocNanoZone: string;
 	export const OLDPWD: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
-	export const OSLogRateLimit: string;
 	export const PATH: string;
 	export const PNPM_HOME: string;
 	export const PWD: string;
@@ -137,12 +135,10 @@ declare module '$env/dynamic/private' {
 		ICUBE_QUALITY: string;
 		ICUBE_USE_IPV6: string;
 		ICUBE_VSCODE_VERSION: string;
-		LANG: string;
 		LOGNAME: string;
 		MallocNanoZone: string;
 		OLDPWD: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
-		OSLogRateLimit: string;
 		PATH: string;
 		PNPM_HOME: string;
 		PWD: string;

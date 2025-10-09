@@ -788,6 +788,11 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 拖拽中禁用过渡，保证位置变化立即生效并跟随鼠标 */
+.window.dragging {
+  transition: none !important;
+}
+
 /* 活跃窗口状态 */
 .window.active { 
   box-shadow: 

@@ -12,8 +12,6 @@ import {
 import { Settings } from '@features/settings'
 
 import type { CSSProperties } from 'react'
-// 已移除吸附与定位线相关工具导入
-// import { SNAP_THRESHOLD, GRID_SIZE, snapTo, snapToGrid, computeBestSnapX, computeBestSnapY } from '@/utils/snap'
 
 /**
  * WindowManager：最小可用版本 + 缩放
@@ -42,18 +40,7 @@ export default function WindowManager() {
 	// useEffect(() => {
 	// 	windowsRef.current = windows
 	// }, [windows])
-	
-	// 标题栏拖拽引用
-	const draggingRef = useRef<{
-		id: string
-		startX: number
-		startY: number
-		originLeft: number
-		originTop: number
-		originWidth: number
-		originHeight: number
-	} | null>(null)
-	
+
 	// 缩放引用
 	const resizingRef = useRef<{
 		id: string
@@ -66,19 +53,31 @@ export default function WindowManager() {
 		originHeight: number
 	} | null>(null)
 
-	// rAF 合帧调度引用，提升拖拽流畅度
-	const frameIdRef = useRef<number | null>(null)
-	const pendingPositionRef = useRef<{ id: string; left: number; top: number } | null>(null)
+// 拖拽引用（窗口标题栏拖拽：拖拽过程中实时移动窗口）
+const draggingRef = useRef<{
+  id: string
+  startX: number
+  startY: number
+  originLeft: number
+  originTop: number
+  width: number
+  height: number
+} | null>(null)
+
+// rAF 调度，避免高频 setState
+const frameIdRef = useRef<number | null>(null)
+// rAF 待提交位置（取最新一次鼠标移动计算结果）
+const pendingPosRef = useRef<{ id: string; left: number; top: number } | null>(null)
 
 	useEffect(() => {
 		/**
-		 * 处理全局鼠标移动：优先处理缩放，其次处理拖拽。
-		 * 重构：移除吸附/引导线逻辑，使用 requestAnimationFrame 合帧调度位置更新，提升拖拽流畅度与实时性。
+		 * 处理全局鼠标移动：优先处理缩放，其次处理拖拽预览。
+		 * 拖拽期间不更新窗口位置，仅更新预览层；松开后一次性提交。
 		 */
 		const onMove = (e: MouseEvent) => {
 			e.preventDefault()
 
-			// 缩放逻辑（保持原有实现，去除引导线相关调用）
+			// 1) 处理缩放逻辑
 			if (resizingRef.current) {
 				const r = resizingRef.current
 				const dx = e.clientX - r.startX
@@ -120,43 +119,44 @@ export default function WindowManager() {
 				return
 			}
 
-			// 拖拽逻辑（高性能：使用 rAF 合帧更新位置）
-			const d = draggingRef.current
-			if (!d) return
+      // 2) 处理拖拽（标题栏，实时移动窗口，移除吸附/对齐）
+      if (draggingRef.current) {
+        const d = draggingRef.current
+        const dx = e.clientX - d.startX
+        const dy = e.clientY - d.startY
 
-			const dx = e.clientX - d.startX
-			const dy = e.clientY - d.startY
+                // 自由位置（不吸附、不对齐）并进行视口边界裁剪
+                const vw = window.innerWidth
+                const vh = window.innerHeight
+                const freeLeft = Math.max(0, Math.min(d.originLeft + dx, vw - d.width))
+                const freeTop = Math.max(0, Math.min(d.originTop + dy, vh - d.height))
+        // rAF 批量更新窗口位置，避免高频 dispatch
+        pendingPosRef.current = { id: d.id, left: Math.round(freeLeft), top: Math.round(freeTop) }
+        if (frameIdRef.current == null) {
+          frameIdRef.current = requestAnimationFrame(() => {
+            frameIdRef.current = null
+            const p = pendingPosRef.current
+            if (p) {
+              dispatch(moveWindow({ id: p.id, left: p.left, top: p.top }))
+            }
+          })
+        }
 
-			const vw = window.innerWidth
-			const vh = window.innerHeight
-
-			let left = d.originLeft + dx
-			let top = d.originTop + dy
-
-			// 拖拽垂直边界：修正为根据窗口高度限制，保证不越界
-			left = Math.min(Math.max(left, 0), vw - d.originWidth)
-			top = Math.min(Math.max(top, 0), vh - d.originHeight)
-
-			// 使用 requestAnimationFrame 合帧调度，减少多次 dispatch 造成的抖动
-			pendingPositionRef.current = { id: d.id, left, top }
-			if (frameIdRef.current == null) {
-				frameIdRef.current = requestAnimationFrame(() => {
-					const p = pendingPositionRef.current
-					if (p) {
-						dispatch(moveWindow({ id: p.id, left: p.left, top: p.top }))
-						pendingPositionRef.current = null
-					}
-					frameIdRef.current = null
-				})
-			}
-		}
+        return
+      }
+    }
 
 		/**
 		 * 处理鼠标松开：结束任何进行中的拖拽或缩放。
 		 */
 		const onUp = () => {
-			draggingRef.current = null
+			// 结束缩放
 			resizingRef.current = null
+    // 结束拖拽：清理引用
+    if (draggingRef.current) {
+      draggingRef.current = null
+      pendingPosRef.current = null
+    }
 		}
 
 		window.addEventListener('mousemove', onMove)
@@ -164,14 +164,12 @@ export default function WindowManager() {
 		return () => {
 			window.removeEventListener('mousemove', onMove)
 			window.removeEventListener('mouseup', onUp)
-			// 释放可能残留的 rAF 与位置引用，避免内存泄漏
 			if (frameIdRef.current != null) {
 				cancelAnimationFrame(frameIdRef.current)
 				frameIdRef.current = null
 			}
-			pendingPositionRef.current = null
 		}
-	}, [dispatch])
+    }, [dispatch, windows])
 
 	const layerStyle = useMemo<CSSProperties>(
 		() => ({ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1100 }),
@@ -310,39 +308,45 @@ export default function WindowManager() {
 				 * - 保留原有 .window 类的视觉定义，新增原子类仅表达布局/圆角/可读性
 				 * - 与 public/styles.css 的同值设置保持一致以避免视觉偏差
 				 */
-				const windowClass = clsx(className, 'absolute pointer-events-auto rounded-xl overflow-hidden text-white')
+				const windowClass = clsx(
+					className,
+					// 拖拽中禁用过渡以消除跟随延迟
+					draggingRef.current?.id === w.id && 'dragging',
+					'absolute pointer-events-auto rounded-xl overflow-hidden text-white',
+				)
 				return (
 					<div key={w.id} className={windowClass} style={style} onMouseDown={() => dispatch(focusWindow(w.id))}>
 						{/* Ubuntu风格扁平化标题栏 */}
 						<div
-							className="window-titlebar flex items-center bg-gray-800 border-b border-gray-600/30 select-none"
-							style={{ height: '60px' }}
-							onMouseDown={(e) => {
-								// 仅左键拖拽
-								if (e.button !== 0) return
-								// 最大化时不允许拖动（与真实系统一致，双击已提供切换）
-								if (w.isMaximized) return
-								e.preventDefault()
-								draggingRef.current = {
-									id: w.id,
-									startX: e.clientX,
-									startY: e.clientY,
-									originLeft: w.left,
-									originTop: w.top,
-									originWidth: w.width,
-									originHeight: w.height,
-								}
-							}}
-							onDoubleClick={() => dispatch(toggleMaximize(w.id))}
-							tabIndex={0}
-						>
+						className="window-titlebar flex items-center bg-gray-800 border-b border-gray-600/30 select-none"
+						style={{ height: '60px' }}
+            // 标题栏拖拽：开始实时拖拽（左键且未最大化）
+            onMouseDown={(e) => {
+              if (e.button !== 0) return
+              if (w.isMaximized) return
+              // 读取当前窗口位置与尺寸
+              const el = (e.currentTarget.parentElement as HTMLElement)
+              const rect = el.getBoundingClientRect()
+              draggingRef.current = {
+                id: w.id,
+                startX: e.clientX,
+                startY: e.clientY,
+                originLeft: rect.left,
+                originTop: rect.top,
+                width: rect.width,
+                height: rect.height,
+              }
+            }}
+						onDoubleClick={() => dispatch(toggleMaximize(w.id))}
+						tabIndex={0}
+					>
 							{/* 左侧：应用图标和名称 */}
 							<div className="flex items-center gap-2 px-3 min-w-0">
 								{w.icon && (
-									<img 
-										src={w.icon} 
-										alt="" 
-										className="w-4 h-4 flex-shrink-0" 
+									<img
+										src={w.icon}
+										alt=""
+										className="w-4 h-4 flex-shrink-0"
 									/>
 								)}
 								<span className="text-sm font-medium text-gray-200 truncate">
@@ -415,6 +419,7 @@ export default function WindowManager() {
 					</div>
 				)
 			})}
+
 		</div>
 	)
 }

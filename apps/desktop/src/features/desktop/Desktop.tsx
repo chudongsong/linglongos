@@ -14,7 +14,7 @@ import { useGridSystem } from '@hooks/useGridSystem'
 import { useSelection } from '@hooks/useSelection'
 import { useMarqueeSelection } from '@hooks/useMarqueeSelection'
 import { useContainerDrop } from '@hooks/useContainerDrop'
-import { useDragPreview } from '@hooks/useDragPreview'
+import { useSmartDragPreview } from '@hooks/useSmartDragPreview'
 import { useAppLauncher } from '@hooks/useAppLauncher'
 import { useDesktopIconDrag } from '@hooks/useDesktopIconDrag'
 import { loadingManager } from '@services/loadingManager'
@@ -91,8 +91,18 @@ export default function Desktop() {
 		findNearestEmptySlot,
 	})
 
-	/** 拖拽预览 */
-	const dragPreviewData = useDragPreview(config)
+	/** 智能拖拽预览（带实时吸附与对齐） */
+	const smartPreview = useSmartDragPreview({
+		config,
+		containerRef,
+		containerWidth,
+		containerHeight,
+		grid,
+		getMaxColsRows,
+		toPixels,
+		positions,
+		findNearestEmptySlot,
+	})
 
 	/** 应用启动器 */
 	const { handleIconDoubleClick, handleIconKeyDown } = useAppLauncher(config)
@@ -159,20 +169,20 @@ export default function Desktop() {
 				/>
 			)}
 
-			{/* 拖拽预览层：固定定位，指针事件穿透 */}
-			{dragPreviewData && (
+			{/* 新：智能拖拽预览层（吸附后位置），固定定位，指针事件穿透 */}
+			{smartPreview && (
 				<div
 					style={{
 						position: 'fixed',
 						pointerEvents: 'none',
-						left: dragPreviewData.left,
-						top: dragPreviewData.top,
+						left: smartPreview.snappedLeft,
+						top: smartPreview.snappedTop,
 						zIndex: 9999,
 					}}
 				>
 					<div className="icon-item selected dragging">
-						<img src={dragPreviewData.app?.icon ?? ''} alt={dragPreviewData.app?.name ?? ''} />
-						<span>{dragPreviewData.app?.name ?? ''}</span>
+						<img src={smartPreview.app?.icon ?? ''} alt={smartPreview.app?.name ?? ''} />
+						<span>{smartPreview.app?.name ?? ''}</span>
 					</div>
 				</div>
 			)}
