@@ -2,14 +2,13 @@ import { useEffect, useMemo, useRef } from 'react'
 import clsx from 'clsx'
 import { useAppDispatch, useAppSelector } from '@store/index'
 import {
-	closeWindow,
-	focusWindow,
-	moveWindow,
-	toggleMaximize,
-	toggleMinimize,
-	resizeWindow,
+    focusWindow,
+    moveWindow,
+    toggleMaximize,
+    resizeWindow,
 } from '@store/slices/window.slice'
 import { Settings } from '@features/settings'
+import WindowControls from './WindowControls'
 
 import type { CSSProperties } from 'react'
 
@@ -317,9 +316,9 @@ const pendingPosRef = useRef<{ id: string; left: number; top: number } | null>(n
 				return (
 					<div key={w.id} className={windowClass} style={style} onMouseDown={() => dispatch(focusWindow(w.id))}>
 						{/* Ubuntu风格扁平化标题栏 */}
-						<div
-						className="window-titlebar flex items-center bg-gray-800 border-b border-gray-600/30 select-none"
-						style={{ height: '60px' }}
+            <div
+            className="window-titlebar flex items-center bg-gray-800/95 border-b border-gray-700/30 select-none"
+            style={{ height: '52px', paddingInline: '6px' }}
             // 标题栏拖拽：开始实时拖拽（左键且未最大化）
             onMouseDown={(e) => {
               if (e.button !== 0) return
@@ -337,11 +336,11 @@ const pendingPosRef = useRef<{ id: string; left: number; top: number } | null>(n
                 height: rect.height,
               }
             }}
-						onDoubleClick={() => dispatch(toggleMaximize(w.id))}
-						tabIndex={0}
-					>
+            onDoubleClick={() => dispatch(toggleMaximize(w.id))}
+            tabIndex={0}
+          >
 							{/* 左侧：应用图标和名称 */}
-							<div className="flex items-center gap-2 px-3 min-w-0">
+              <div className="flex items-center gap-2 px-2 min-w-0">
 								{w.icon && (
 									<img
 										src={w.icon}
@@ -355,62 +354,16 @@ const pendingPosRef = useRef<{ id: string; left: number; top: number } | null>(n
 							</div>
 
 							{/* 中间：自定义内容区域（预留给应用内容，如搜索、排序等） */}
-							<div className="flex-1 flex items-center justify-center px-2">
+              <div className="flex-1 flex items-center justify-center px-2">
 								{/* 这里可以由应用自定义内容，如搜索框、排序按钮等 */}
 								<div className="text-xs text-gray-400 opacity-50">
 									{/* 应用可在此区域添加自定义控件 */}
 								</div>
 							</div>
 
-							{/* 右侧：窗口控制按钮（设计更新：按钮背景白色10%，图标黑色，尺寸200%） */}
-							<div className="flex items-center gap-1 px-2">
-								{/* 最小化 */}
-								<button
-									className="w-8 h-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-									onClick={(e) => {
-										e.stopPropagation()
-										dispatch(toggleMinimize(w.id))
-									}}
-									title="最小化"
-								>
-									<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-									</svg>
-								</button>
-								{/* 最大化/还原 */}
-								<button
-									className="w-8 h-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-									onClick={(e) => {
-										e.stopPropagation()
-										dispatch(toggleMaximize(w.id))
-									}}
-									title={w.isMaximized ? '还原' : '最大化'}
-								>
-									{w.isMaximized ? (
-										<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M15 15v4.5M15 15h4.5M15 15l5.25 5.25" />
-										</svg>
-									) : (
-										<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-										</svg>
-									)}
-								</button>
-								{/* 关闭 */}
-								<button
-									className="w-8 h-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-									onClick={(e) => {
-										e.stopPropagation()
-										dispatch(closeWindow(w.id))
-									}}
-									title="关闭"
-								>
-									<svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-									</svg>
-								</button>
-							</div>
-						</div>
+              {/* 右侧：现代化窗口控制按钮 */}
+              <WindowControls id={w.id} isMaximized={w.isMaximized} />
+            </div>
 						{/* 缩放手柄 */}
 						{renderResizeHandles(w.id, w.isMaximized)}
 						<div className="window-content w-full" style={{ pointerEvents: 'auto' }}>
