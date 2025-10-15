@@ -250,7 +250,7 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 			>
 				<div className={contentClass} style={contentInnerStyle}>
 					{/* 顶部：搜索与操作 */}
-					<div className="relative flex-1 group w-[32rem] mb-[1rem] ">
+					<div className="relative flex-1 group w-full mb-[1rem] ">
 						<Search
 							className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60 transition-colors"
 							aria-hidden="true"

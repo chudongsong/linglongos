@@ -1,0 +1,22 @@
+import type { Context } from 'egg';
+
+/**
+ * 认证中间件：校验签名会话 Cookie `ll_session` 是否有效。
+ *
+ * 用途：拦截受保护的接口请求，确保来自已认证用户；
+ * 逻辑：读取 `ll_session`，通过 `ctx.service.storage.isValidSession(sid)` 判断会话是否未过期。
+ *
+ * @returns {(ctx: Context, next: () => Promise<any>) => Promise<void>} - 返回 Egg 中间件函数；会话无效时写入 401 响应
+ */
+export default function authMiddleware() {
+  return async (ctx: Context, next: () => Promise<any>) => {
+    const sid = ctx.cookies.get('ll_session');
+    const ok = sid ? ctx.service.storage.isValidSession(sid) : false;
+    if (!ok) {
+      ctx.status = 401;
+      ctx.body = { code: 401, message: 'AUTH_REQUIRED' };
+      return;
+    }
+    await next();
+  };
+}

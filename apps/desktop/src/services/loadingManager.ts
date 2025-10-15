@@ -1,9 +1,10 @@
 /**
- * loadingManager.ts
- * 提供与 test2 一致的“加载遮罩与进度”行为，但适配 React/Vite 架构：
- * - 在应用启动时进行基础预检（样式可访问、DOM 就绪）并更新进度
- * - 在配置完成加载后，预加载背景与应用图标资源，完成后淡出遮罩
- * - 所有 DOM 查询与更新都以 index.html 中的遮罩结构为基础
+ * LoadingManager
+ *
+ * 提供与测试环境一致的“加载遮罩与进度”行为，适配 React/Vite 架构：
+ * - 应用启动时执行基础预检（样式可访问、DOM 就绪）并更新进度
+ * - 配置完成加载后，预加载背景与应用图标资源，完成后淡出遮罩
+ * - 所有 DOM 查询与更新基于 `index.html` 中的遮罩结构
  */
 
 import type { FullConfig } from '@/types/config'
@@ -184,6 +185,9 @@ function collectImageUrlsFromConfig(config: FullConfig | null | undefined): stri
  * 单例：加载管理器
  * - init(): 执行样式/DOM 预检查并推进至 40%
  * - finishWithConfig(config): 依据配置预加载资源（60%->95%），最后 100% 并隐藏遮罩
+ */
+/**
+ * 加载管理器单例，负责进度计算与遮罩的显示/隐藏。
  */
 class LoadingManager {
 	private elements = queryLoadingElements()
@@ -375,12 +379,11 @@ class LoadingManager {
 	}
 }
 
-/**
- * 导出单例实例
- */
+/** 导出单例实例 */
 export const loadingManager = new LoadingManager()
 
+/** 完整配置类型导出（供外部类型标注使用） */
 export type { FullConfig }
 
-// 额外导出纯函数，便于单元测试覆盖
+/** 额外导出纯函数，便于单元测试覆盖 */
 export { normalizeAssetUrl, collectImageUrlsFromConfig }

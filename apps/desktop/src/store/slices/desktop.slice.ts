@@ -1,11 +1,15 @@
 /**
- * desktop.slice：桌面相关的全局状态
+ * desktop.slice
+ *
+ * 管理桌面相关的全局状态（完整配置、加载状态、错误、图标尺寸与网格尺寸）。
+ * 提供异步配置加载与基于配置推导的网格计算逻辑。
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { FullConfig, GridSize } from '@/types/config'
 import { loadFullConfig, validateFullConfig } from '@/services/config.service'
 
+/** 桌面状态对象 */
 export interface DesktopState {
 	config: FullConfig | null
 	loading: boolean
@@ -26,7 +30,10 @@ const initialState: DesktopState = {
 }
 
 /**
- * 异步：加载配置
+ * 异步：加载完整配置
+ *
+ * 从远端加载桌面与应用配置，校验通过后写入状态。
+ * @returns Promise<FullConfig> 完整配置
  */
 export const fetchConfig = createAsyncThunk('desktop/fetchConfig', async () => {
 	const cfg = await loadFullConfig()
@@ -35,11 +42,12 @@ export const fetchConfig = createAsyncThunk('desktop/fetchConfig', async () => {
 })
 
 /**
- * 计算当前 grid 尺寸
- * 根据配置与图标尺寸档位，返回对应的网格宽高与间距
+ * 计算当前网格尺寸
+ *
+ * 根据配置与图标尺寸档位，返回对应的网格宽高与间距。
  * @param cfg 完整配置对象
  * @param size 图标尺寸档位（small|medium|large）
- * @returns GridSize 网格尺寸
+ * @returns 网格尺寸对象
  */
 function computeGrid(cfg: FullConfig | null, size: 'small' | 'medium' | 'large'): GridSize {
 	const fallback = { width: 100, height: 120, gap: 5 }
@@ -48,8 +56,9 @@ function computeGrid(cfg: FullConfig | null, size: 'small' | 'medium' | 'large')
 }
 
 /**
- * 规范化配置中的图标尺寸字段
- * 仅允许 small|medium|large，其它值将回退为 medium
+ * 规范化图标尺寸字段
+ *
+ * 仅允许 small|medium|large，其它值将回退为 medium。
  * @param raw 原始 iconSize 字段
  * @returns 规范化后的图标尺寸
  */
@@ -62,9 +71,7 @@ const desktopSlice = createSlice({
 	name: 'desktop',
 	initialState,
 	reducers: {
-		/**
-		 * 切换图标尺寸
-		 */
+		/** 切换图标尺寸并更新网格尺寸 */
 		setIconSize(state, action: PayloadAction<'small' | 'medium' | 'large'>) {
 			state.iconSize = action.payload
 			state.grid = computeGrid(state.config, action.payload)

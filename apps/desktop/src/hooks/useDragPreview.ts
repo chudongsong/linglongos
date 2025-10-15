@@ -8,8 +8,13 @@ import { ITEM_TYPE, type IconDragItem } from '@/types/dnd'
 import type { FullConfig, AppItem } from '@/types/config'
 
 /**
- * 拖拽预览 Hook
+ * 拖拽预览 Hook。
+ *
+ * 封装自定义 DragLayer 数据，计算未吸附的实时预览 `left/top`，并返回对应应用信息。
+ * 适用于仅展示拖拽过程中的影像，而不进行网格吸附。
+ *
  * @param config 完整配置（可为空）
+ * @returns `null` 或 `{ left, top, app }`
  */
 export function useDragPreview(config?: FullConfig | null) {
 	const dragLayer = useDragLayer((monitor) => ({

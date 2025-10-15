@@ -1,5 +1,8 @@
 /**
- * settings.slice：设置应用相关的全局状态管理
+ * settings.slice
+ *
+ * 管理系统设置相关的全局状态：背景、主题、版本信息、双重认证（Google Authenticator）、宝塔账号与管理 API 等。
+ * 包含同步 reducers 与一组异步 `createAsyncThunk` 操作，用于加载/保存/校验/连接等流程。
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
@@ -83,9 +86,7 @@ const initialState: SettingsState = {
   previewMode: false
 }
 
-/**
- * 异步操作：加载设置配置
- */
+/** 异步：加载设置配置 */
 export const fetchSettings = createAsyncThunk(
   'settings/fetchSettings',
   async () => {
@@ -94,9 +95,7 @@ export const fetchSettings = createAsyncThunk(
   }
 )
 
-/**
- * 异步操作：保存设置配置
- */
+/** 异步：保存设置配置 */
 export const saveSettingsConfig = createAsyncThunk(
   'settings/saveSettings',
   async (settings: Partial<SettingsState>) => {
@@ -105,9 +104,7 @@ export const saveSettingsConfig = createAsyncThunk(
   }
 )
 
-/**
- * 异步操作：检查版本更新
- */
+/** 异步：检查版本信息/更新 */
 export const fetchVersionInfo = createAsyncThunk(
   'settings/fetchVersionInfo',
   async () => {
@@ -116,9 +113,7 @@ export const fetchVersionInfo = createAsyncThunk(
   }
 )
 
-/**
- * 异步操作：设置Google Authenticator
- */
+/** 异步：初始化 Google Authenticator */
 export const setupGoogleAuthenticator = createAsyncThunk(
   'settings/setupGoogleAuth',
   async () => {
@@ -127,9 +122,7 @@ export const setupGoogleAuthenticator = createAsyncThunk(
   }
 )
 
-/**
- * 异步操作：验证Google Authenticator
- */
+/** 异步：验证 Google Authenticator */
 export const verifyGoogleAuthenticator = createAsyncThunk(
   'settings/verifyGoogleAuth',
   async (code: string) => {
@@ -138,9 +131,7 @@ export const verifyGoogleAuthenticator = createAsyncThunk(
   }
 )
 
-/**
- * 异步操作：连接宝塔账号
- */
+/** 异步：连接宝塔账号 */
 export const connectBaota = createAsyncThunk(
   'settings/connectBaota',
   async (credentials: { username: string; password: string }) => {
@@ -149,9 +140,7 @@ export const connectBaota = createAsyncThunk(
   }
 )
 
-/**
- * 异步操作：断开宝塔账号
- */
+/** 异步：断开宝塔账号 */
 export const disconnectBaota = createAsyncThunk(
   'settings/disconnectBaota',
   async () => {
@@ -160,9 +149,7 @@ export const disconnectBaota = createAsyncThunk(
   }
 )
 
-/**
- * 异步操作：同步宝塔配置
- */
+/** 异步：同步宝塔配置 */
 export const syncBaotaConfiguration = createAsyncThunk(
   'settings/syncBaotaConfig',
   async () => {
@@ -175,51 +162,37 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    /**
-     * 设置当前活动的设置页面
-     */
+    /** 设置当前活动的设置页面 */
     setActiveSection(state, action: PayloadAction<string>) {
       state.activeSection = action.payload
     },
     
-    /**
-     * 更新背景配置
-     */
+    /** 更新背景配置（支持预览模式临时应用） */
     updateBackground(state, action: PayloadAction<Partial<BackgroundConfig>>) {
       state.background = { ...state.background, ...action.payload }
     },
     
-    /**
-     * 更新主题配置
-     */
+    /** 更新主题配置（支持预览模式临时应用） */
     updateTheme(state, action: PayloadAction<Partial<ThemeConfig>>) {
       state.theme = { ...state.theme, ...action.payload }
     },
     
-    /**
-     * 更新Google Authenticator配置
-     */
+    /** 更新 Google Authenticator 配置 */
     updateGoogleAuth(state, action: PayloadAction<Partial<GoogleAuthConfig>>) {
       state.googleAuth = { ...state.googleAuth, ...action.payload }
     },
     
-    /**
-     * 更新宝塔账号配置
-     */
+    /** 更新宝塔账号配置 */
     updateBaotaAccount(state, action: PayloadAction<Partial<BaotaAccountConfig>>) {
       state.baotaAccount = { ...state.baotaAccount, ...action.payload }
     },
     
-    /**
-     * 更新管理API配置
-     */
+    /** 更新管理 API 配置 */
     updateAdminApi(state, action: PayloadAction<Partial<AdminApiConfig>>) {
       state.adminApi = { ...state.adminApi, ...action.payload }
     },
     
-    /**
-     * 开启预览模式
-     */
+    /** 开启预览模式：临时应用背景/主题以便用户预览效果 */
     enablePreview(state, action: PayloadAction<{ background?: BackgroundConfig; theme?: ThemeConfig }>) {
       state.previewMode = true
       if (action.payload.background) {
@@ -230,18 +203,14 @@ const settingsSlice = createSlice({
       }
     },
     
-    /**
-     * 关闭预览模式
-     */
+    /** 关闭预览模式：清理临时配置 */
     disablePreview(state) {
       state.previewMode = false
       delete state.previewBackground
       delete state.previewTheme
     },
     
-    /**
-     * 应用预览配置
-     */
+    /** 应用预览配置：将临时配置写入正式状态并关闭预览 */
     applyPreview(state) {
       if (state.previewBackground) {
         state.background = state.previewBackground
@@ -254,9 +223,7 @@ const settingsSlice = createSlice({
       state.previewMode = false
     },
     
-    /**
-     * 清除错误状态
-     */
+    /** 清除错误状态 */
     clearError(state) {
       state.error = null
     }

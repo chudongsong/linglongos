@@ -9,11 +9,31 @@ import { useDrop } from 'react-dnd'
 import type { XYCoord } from 'react-dnd'
 import { ITEM_TYPE, type IconDragItem } from '@/types/dnd'
 
+/**
+ * 容器作为拖拽接收区的 Hook。
+ *
+ * 用于在图标拖拽释放时：
+ * - 将释放点限制在容器边界内；
+ * - 将像素坐标吸附到网格行/列；
+ * - 若目标网格已被占用，查找最近可用网格位并更新位置。
+ *
+ * @param params 参数对象
+ * @param params.containerRef 容器 `div` 的 ref，用于获取边界与坐标系
+ * @param params.containerWidth 容器宽度（像素）
+ * @param params.containerHeight 容器高度（像素）
+ * @param params.grid 网格规格：图标占位宽高与网格间距
+ * @param params.getMaxColsRows 计算最大列/行与 padding 的函数
+ * @param params.toPixels 将网格行/列转换为像素 `left/top` 的函数
+ * @param params.positions 当前所有图标的网格行/列映射
+ * @param params.setPositions 位置更新函数（函数式 setState）
+ * @param params.findNearestEmptySlot 查找最近可用网格位的函数
+ * @returns 用于绑定到容器节点的 dropRef（作为拖拽接收区）
+ */
 export function useContainerDrop(params: {
-	containerRef: React.MutableRefObject<HTMLDivElement | null>
-	containerWidth: number
-	containerHeight: number
-	grid: { width: number; height: number; gap: number }
+    containerRef: React.MutableRefObject<HTMLDivElement | null>
+    containerWidth: number
+    containerHeight: number
+    grid: { width: number; height: number; gap: number }
 	getMaxColsRows: () => { maxCols: number; maxRows: number; padding: number }
 	toPixels: (row: number, col: number) => { left: number; top: number }
 	positions: Record<string, { row: number; col: number }>

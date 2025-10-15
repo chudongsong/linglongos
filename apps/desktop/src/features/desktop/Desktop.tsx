@@ -169,14 +169,15 @@ export default function Desktop() {
 				/>
 			)}
 
-			{/* 新：智能拖拽预览层（吸附后位置），固定定位，指针事件穿透 */}
+			{/* 新：智能拖拽预览层（自由跟随 + 容器绝对定位），指针事件穿透 */}
 			{smartPreview && (
 				<div
+					className="drag-preview"
 					style={{
-						position: 'fixed',
+						position: 'absolute',
 						pointerEvents: 'none',
-						left: smartPreview.snappedLeft,
-						top: smartPreview.snappedTop,
+						left: smartPreview.freeLeft,
+						top: smartPreview.freeTop,
 						zIndex: 9999,
 					}}
 				>

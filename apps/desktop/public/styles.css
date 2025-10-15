@@ -68,6 +68,11 @@ body {
   color: var(--theme-text-color);
 }
 
+/* 全局按钮默认背景透明，避免影响各组件的自定义样式 */
+button {
+  background-color: transparent;
+}
+
 /* 加载遮罩层样式 */
 .loading-overlay {
   position: fixed;
@@ -255,8 +260,9 @@ body {
 }
 
 .icon-item:hover img {
-  transform: scale(1.1);
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.1);
+  /* 移除悬停放大动画，保持轻微高亮但不改变尺寸 */
+  transform: none;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
 /* 现代化图标标题：字号随高度比例变化，使用 clamp 夹逼范围 */
@@ -331,6 +337,9 @@ body {
   transition: none !important;
   pointer-events: none !important;
   z-index: 9999 !important;
+  /* 统一预览容器尺寸与网格一致，保证与桌面图标 UI 对齐 */
+  width: var(--grid-width);
+  height: var(--grid-height);
 }
 
 /* 新增：橡皮筋选择框样式，使用主题变量 */
@@ -790,6 +799,11 @@ body {
 
 /* 拖拽中禁用过渡，保证位置变化立即生效并跟随鼠标 */
 .window.dragging {
+  transition: none !important;
+}
+
+/* 缩放进行中：禁用所有过渡，确保尺寸变化即时响应 */
+.window.resizing {
   transition: none !important;
 }
 

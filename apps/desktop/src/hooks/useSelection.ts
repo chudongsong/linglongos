@@ -8,8 +8,11 @@
 import { useRef, useState } from 'react'
 
 /**
- * 选择管理 Hook
- * 提供选中集合、控制清空的 ref，以及点击/按下/拖拽开始时的处理函数。
+ * 选择管理 Hook。
+ *
+ * 管理桌面图标的选中状态，支持单选与多选（cmd/ctrl），并在点击、按下与拖拽开始时更新选中集合。
+ *
+ * @returns `{ selected, setSelected, suppressNextClickClearRef, dragMultiKeyRef, handleIconClick, handleIconMouseDown, handleDragStartSelect }`
  */
 export function useSelection() {
 	const [selected, setSelected] = useState<Set<string>>(new Set())

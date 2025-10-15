@@ -10,8 +10,12 @@ import { openWindow } from '@store/slices/window.slice'
 import type { FullConfig, AppItem } from '@/types/config'
 
 /**
- * 启动器 Hook：根据配置在交互时打开应用窗口
+ * 启动器 Hook：根据配置在交互时打开应用窗口。
+ *
+ * 支持双击激活与键盘可达性（Enter/Space），将统一派发到 WindowManager。
+ *
  * @param config 完整配置（可为空，表示尚未加载完成）
+ * @returns `{ handleIconDoubleClick, handleIconKeyDown }`
  */
 export function useAppLauncher(config?: FullConfig | null) {
 	const dispatch = useAppDispatch()

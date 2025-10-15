@@ -1,14 +1,14 @@
 {
-  "extends": "../../env/typescript/base.json",
+  "extends": "@eggjs/tsconfig",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "declaration": false,
     "outDir": "dist",
-    "rootDir": "src",
-    "strict": true,
-    "esModuleInterop": true
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+    "paths": {
+      "@/module/*": ["app/module/*"]
+    },
+    "baseUrl": "."
+  }
 }

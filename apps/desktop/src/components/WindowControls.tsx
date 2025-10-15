@@ -40,6 +40,35 @@ export function WindowControls({ id, isMaximized }: Props) {
     [dispatch, id],
   )
 
+  // 键盘激活支持：Enter 或 Space 触发对应操作
+  const handleMinimizeKey = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.stopPropagation()
+        dispatch(toggleMinimize(id))
+      }
+    },
+    [dispatch, id],
+  )
+  const handleToggleMaximizeKey = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.stopPropagation()
+        dispatch(toggleMaximize(id))
+      }
+    },
+    [dispatch, id],
+  )
+  const handleCloseKey = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.stopPropagation()
+        dispatch(closeWindow(id))
+      }
+    },
+    [dispatch, id],
+  )
+
   const baseBtn =
     'group relative w-9 h-9 inline-flex items-center justify-center rounded-md text-gray-200 hover:text-white transition-all ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 active:scale-[0.98]'
@@ -52,24 +81,30 @@ export function WindowControls({ id, isMaximized }: Props) {
   return (
     <div className="window-controls flex items-center gap-1.5 px-2">
       {/* 最小化 */}
-      <button
+      <div
         className={baseBtn}
         onClick={handleMinimize}
         aria-label="最小化窗口"
         title="最小化"
+        role="button"
+        tabIndex={0}
+        onKeyDown={handleMinimizeKey}
       >
         <span className={overlay} />
         <svg className={icon} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" d="M5 12h14" />
         </svg>
-      </button>
+      </div>
 
       {/* 最大化/还原 */}
-      <button
+      <div
         className={baseBtn}
         onClick={handleToggleMaximize}
         aria-label={isMaximized ? '还原窗口' : '最大化窗口'}
         title={isMaximized ? '还原' : '最大化'}
+        role="button"
+        tabIndex={0}
+        onKeyDown={handleToggleMaximizeKey}
       >
         <span className={overlay} />
         {isMaximized ? (
@@ -81,20 +116,23 @@ export function WindowControls({ id, isMaximized }: Props) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5.5 5.5h13v13h-13z" />
           </svg>
         )}
-      </button>
+      </div>
 
       {/* 关闭（危险态：更强的悬停提示） */}
-      <button
+      <div
         className={baseBtn + ' text-gray-200 hover:text-white'}
         onClick={handleClose}
         aria-label="关闭窗口"
         title="关闭"
+        role="button"
+        tabIndex={0}
+        onKeyDown={handleCloseKey}
       >
         <span className={overlay + ' group-hover:bg-red-500/25 group-active:bg-red-500/35'} />
         <svg className={icon} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M6 18L18 6" />
         </svg>
-      </button>
+      </div>
     </div>
   )
 }

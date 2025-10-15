@@ -1,262 +1,143 @@
-# LingLongOS API 服务
+# LinglongOS API
 
-一个基于 Koa.js 的现代化 API 服务，提供 Google 身份验证和面板代理功能。
+统一面板代理与认证服务，基于 [Egg](https://eggjs.org) 与 [tegg](https://github.com/eggjs/tegg)
 
-## 🚀 功能特性
+## 注释规范（TS JSDoc）
 
-- **Google 身份验证**: 基于 TOTP 的双因素认证
-- **面板代理**: 支持宝塔面板和 1Panel 的 API 代理
-- **统一响应格式**: 标准化的 API 响应结构
-- **完整的日志系统**: 包含 HTTP 请求、性能监控和安全日志
-- **OpenAPI 文档**: 自动生成的 API 文档
-- **TypeScript 支持**: 完整的类型定义和类型安全
+为提升可维护性，代码注释统一采用 TS JSDoc 风格，要求如下：
 
-## 📁 项目结构
+- 范围：模块、类、函数/方法、关键逻辑与配置返回对象。
+- 必备信息：功能描述、参数说明（含类型与含义）、返回值类型与含义、可能的异常或边界情况。
+- 统一格式：
 
-```
-src/
-├── config/           # 配置管理
-│   ├── auth.config.ts    # 认证配置
-│   ├── logger.config.ts  # 日志配置
-│   └── index.ts          # 统一配置导出
-├── controllers/      # 控制器层
-│   ├── authController.ts # 认证控制器
-│   ├── proxyController.ts # 代理控制器
-│   └── index.ts          # 统一控制器导出
-├── middlewares/      # 中间件
-│   ├── authMiddleware.ts    # 认证中间件
-│   ├── commonMiddleware.ts  # 通用中间件
-│   ├── loggerMiddleware.ts  # 日志中间件
-│   └── index.ts             # 统一中间件导出
-├── services/         # 服务层
-│   ├── authService.ts   # 认证服务
-│   ├── proxyService.ts  # 代理服务
-│   └── index.ts         # 统一服务导出
-├── types/           # 类型定义
-│   └── index.ts         # 统一类型定义
-├── routes/          # 路由配置
-│   └── index.ts         # API 路由
-├── docs/            # 文档生成
-│   └── openapi.ts       # OpenAPI 文档生成
-├── btpanel/         # 宝塔面板专用模块
-│   └── index.ts         # 宝塔面板路由
-└── app.ts           # 应用入口
+```ts
+/**
+ * 功能简述（1-2 行）。
+ * 可选：关键逻辑或流程要点。
+ *
+ * @param {Type} paramName - 参数含义与取值要求
+ * @param {Type} [optionalParam] - 可选参数说明
+ * @returns {ReturnType} - 返回值含义与结构说明
+ * @throws {ErrorType} - 可能抛出的异常（如有）
+ */
 ```
 
-## 🛠️ 技术栈
+注意：在 TypeScript 中，JSDoc 的类型不会影响编译类型，但用于文档与 IDE 智能提示；同时保持函数签名上的显式 TS 类型。
 
-- **运行时**: Node.js 18+
-- **框架**: Koa.js
-- **语言**: TypeScript
-- **认证**: Google Authenticator (TOTP)
-- **日志**: Winston
-- **文档**: OpenAPI 3.0 + Swagger UI
-- **验证**: Zod
-- **包管理**: pnpm
+## QuickStart
 
-## 🚀 快速开始
-
-### 环境要求
-
-- Node.js 18+
-- pnpm
-
-### 安装依赖
+### Development
 
 ```bash
-pnpm install
+pnpm -C apps/api install
+pnpm -C apps/api dev
+# 本地服务默认端口 7001
 ```
 
-### 开发模式
+Don't tsc compile at development mode, if you had run `tsc` then you need to `npm run clean` before `npm run dev`.
+
+### Deploy
 
 ```bash
-pnpm dev
+pnpm -C apps/api tsc
+pnpm -C apps/api start
 ```
 
-服务将在 `http://localhost:4000` 启动。
+### API 文档导出（OpenAPI）
 
-### 构建生产版本
+- 服务启动后，访问 `GET /api/v1/docs/openapi.json` 获取动态生成的 OpenAPI 3.0 文档。
+- 可直接导入到 Apipost、Postman、Apifox 等 API 管理工具。
+
+示例：
 
 ```bash
-pnpm build
+curl http://localhost:7001/api/v1/docs/openapi.json | jq .info
 ```
 
-### 启动生产服务
+### Npm Scripts
+
+- 使用 `pnpm -C apps/api lint` 检查代码风格
+- 使用 `pnpm -C apps/api exec egg-bin test` 运行集成测试
+- 使用 `pnpm -C apps/api clean` 清理编译产物
+
+### Requirement
+
+- Node.js >= 20.x
+- Typescript >= 5.x
+
+## 接口说明
+
+- `GET /api/v1/auth/google-auth-bind`
+  - 返回 `secret` 与二维码URL（本服务用于生成2FA）
+- `POST /api/v1/auth/google-auth-verify`
+  - 请求体：`{ token }`
+  - 验证成功后设置会话Cookie：`ll_session`（签名）
+- `POST /api/v1/proxy/bind-panel-key`
+  - 请求体：`{ type, url, key }`
+  - 绑定面板类型与目标地址、密钥
+- `ALL /api/v1/proxy/request`
+  - 支持查询或请求体传参：`panelType`、`url`、`method`、`params`
+  - `bt` 类型会自动追加 `request_time` 与 `request_token=md5(key+request_time)`
+  - 响应的 `code` 会透传上游 HTTP 状态码
+
+## 业务流程
+
+- 前置条件
+  - 服务已运行：`http://127.0.0.1:7001`
+  - 默认配置启用：签名 Cookie、关闭 CSRF（API 场景）
+
+### 2FA 绑定与会话创建
+- 生成绑定信息：`GET /api/v1/auth/google-auth-bind`
+  - 返回：`secret`（base32）与 `qrCodeUrl`（`otpauth://...`）
+  - 行为：持久化 `secret` 到 `auth` 表
+- 验证 TOTP 并创建会话：`POST /api/v1/auth/google-auth-verify`
+  - 请求体：`{ token }`（6 位一次性口令）
+  - 成功：设置 `ll_session` Cookie（有效期 4h，`httpOnly`，签名）
+  - 失败：`401 { code: 401, message: 'Invalid token or session expired.' }`
+
+### 受保护接口访问
+- 前提：客户端需携带有效 `ll_session` Cookie
+- 示例：`GET /bar/user?userId=Alice`
+  - 响应：`hello, Alice`
+  - 无会话：`401 { code: 401, message: 'AUTH_REQUIRED' }`
+
+### 面板绑定与代理
+- 绑定面板：`POST /api/v1/proxy/bind-panel-key`
+  - 请求体：`{ type, url, key }`
+  - 成功：`{ code: 200, message: 'Panel key bound successfully.' }`
+- 代理调用：`ALL /api/v1/proxy/request`
+  - 参数：`panelType`、`url`、`method`、`params`
+  - bt 特殊：自动追加 `request_time` 与 `request_token=md5(key+request_time)`
+  - 未配置面板：`400 { code: 400, message: 'Panel not configured.' }`
+
+### 会话生命周期
+- 生成：`createSession(ttlMs=4h)` 持久化到 `session` 表
+- 校验：`isValidSession(sessionId)`；过期返回 `false`
+- 可选：实现 `logout` 删除 `session` 并清理 Cookie
+
+### 错误处理约定
+- `401 AUTH_REQUIRED`：缺少或无效会话
+- `401 Invalid token or session expired.`：TOTP 验证失败或会话过期
+- `400 Panel not configured.`：未绑定面板配置
+- 代理错误：透传上游状态码到 `code` 与 `ctx.status`
+
+### 典型调用序列
+1. 绑定 2FA → `GET /api/v1/auth/google-auth-bind`（获得 `secret`/二维码）
+2. 生成 TOTP → 输入 6 位口令（本地或 App）
+3. 验证并创建会话 → `POST /api/v1/auth/google-auth-verify`（获得 `ll_session`）
+4. 绑定面板 → `POST /api/v1/proxy/bind-panel-key`
+5. 发起代理请求 → `GET/POST /api/v1/proxy/request`
+6. 访问受保护接口 → `GET /bar/user?userId=Alice`
+
+## 运行测试
 
 ```bash
-pnpm start
+pnpm -C apps/api exec egg-bin test
 ```
 
-## 📖 API 文档
+测试覆盖：
+- 2FA 验证与会话 Cookie 设置
+- bt 面板绑定与 GET/POST 代理、状态码透传、鉴权参数校验
+- 1panel 基本 GET 代理
 
-启动服务后，访问以下地址查看 API 文档：
-
-- **Swagger UI**: http://localhost:4000/docs
-- **OpenAPI JSON**: http://localhost:4000/api/v1/docs/openapi.json
-- **OpenAPI YAML**: http://localhost:4000/api/v1/docs/openapi.yaml
-
-## 🔐 认证流程
-
-### 1. 绑定 Google Authenticator
-
-```bash
-GET /api/v1/auth/google-auth-bind
-```
-
-返回二维码 URL，用户扫描后在 Google Authenticator 中添加账户。
-
-### 2. 验证 TOTP 令牌
-
-```bash
-POST /api/v1/auth/google-auth-verify
-Content-Type: application/json
-
-{
-  "token": "123456"
-}
-```
-
-验证成功后会创建会话并设置 Cookie。
-
-### 3. 使用认证接口
-
-后续请求会自动验证会话 Cookie，无需额外处理。
-
-## 🔧 代理功能
-
-### 绑定面板密钥
-
-```bash
-POST /api/v1/proxy/bind-panel-key
-Content-Type: application/json
-
-{
-  "type": "bt",
-  "url": "http://panel.example.com:8888",
-  "key": "your-api-key"
-}
-```
-
-### 代理请求
-
-```bash
-# GET 请求
-GET /api/v1/proxy/request?url=/api/panel/get_sys_info&panelType=bt
-
-# POST 请求
-POST /api/v1/proxy/request
-Content-Type: application/json
-
-{
-  "url": "/api/panel/get_sys_info",
-  "panelType": "bt",
-  "params": {
-    "action": "get_sys_info"
-  }
-}
-```
-
-## 📝 开发规范
-
-### 代码风格
-
-- 使用 TypeScript 严格模式
-- 遵循 ESLint 和 Prettier 配置
-- 所有函数必须包含 JSDoc 注释
-- 禁止使用 `any` 类型
-
-### 文件命名
-
-- 控制器: `xxxController.ts`
-- 服务: `xxxService.ts`
-- 中间件: `xxxMiddleware.ts`
-- 配置: `xxx.config.ts`
-- 类型: 统一在 `types/index.ts`
-
-### 导入导出
-
-- 使用统一的索引文件 (`index.ts`) 管理导出
-- 导入路径使用 `.js` 扩展名（TypeScript 编译要求）
-- 优先使用命名导出而非默认导出
-
-### 错误处理
-
-- 使用 `HttpError` 类处理业务错误
-- 所有异步操作必须包含错误处理
-- 错误信息使用中文，便于用户理解
-
-### 日志记录
-
-- HTTP 请求自动记录
-- 业务操作使用 `logBusinessOperation` 装饰器
-- 安全事件使用 `securityLogger`
-- 性能监控自动记录响应时间
-
-## 🔍 调试
-
-### 日志级别
-
-开发环境默认使用 `debug` 级别，生产环境使用 `info` 级别。
-
-### 日志文件
-
-日志文件保存在 `logs/` 目录：
-
-- `error.log`: 错误日志
-- `combined.log`: 所有日志
-- `exceptions.log`: 未捕获异常
-- `rejections.log`: 未处理的 Promise 拒绝
-
-## 🧪 测试
-
-```bash
-# 运行测试
-pnpm test
-
-# 生成覆盖率报告
-pnpm test:coverage
-```
-
-## 📦 部署
-
-### Docker 部署
-
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY dist ./dist
-EXPOSE 4000
-CMD ["node", "dist/app.js"]
-```
-
-### 环境变量
-
-- `PORT`: 服务端口 (默认: 4000)
-- `NODE_ENV`: 环境模式 (development/production)
-- `IGNORE_SSL_ERRORS`: 是否忽略 SSL 错误 (true/false)
-
-## 🤝 贡献指南
-
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建 Pull Request
-
-## 📄 许可证
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 🆘 支持
-
-如果您遇到问题或有疑问，请：
-
-1. 查看 [API 文档](http://localhost:4000/docs)
-2. 检查日志文件
-3. 提交 Issue
-
----
-
-**注意**: 本项目仍在积极开发中，API 可能会发生变化。请关注更新日志。
+CI 已配置于 `.github/workflows/api-tests.yml`，在推送或 PR 时自动运行。

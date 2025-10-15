@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LinglongOS API 测试页</title>
+    <style>
+      html, body { height: 100%; }
+      body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0f172a; color: #e5e7eb; }
+      header { padding: 16px 20px; background: #111827; border-bottom: 1px solid #1f2937; }
+      header h1 { margin: 0; font-size: 18px; }
+      main { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      section { background: #111827; border: 1px solid #1f2937; border-radius: 8px; padding: 16px; }
+      h2 { margin: 0 0 12px; font-size: 16px; }
+      .row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+      input, select, textarea, button { font: inherit; border-radius: 6px; border: 1px solid #374151; background: #0b1220; color: #e5e7eb; }
+      input, select { padding: 8px; }
+      textarea { width: 100%; min-height: 120px; padding: 10px; }
+      button { padding: 8px 12px; border: 1px solid #374151; cursor: pointer; transition: background .15s; }
+      button:hover { background: #0f1321; }
+      pre { background: #0b1220; border: 1px solid #374151; border-radius: 8px; padding: 12px; overflow: auto; max-height: 320px; }
+      .muted { color: #9ca3af; font-size: 12px; }
+      footer { padding: 12px 20px; color: #94a3b8; border-top: 1px solid #1f2937; text-align: right; }
+      a { color: #93c5fd; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>LinglongOS API 测试页</h1>
+      <div class="muted">此页面由 Egg 静态服务提供（/public/index.html）。</div>
+    </header>
+    <main>
+      <section>
+        <h2>快速测试 & 2FA</h2>
+        <div class="row">
+          <button id="btn-openapi">获取 OpenAPI JSON</button>
+          <a href="/api/v1/docs/openapi.json" target="_blank">在新窗口查看</a>
+        </div>
+        <div class="row">
+          <button id="btn-auth-bind">生成绑定信息（二维码+密钥）</button>
+        </div>
+        <div class="row" style="align-items:flex-start">
+          <div style="flex:1">
+            <div class="muted">Base32 Secret（仅用于本地测试）</div>
+            <input id="secret" style="width:100%" placeholder="绑定后自动填充" />
+          </div>
+          <div style="width:190px">
+            <div class="muted">扫描二维码</div>
+            <div id="qr" style="width:180px; height:180px; border:1px solid #374151; border-radius:8px; display:flex; align-items:center; justify-content:center; background:#0b1220">暂无</div>
+          </div>
+        </div>
+        <div class="row">
+          <input id="token" placeholder="输入或生成 TOTP" style="flex:1" />
+          <button id="btn-gen-totp">生成 TOTP</button>
+          <button id="btn-auth-verify">验证并创建会话</button>
+          <button id="btn-call-bar">使用会话请求 /bar/user</button>
+        </div>
+        <pre id="quick-output">等待结果...</pre>
+      </section>
+
+      <section>
+        <h2>自定义请求</h2>
+        <div class="row">
+          <label>方法</label>
+          <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+            <option>PATCH</option>
+          </select>
+          <label>路径</label>
+          <input id="path" value="/api/v1/proxy/request" style="flex:1" />
+        </div>
+        <div class="row" style="align-items:flex-start">
+          <label>Body (JSON)</label>
+        </div>
+        <textarea id="body" placeholder='{"panelType":"bt","url":"/some/api","params":{"foo":"bar"}}'></textarea>
+        <div class="row">
+          <button id="btn-send">发送请求</button>
+        </div>
+        <pre id="custom-output">等待结果...</pre>
+        <div class="muted">提示：如果未绑定面板密钥，/api/v1/proxy/request 可能返回 400。</div>
+      </section>
+    </main>
+    <footer>
+      <span>Node 服务: <code id="server-url">http://127.0.0.1:7001</code></span>
+    </footer>
+
+    <script>
+      const quickOutput = document.getElementById('quick-output');
+      const customOutput = document.getElementById('custom-output');
+      const secretInput = document.getElementById('secret');
+      const qrDiv = document.getElementById('qr');
+      const tokenInput = document.getElementById('token');
+      let lastBind = null;
+
+      function show(obj, el) {
+        el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
+      }
+
+      async function fetchJson(url, options) {
+        const resp = await fetch(url, { credentials: 'include', ...(options || {}) });
+        const text = await resp.text();
+        try { return { status: resp.status, data: JSON.parse(text) }; }
+        catch { return { status: resp.status, data: text }; }
+      }
+
+      document.getElementById('btn-openapi').addEventListener('click', async () => {
+        show('请求中...', quickOutput);
+        try {
+          const res = await fetchJson('/api/v1/docs/openapi.json');
+          show(res, quickOutput);
+        } catch (e) {
+          show({ error: String(e) }, quickOutput);
+        }
+      });
+
+      document.getElementById('btn-auth-bind').addEventListener('click', async () => {
+        show('请求中...', quickOutput);
+        try {
+          const res = await fetchJson('/api/v1/auth/google-auth-bind');
+          show(res, quickOutput);
+          lastBind = res?.data || null;
+          const secret = lastBind?.secret || '';
+          const qrCodeUrl = lastBind?.qrCodeUrl || '';
+          secretInput.value = secret || '';
+          if (qrCodeUrl) {
+            const img = document.createElement('img');
+            img.alt = 'QR';
+            img.width = 180; img.height = 180;
+            img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(qrCodeUrl);
+            qrDiv.innerHTML = '';
+            qrDiv.appendChild(img);
+          }
+        } catch (e) {
+          show({ error: String(e) }, quickOutput);
+        }
+      });
+
+      // Base32 -> bytes
+      function base32ToBytes(b32) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        const clean = String(b32 || '').toUpperCase().replace(/=+$/,'').replace(/\s+/g,'');
+        let bits = 0, value = 0; const out = [];
+        for (let i = 0; i < clean.length; i++) {
+          const idx = alphabet.indexOf(clean[i]);
+          if (idx === -1) continue;
+          value = (value << 5) | idx; bits += 5;
+          if (bits >= 8) { out.push((value >>> (bits - 8)) & 0xFF); bits -= 8; }
+        }
+        return new Uint8Array(out);
+      }
+
+      function intToBytes(num) {
+        const arr = new Uint8Array(8);
+        for (let i = 7; i >= 0; i--) { arr[i] = num & 0xFF; num = num >>> 8; }
+        return arr;
+      }
+
+      async function hmacSha1(keyBytes, msgBytes) {
+        const key = await crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+        const sig = await crypto.subtle.sign('HMAC', key, msgBytes);
+        return new Uint8Array(sig);
+      }
+
+      async function generateTOTP(secret, digits = 6, step = 30) {
+        if (!window.crypto?.subtle) throw new Error('当前环境不支持 WebCrypto');
+        const keyBytes = base32ToBytes(secret);
+        const counter = Math.floor(Date.now() / 1000 / step);
+        const msg = intToBytes(counter);
+        const h = await hmacSha1(keyBytes, msg);
+        const offset = h[19] & 0xf;
+        const bin = ((h[offset] & 0x7f) << 24) | (h[offset + 1] << 16) | (h[offset + 2] << 8) | (h[offset + 3]);
+        const otp = (bin % (10 ** digits)).toString().padStart(digits, '0');
+        return otp;
+      }
+
+      document.getElementById('btn-gen-totp').addEventListener('click', async () => {
+        show('生成中...', quickOutput);
+        try {
+          const secret = secretInput.value.trim();
+          if (!secret) { show({ error: '请先生成绑定信息，或填写 base32 secret' }, quickOutput); return; }
+          const token = await generateTOTP(secret);
+          tokenInput.value = token;
+          show({ token }, quickOutput);
+        } catch (e) {
+          show({ error: String(e) }, quickOutput);
+        }
+      });
+
+      document.getElementById('btn-auth-verify').addEventListener('click', async () => {
+        show('验证中...', quickOutput);
+        try {
+          const token = tokenInput.value.trim();
+          if (!token) { show({ error: '请填写或生成 TOTP token' }, quickOutput); return; }
+          const res = await fetchJson('/api/v1/auth/google-auth-verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+          });
+          show(res, quickOutput);
+        } catch (e) {
+          show({ error: String(e) }, quickOutput);
+        }
+      });
+
+      document.getElementById('btn-call-bar').addEventListener('click', async () => {
+        show('请求受保护接口中...', quickOutput);
+        try {
+          const resp = await fetchJson('/bar/user?userId=Alice', { method: 'GET' });
+          show(resp, quickOutput);
+        } catch (e) {
+          show({ error: String(e) }, quickOutput);
+        }
+      });
+
+      document.getElementById('btn-send').addEventListener('click', async () => {
+        show('请求中...', customOutput);
+        const method = document.getElementById('method').value;
+        const path = document.getElementById('path').value || '/';
+        let bodyRaw = document.getElementById('body').value.trim();
+        let bodyObj = undefined;
+        if (bodyRaw) {
+          try { bodyObj = JSON.parse(bodyRaw); }
+          catch (e) { show({ error: 'Body 不是有效 JSON: ' + String(e) }, customOutput); return; }
+        }
+        try {
+          const res = await fetchJson(path, {
+            method,
+            headers: bodyObj ? { 'Content-Type': 'application/json' } : undefined,
+            body: bodyObj ? JSON.stringify(bodyObj) : undefined,
+          });
+          show(res, customOutput);
+        } catch (e) {
+          show({ error: String(e) }, customOutput);
+        }
+      });
+    </script>
+  </body>
+</html>

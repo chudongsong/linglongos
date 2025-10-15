@@ -6,7 +6,7 @@
  * - 鼠标释放更新选中集（支持追加选择 toggle）
  * - 实时计算视觉选中集（进行中时）
  */
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { FullConfig, AppItem } from '@/types/config'
 
 export function useMarqueeSelection(params: {
@@ -49,6 +49,13 @@ export function useMarqueeSelection(params: {
 	 */
 	function handleMouseMove(e: React.MouseEvent, containerEl: HTMLElement | null) {
 		if (!marqueeStart) return
+		// 未按住左键则立即终止框选（防止离开页面再进入仍跟随）
+		if ((e.buttons & 1) !== 1) {
+			setMarqueeStart(null)
+			setMarqueeRect(null)
+			setMarqueeAdditive(false)
+			return
+		}
 		const rect = containerEl?.getBoundingClientRect()
 		if (!rect) return
 		const currX = e.clientX - rect.left
@@ -102,6 +109,31 @@ export function useMarqueeSelection(params: {
 		setMarqueeAdditive(false)
 		suppressNextClickClearRef.current = true
 	}
+
+	/**
+	 * 全局监听：离开页面/窗口失焦 时终止框选（不提交选中集，不设置 suppressNextClickClearRef）
+	 */
+	useEffect(() => {
+		const endMarquee = () => {
+			setMarqueeStart(null)
+			setMarqueeRect(null)
+			setMarqueeAdditive(false)
+		}
+		const onLeaveDocument = () => endMarquee()
+		const onWindowMouseOut = (ev: MouseEvent) => {
+			const to = ev.relatedTarget as Node | null
+			if (!to) endMarquee()
+		}
+		const onWindowBlur = () => endMarquee()
+		document.addEventListener('mouseleave', onLeaveDocument)
+		window.addEventListener('mouseout', onWindowMouseOut)
+		window.addEventListener('blur', onWindowBlur)
+		return () => {
+			document.removeEventListener('mouseleave', onLeaveDocument)
+			window.removeEventListener('mouseout', onWindowMouseOut)
+			window.removeEventListener('blur', onWindowBlur)
+		}
+	}, [])
 
 	/**
 	 * 视觉选中集：实时计算（进行框选时）

@@ -7,9 +7,12 @@ import { useMemo } from 'react'
 import type { FullConfig } from '@/types/config'
 
 /**
- * 背景样式计算 Hook
+ * 背景样式计算 Hook。
+ *
+ * 根据配置的背景信息（图片或渐变）生成桌面根容器的内联样式对象。
+ *
  * @param config 完整配置（可为空）
- * @returns CSSProperties 样式对象
+ * @returns `CSSProperties` 样式对象
  */
 export function useBackgroundStyle(config?: FullConfig | null) {
 	const backgroundStyle = useMemo<CSSProperties>(() => {

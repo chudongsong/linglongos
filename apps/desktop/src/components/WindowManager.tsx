@@ -70,11 +70,39 @@ const pendingPosRef = useRef<{ id: string; left: number; top: number } | null>(n
 
 	useEffect(() => {
 		/**
+		 * 结束当前交互（拖拽/缩放）并清理临时状态
+		 */
+		const endInteraction = () => {
+			// 结束缩放
+			resizingRef.current = null
+			// 结束拖拽
+			if (draggingRef.current) {
+				draggingRef.current = null
+				pendingPosRef.current = null
+			}
+		}
+
+		/**
 		 * 处理全局鼠标移动：优先处理缩放，其次处理拖拽预览。
 		 * 拖拽期间不更新窗口位置，仅更新预览层；松开后一次性提交。
 		 */
 		const onMove = (e: MouseEvent) => {
 			e.preventDefault()
+
+			// 若未按住左键，则立即结束交互（防止离开页面后返回仍跟随）
+			// 鼠标左键对应 bit 位 1；当 e.buttons === 0 或未包含左键位时，认为未按住
+			if ((e.buttons & 1) !== 1) {
+				endInteraction()
+				return
+			}
+
+			// 若鼠标坐标越界到页面外（安全边界判断），立即结束交互
+			const vw = window.innerWidth
+			const vh = window.innerHeight
+			if (e.clientX < 0 || e.clientY < 0 || e.clientX > vw || e.clientY > vh) {
+				endInteraction()
+				return
+			}
 
 			// 1) 处理缩放逻辑
 			if (resizingRef.current) {
@@ -149,26 +177,45 @@ const pendingPosRef = useRef<{ id: string; left: number; top: number } | null>(n
 		 * 处理鼠标松开：结束任何进行中的拖拽或缩放。
 		 */
 		const onUp = () => {
-			// 结束缩放
-			resizingRef.current = null
-    // 结束拖拽：清理引用
-    if (draggingRef.current) {
-      draggingRef.current = null
-      pendingPosRef.current = null
-    }
+			endInteraction()
+		}
+
+		// 鼠标离开整个页面（窗口）时，立即终止交互
+		const onLeaveDocument = () => {
+			endInteraction()
+		}
+
+		// 当触发 "mouseout" 且目标为 null（离开浏览器窗口）时，终止交互
+		const onWindowMouseOut = (ev: MouseEvent) => {
+			// relatedTarget 为 null 表示指针移出至浏览器之外
+			const to = ev.relatedTarget as Node | null
+			if (!to) {
+				endInteraction()
+			}
+		}
+
+		// 浏览器窗口失焦（例如切到其他应用）也应结束交互
+		const onWindowBlur = () => {
+			endInteraction()
 		}
 
 		window.addEventListener('mousemove', onMove)
 		window.addEventListener('mouseup', onUp)
+		document.addEventListener('mouseleave', onLeaveDocument)
+		window.addEventListener('mouseout', onWindowMouseOut)
+		window.addEventListener('blur', onWindowBlur)
 		return () => {
 			window.removeEventListener('mousemove', onMove)
 			window.removeEventListener('mouseup', onUp)
+			document.removeEventListener('mouseleave', onLeaveDocument)
+			window.removeEventListener('mouseout', onWindowMouseOut)
+			window.removeEventListener('blur', onWindowBlur)
 			if (frameIdRef.current != null) {
 				cancelAnimationFrame(frameIdRef.current)
 				frameIdRef.current = null
 			}
 		}
-    }, [dispatch, windows])
+		}, [dispatch, windows])
 
 	const layerStyle = useMemo<CSSProperties>(
 		() => ({ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 1100 }),
@@ -311,6 +358,8 @@ const pendingPosRef = useRef<{ id: string; left: number; top: number } | null>(n
 					className,
 					// 拖拽中禁用过渡以消除跟随延迟
 					draggingRef.current?.id === w.id && 'dragging',
+					// 缩放中禁用过渡，保证尺寸变化即时生效
+					resizingRef.current?.id === w.id && 'resizing',
 					'absolute pointer-events-auto rounded-xl overflow-hidden text-white',
 				)
 				return (

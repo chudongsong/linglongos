@@ -6,6 +6,15 @@
  */
 import { useEffect, useRef, useState } from 'react'
 
+/**
+ * 计算并维护容器尺寸的 Hook。
+ *
+ * 初始化时会返回一个用于绑定到容器节点的 `ref`，并在窗口尺寸变化或容器挂载时更新宽高。
+ *
+ * @param initialWidth 初始宽度（SSR 或无 `window` 环境下的回退值）
+ * @param initialHeight 初始高度（SSR 或无 `window` 环境下的回退值）
+ * @returns `{ containerRef, containerWidth, containerHeight }` 尺寸状态与容器 ref
+ */
 export function useContainerSize(initialWidth = 0, initialHeight = 0) {
 	const containerRef = useRef<HTMLDivElement | null>(null)
 	const [containerWidth, setContainerWidth] = useState<number>(

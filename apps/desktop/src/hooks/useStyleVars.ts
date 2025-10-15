@@ -10,7 +10,12 @@ import { useMemo } from 'react'
 import type { FullConfig } from '@/types/config'
 
 /**
- * 计算根容器的样式变量
+ * 计算根容器的样式变量。
+ *
+ * 合成 CSS 变量（网格、主题）与背景样式，用于桌面根容器的内联样式。
+ *
+ * @param params `{ config, grid, backgroundStyle }`
+ * @returns `CSSProperties` 合成后的样式对象
  */
 export function useStyleVars(params: {
 	config?: FullConfig | null

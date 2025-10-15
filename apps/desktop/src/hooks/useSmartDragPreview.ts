@@ -24,6 +24,15 @@ export interface SmartPreviewParams {
   findNearestEmptySlot: (targetRow: number, targetCol: number, excludeId: string) => { row: number; col: number }
 }
 
+/**
+ * 智能拖拽预览 Hook。
+ *
+ * 在拖拽过程中实时计算图标预览位置，约束在容器边界，吸附至网格行列，并给出最终吸附后的像素坐标与应用信息。
+ * 兼容现有网格系统（`toPixels`/`getMaxColsRows`/`findNearestEmptySlot`/`positions`）。
+ *
+ * @param params 预览计算所需的上下文参数（容器、网格、配置、位置映射等）
+ * @returns `null` 或 `{ left, top, app }`：吸附后的像素位置及对应应用
+ */
 export function useSmartDragPreview(params: SmartPreviewParams) {
   const { config, containerRef, containerWidth, containerHeight, grid, getMaxColsRows, toPixels, positions, findNearestEmptySlot } = params
 

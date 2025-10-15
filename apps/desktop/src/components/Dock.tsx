@@ -29,6 +29,9 @@ export default function Dock() {
 	const categories = useAppSelector((s) => s.desktop.config?.categories || {})
 	const grid = useAppSelector((s) => s.desktop.grid)
 
+	// 整洁布局：Dock 快捷栏最大显示数量（超过部分通过“应用中心”访问）
+	const MAX_QUICK_LAUNCH = 9
+
 	// 快捷栏固定应用 id 列表
 	const [pinned, setPinned] = useState<string[]>([])
 	const [showCenter, setShowCenter] = useState(false)
@@ -63,6 +66,21 @@ export default function Dock() {
 			void 0
 		}
 	}, [pinned])
+
+	// 同步：当应用列表发生变化时，自动对齐 pinned（去除失效并补齐到最大显示数）
+	useEffect(() => {
+		const appIds = apps.map((a) => a.id)
+		if (appIds.length === 0) return
+		setPinned((prev) => {
+			const filtered = prev.filter((id) => appIds.includes(id))
+			const need = Math.max(0, Math.min(MAX_QUICK_LAUNCH, appIds.length) - filtered.length)
+			const extras = need > 0 ? appIds.filter((id) => !filtered.includes(id)).slice(0, need) : []
+			const next = extras.length > 0 || filtered.length !== prev.length ? [...filtered, ...extras] : prev
+			const changed = next.length !== prev.length || next.some((id, i) => id !== prev[i])
+			return changed ? next : prev
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [apps])
 
 	// 当前运行中的 appId 集合（用于显示指示点）
 	const runningSet = useMemo(() => new Set(windows.map((w) => w.appId)), [windows])
@@ -173,12 +191,17 @@ export default function Dock() {
 			{/* 右：快捷启动栏 */}
 			<QuickLaunch
 				apps={apps}
-				pinnedIds={pinned}
+				pinnedIds={pinned.slice(0, MAX_QUICK_LAUNCH)}
 				runningSet={runningSet}
 				onOpen={openOrFocusApp}
 				movePinned={movePinned}
 				addPinnedAt={addPinnedAt}
 			/>
+
+			{/* 超出数量提示：保持 Dock 整洁，点击打开应用中心 */}
+			{pinned.length > MAX_QUICK_LAUNCH && (
+				<HiddenCountBadge count={pinned.length - MAX_QUICK_LAUNCH} onClick={toggleAppCenter} />
+			)}
 
 			{/* 新：全屏应用中心覆盖层（常驻渲染以支持入场/退场动画） */}
 			{/** 仅在 anchorRect 存在时传递，避免传入 undefined 触发 exactOptionalPropertyTypes */}
@@ -200,31 +223,55 @@ export default function Dock() {
  * AppCenterButton：九宫格按钮（Ubuntu 风格）
  */
 function AppCenterButton(props: {
-	active: boolean
-	onClick: () => void
-	buttonRef?: React.RefObject<HTMLButtonElement | null>
+    active: boolean
+    onClick: () => void
+    buttonRef?: React.RefObject<HTMLButtonElement | null>
 }) {
-	const { active, onClick, buttonRef } = props
-	return (
-		<button
-			ref={buttonRef}
-			title="应用中心"
-			onClick={onClick}
-			className={clsx(
-				'grid place-items-center w-10 h-10 bg-white/10 border-none cursor-pointer rounded-xl transition-colors',
-			)}
-		>
-			{/* 内联 3x3 圆点图标（SVG），无外部资源依赖 */}
-			<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-white/90">
-				{[4, 12, 20].map((x) => [4, 12, 20].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2" />))}
-			</svg>
-		</button>
-	)
+    const { active, onClick, buttonRef } = props
+    return (
+        <button
+            ref={buttonRef}
+            title="应用中心"
+            onClick={onClick}
+            aria-pressed={active}
+            className={clsx(
+                'grid place-items-center w-10 h-10 border-none cursor-pointer rounded-xl transition-colors',
+                'bg-white/10',
+                active && 'bg-white/20 ring-1 ring-white/30',
+            )}
+        >
+            {/* 内联 3x3 圆点图标（SVG），无外部资源依赖 */}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-white/90">
+                {[4, 12, 20].map((x) => [4, 12, 20].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2" />))}
+            </svg>
+        </button>
+    )
 }
 
 /** 分隔线 */
 function Divider() {
 	return <div className="w-px h-8 bg-white/15 mx-1" />
+}
+
+/**
+ * HiddenCountBadge：更多数量提示徽标
+ * - 显示 "+N"，点击后打开应用中心以访问全部应用
+ */
+function HiddenCountBadge(props: { count: number; onClick: () => void }) {
+  const { count, onClick } = props
+  return (
+    <button
+      onClick={onClick}
+      title={`还有 ${count} 个应用`}
+      className={clsx(
+        'px-2 h-6 rounded-full text-xs font-medium text-white/90 bg-white/10 hover:bg-white/15 border-none',
+        'transition-colors',
+      )}
+      aria-label={`更多应用（${count}）`}
+    >
+      +{count}
+    </button>
+  )
 }
 
 /**
