@@ -37,7 +37,7 @@ export default function staticAuthMiddleware() {
 		if (protectedPages.includes(requestPath)) {
 			// 验证会话（注意：cookie是签名的）
 			const sid = ctx.cookies.get('ll_session', { signed: true })
-			const isValidSession = sid ? ctx.service.fileStorage.isValidSession(sid) : false
+			const isValidSession = sid ? ctx.service.storage.isValidSession(sid) : false
 
 			if (!isValidSession) {
 				// 未认证用户重定向到登录页面
@@ -66,7 +66,7 @@ export default function staticAuthMiddleware() {
 			if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
 				// 文件存在，默认需要会话验证（安全优先原则）
 				const sid = ctx.cookies.get('ll_session', { signed: true })
-				const isValidSession = sid ? ctx.service.fileStorage.isValidSession(sid) : false
+				const isValidSession = sid ? ctx.service.storage.isValidSession(sid) : false
 
 				if (!isValidSession) {
 					ctx.redirect(loginPage)

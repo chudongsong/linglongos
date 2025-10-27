@@ -19,15 +19,15 @@ export default class InitController extends Controller {
     const { ctx, service } = this;
 
     try {
-      // 使用文件存储服务检查状态
-      const fileStorage = service.fileStorage;
+      // 使用存储服务检查状态
+      const storage = service.storage;
 
       // 检查 2FA 绑定状态
-      const twoFASecret = fileStorage.getTwoFASecret();
+      const twoFASecret = storage.getTwoFASecret();
       const hasTwoFA = !!twoFASecret;
 
       // 检查面板绑定状态
-      const panelConfig = fileStorage.getPanel();
+      const panelConfig = storage.getPanel();
       const hasPanel = !!(panelConfig?.url && panelConfig?.key);
 
       // 检查会话状态（如果有 session cookie）
@@ -35,7 +35,7 @@ export default class InitController extends Controller {
       let hasValidSession = false;
 
       if (sessionId) {
-        hasValidSession = fileStorage.isValidSession(sessionId);
+        hasValidSession = storage.isValidSession(sessionId);
       }
 
       ctx.body = {
@@ -51,9 +51,9 @@ export default class InitController extends Controller {
             sessionCookie: sessionId ? 'present' : 'missing',
             twoFASecret: twoFASecret ? 'present' : 'missing',
             panelConfig: panelConfig ? 'present' : 'missing',
-            timestamp: new Date().toISOString()
-          }
-        }
+            timestamp: new Date().toISOString(),
+          },
+        },
       };
     } catch (error) {
       ctx.logger.error('检查初始化状态失败:', error);
@@ -61,7 +61,7 @@ export default class InitController extends Controller {
       ctx.body = {
         code: 500,
         message: '检查初始化状态失败',
-        data: null
+        data: null,
       };
     }
   }

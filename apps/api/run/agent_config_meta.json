@@ -226,9 +226,11 @@
       "tsc": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "clean": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "export:openapi": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "migrate:to-sqlite": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "prepublishOnly": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
     "dependencies": {
+      "@eggjs/scripts": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/tegg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/tegg-aop-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/tegg-config": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
@@ -236,20 +238,20 @@
       "@eggjs/tegg-eventbus-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/tegg-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/tegg-schedule-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "egg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/scripts": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/tracer": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "axios": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "speakeasy": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "better-sqlite3": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "md5": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "egg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "md5": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "speakeasy": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "sqlite3": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
     "devDependencies": {
-      "@types/mocha": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@types/node": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tsconfig": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/bin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "@eggjs/mock": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tsconfig": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@types/mocha": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@types/node": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "eslint": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "eslint-config-egg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "typescript": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"

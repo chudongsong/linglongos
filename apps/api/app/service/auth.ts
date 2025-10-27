@@ -37,10 +37,10 @@ export default class AuthService extends Service {
      if (!ok) return null;
 
      // 验证成功后保存密钥
-     this.ctx.service.fileStorage.setTwoFASecret(secret);
+     this.ctx.service.storage.setTwoFASecret(secret);
 
      // 创建会话
-     const sessionId = this.ctx.service.fileStorage.createSession(4 * 60 * 60 * 1000);
+     const sessionId = this.ctx.service.storage.createSession(4 * 60 * 60 * 1000);
      return { sessionId };
    }
 
@@ -52,11 +52,11 @@ export default class AuthService extends Service {
    */
   async verifyTokenAndCreateSession(token?: string): Promise<{ sessionId?: string } | null> {
     if (!token) return null;
-    const secret = this.ctx.service.fileStorage.getTwoFASecret();
+    const secret = this.ctx.service.storage.getTwoFASecret();
     if (!secret) return null;
     const ok = speakeasy.totp.verify({ secret, encoding: 'base32', token });
     if (!ok) return null;
-    const sessionId = this.ctx.service.fileStorage.createSession(4 * 60 * 60 * 1000);
+    const sessionId = this.ctx.service.storage.createSession(4 * 60 * 60 * 1000);
     return { sessionId };
   }
 }

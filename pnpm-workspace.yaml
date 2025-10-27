@@ -1,5 +1,8 @@
 packages:
-  - 'plugin/*'
-  - 'apps/*'
-  - 'packages/*'
-  - 'env/*'
+  - plugin/*
+  - apps/*
+  - packages/*
+  - env/*
+
+ignoredBuiltDependencies:
+  - better-sqlite3

@@ -12,7 +12,7 @@ export default class ProxyService extends Service {
    * @returns {Promise<void>} - 无返回值，写入持久化存储
    */
   async bindPanelKey(type: 'bt' | '1panel', url: string, key: string): Promise<void> {
-    this.ctx.service.fileStorage.bindPanelKey(type, url, key);
+    this.ctx.service.storage.bindPanelKey(type, url, key);
   }
 
   /**
@@ -27,7 +27,7 @@ export default class ProxyService extends Service {
     const params = (ctx.request.body?.params || {}) as Record<string, any>;
     const overrideMethod = (ctx.request.body?.method || ctx.query?.method) as string | undefined;
 
-    const panel = this.ctx.service.fileStorage.getPanel(panelType);
+    const panel = this.ctx.service.storage.getPanel(panelType);
     if (!panel || !panel.url) {
       ctx.status = 400;
       return { code: 400, message: 'Panel not configured.' };

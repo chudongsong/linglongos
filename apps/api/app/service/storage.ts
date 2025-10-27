@@ -1,155 +1,143 @@
 import { Service } from 'egg';
-import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'crypto';
 
 type PanelType = 'bt' | '1panel';
+
+interface StorageData {
+  auth: Record<string, string>;
+  sessions: Record<string, { expiresAt: number; createdAt: number }>;
+  panels: Record<string, { url: string; key: string }>;
+}
 
 /**
  * StorageService
  *
- * 提供应用的数据持久化能力（SQLite）：
- * - 初始化与维护数据库连接及表结构；
+ * 提供应用的数据持久化能力（文件系统）：
  * - 存取 2FA 密钥；
  * - 创建与校验用户会话；
  * - 绑定并读取面板配置（地址与密钥）。
  */
 export default class StorageService extends Service {
-  private db?: Database.Database;
+  private dataPath: string;
+
+  constructor(ctx: any) {
+    super(ctx);
+    this.dataPath = path.join(this.app.baseDir, 'data', 'storage.json');
+    this.ensureDataFile();
+  }
 
   /**
-   * 确保数据库已创建并初始化。
-   *
-   * @returns {Database.Database} - SQLite 数据库连接实例
+   * 确保数据文件存在
    */
-  private ensureDb() {
-    if (!this.db) {
-      const dbPath = (this.app.config as any).sqlite?.path || `${this.app.baseDir}/data/api.db`;
-      const dir = path.dirname(dbPath);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      this.db = new Database(dbPath);
-      this.initSchema();
+  private ensureDataFile(): void {
+    const dir = path.dirname(this.dataPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
     }
-    return this.db!;
-  }
 
-  /**
-   * 初始化数据库表结构（幂等）。
-   *
-   * 表：
-   * - `auth(id, secret, created_at)`：存储 2FA 密钥；
-   * - `session(session_id, expires_at, created_at)`：用户会话；
-   * - `panel(type, url, key, updated_at)`：面板配置。
-   *
-   * @returns {void}
-   */
-  private initSchema() {
-    const db = this.db!;
-    db.prepare(
-      'CREATE TABLE IF NOT EXISTS auth (id INTEGER PRIMARY KEY, secret TEXT, created_at INTEGER)'
-    ).run();
-    db.prepare(
-      'CREATE TABLE IF NOT EXISTS session (session_id TEXT PRIMARY KEY, expires_at INTEGER, created_at INTEGER)'
-    ).run();
-    db.prepare(
-      'CREATE TABLE IF NOT EXISTS panel (type TEXT PRIMARY KEY, url TEXT, key TEXT, updated_at INTEGER)'
-    ).run();
-  }
-
-  /**
-   * 保存（插入或更新）2FA base32 密钥。
-   *
-   * @param {string} secret - TOTP base32 密钥
-   * @returns {void}
-   */
-  setTwoFASecret(secret: string) {
-    const db = this.ensureDb();
-    const now = Date.now();
-    const exists = db.prepare('SELECT id FROM auth WHERE id = 1').get();
-    if (exists) {
-      db.prepare('UPDATE auth SET secret = ?, created_at = ? WHERE id = 1').run(secret, now);
-    } else {
-      db.prepare('INSERT INTO auth (id, secret, created_at) VALUES (1, ?, ?)').run(secret, now);
+    if (!fs.existsSync(this.dataPath)) {
+      const initialData: StorageData = {
+        auth: {},
+        sessions: {},
+        panels: {},
+      };
+      fs.writeFileSync(this.dataPath, JSON.stringify(initialData, null, 2));
     }
   }
 
   /**
-   * 读取 2FA 密钥。
-   *
-   * @returns {string|null} - 若存在返回 base32 密钥，否则 `null`
+   * 读取存储数据
+   */
+  private readData(): StorageData {
+    try {
+      const content = fs.readFileSync(this.dataPath, 'utf8');
+      return JSON.parse(content);
+    } catch (error) {
+      return {
+        auth: {},
+        sessions: {},
+        panels: {},
+      };
+    }
+  }
+
+  /**
+   * 写入存储数据
+   */
+  private writeData(data: StorageData): void {
+    fs.writeFileSync(this.dataPath, JSON.stringify(data, null, 2));
+  }
+
+  /**
+   * 设置 2FA 密钥
+   */
+  setTwoFASecret(secret: string): void {
+    const data = this.readData();
+    data.auth.twofa_secret = secret;
+    this.writeData(data);
+  }
+
+  /**
+   * 获取 2FA 密钥
    */
   getTwoFASecret(): string | null {
-    const db = this.ensureDb();
-    const row = db.prepare('SELECT secret FROM auth WHERE id = 1').get() as { secret?: string } | undefined;
-    return row?.secret || null;
+    const data = this.readData();
+    return data.auth.twofa_secret || null;
   }
 
   /**
-   * 创建用户会话并返回会话 ID。
-   *
-   * @param {number} ttlMs - 会话有效期（毫秒）
-   * @returns {string} - 新创建的会话 ID
+   * 创建用户会话
    */
   createSession(ttlMs: number): string {
-    const db = this.ensureDb();
-    const sessionId = `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    const data = this.readData();
+    const sessionId = crypto.randomBytes(32).toString('hex');
     const now = Date.now();
-    const expiresAt = now + ttlMs;
-    db.prepare('INSERT INTO session (session_id, expires_at, created_at) VALUES (?, ?, ?)').run(
-      sessionId,
-      expiresAt,
-      now
-    );
+
+    data.sessions[sessionId] = {
+      expiresAt: now + ttlMs,
+      createdAt: now,
+    };
+
+    this.writeData(data);
     return sessionId;
   }
 
   /**
-   * 校验会话是否未过期。
-   *
-   * @param {string} sessionId - 会话 ID
-   * @returns {boolean} - 会话存在且未过期返回 `true`，否则 `false`
+   * 验证会话是否有效
    */
   isValidSession(sessionId: string): boolean {
     if (!sessionId) return false;
-    const db = this.ensureDb();
-    const row = db
-      .prepare('SELECT expires_at FROM session WHERE session_id = ?')
-      .get(sessionId) as { expires_at?: number } | undefined;
-    if (!row?.expires_at) return false;
-    return row.expires_at > Date.now();
+
+    const data = this.readData();
+    const session = data.sessions[sessionId];
+
+    if (!session) return false;
+    if (session.expiresAt <= Date.now()) {
+      // 清理过期会话
+      delete data.sessions[sessionId];
+      this.writeData(data);
+      return false;
+    }
+
+    return true;
   }
 
   /**
-   * 绑定或更新面板配置。
-   *
-   * @param {('bt'|'1panel')} type - 面板类型
-   * @param {string} url - 面板基础地址
-   * @param {string} key - 访问密钥
-   * @returns {void}
+   * 绑定面板密钥
    */
-  bindPanelKey(type: PanelType, url: string, key: string) {
-    const db = this.ensureDb();
-    const now = Date.now();
-    db.prepare('INSERT OR REPLACE INTO panel (type, url, key, updated_at) VALUES (?, ?, ?, ?)').run(
-      type,
-      url,
-      key,
-      now
-    );
+  bindPanelKey(type: PanelType, url: string, key: string): void {
+    const data = this.readData();
+    data.panels[type] = { url, key };
+    this.writeData(data);
   }
 
   /**
-   * 读取面板配置。
-   *
-   * @param {('bt'|'1panel')} type - 面板类型
-   * @returns {{ url: string; key: string } | null} - 面板配置，若未配置返回 `null`
+   * 获取面板配置
    */
   getPanel(type: PanelType): { url: string; key: string } | null {
-    const db = this.ensureDb();
-    const row = db
-      .prepare('SELECT url, key FROM panel WHERE type = ?')
-      .get(type) as { url?: string; key?: string } | undefined;
-    if (!row?.url || !row?.key) return null;
-    return { url: row.url, key: row.key };
+    const data = this.readData();
+    return data.panels[type] || null;
   }
 }

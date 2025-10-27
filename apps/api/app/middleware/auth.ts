@@ -14,7 +14,7 @@ export default function authMiddleware() {
   const whitelist = [
     '/api/v1/init/status',           // 初始化状态检查
     '/api/v1/auth/google-auth-bind', // 2FA 绑定（生成二维码）
-    '/api/v1/auth/google-auth-verify' // 2FA 验证（首次绑定或登录）
+    '/api/v1/auth/google-auth-verify', // 2FA 验证（首次绑定或登录）
   ];
 
   return async (ctx: Context, next: () => Promise<any>) => {
@@ -25,7 +25,7 @@ export default function authMiddleware() {
     }
 
     const sid = ctx.cookies.get('ll_session', { signed: true });
-    const ok = sid ? ctx.service.fileStorage.isValidSession(sid) : false;
+    const ok = sid ? ctx.service.storage.isValidSession(sid) : false;
     if (!ok) {
       ctx.status = 401;
       ctx.body = { code: 401, message: 'AUTH_REQUIRED' };
