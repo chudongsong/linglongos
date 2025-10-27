@@ -1,1 +1,1 @@
-{"name": "bar","unitPath": "/Users/chudong/Project/linglongos/apps/api/app/module/bar","clazzList": [{"name": "HomeController","filePath": "controller/home.ts"},{"name": "UserController","filePath": "controller/user.ts"}],"multiInstanceClazzList": [],"protos": []}
+{"name": "bar","unitPath": "/Users/bt.cn/project/linglongos/apps/api/app/module/bar","clazzList": [{"name": "HomeController","filePath": "controller/home.ts"},{"name": "UserController","filePath": "controller/user.ts"}],"multiInstanceClazzList": [],"protos": []}

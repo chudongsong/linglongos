@@ -984,39 +984,27 @@
     async function verify2FA(code) {
       showMessage('正在验证...', 'loading');
 
-      const result = await fetchJson('/api/v1/auth/google-auth-verify', {
+      // 直接使用确认绑定接口，验证令牌并保存密钥
+      const result = await fetchJson('/api/v1/auth/google-auth-confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: code })
+        body: JSON.stringify({ secret: qrSecret, token: code })
       });
 
       if (result.status === 200) {
-        // 验证成功后，需要确认绑定
-        const bindResult = await fetchJson('/api/v1/auth/google-auth-bind', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ secret: qrSecret, token: code })
-        });
+        showMessage('2FA 绑定成功！正在进入下一步...', 'success');
+        systemStatus.hasTwoFA = true;
+        systemStatus.hasValidSession = true;
 
-        if (bindResult.status === 200) {
-          showMessage('2FA 绑定成功！正在进入下一步...', 'success');
-          systemStatus.hasTwoFA = true;
-          systemStatus.hasValidSession = true;
+        // 清除倒计时
+        if (countdownTimer) clearInterval(countdownTimer);
 
-          // 清除倒计时
-          if (countdownTimer) clearInterval(countdownTimer);
+        // 保存状态
+        saveState();
 
-          // 保存状态
-          saveState();
-
-          setTimeout(() => showStep(1), 1500);
-        } else {
-          showMessage(`绑定失败: ${bindResult.data.message || bindResult.error}`, 'error');
-          twofaPinInput.showError();
-          twofaPinInput.clear();
-        }
+        setTimeout(() => showStep(1), 1500);
       } else {
-        showMessage(`验证失败: ${result.data.message || result.error}`, 'error');
+        showMessage(`绑定失败: ${result.data.message || result.error}`, 'error');
         twofaPinInput.showError();
         twofaPinInput.clear();
       }

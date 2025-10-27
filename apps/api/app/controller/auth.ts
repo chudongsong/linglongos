@@ -5,7 +5,8 @@ import type { Context } from 'egg';
  * AuthController
  *
  * 负责 2FA（基于 TOTP）的绑定与验证流程：
- * - `googleAuthBind`：生成绑定用二维码 URL 与 base32 密钥，并持久化密钥；
+ * - `googleAuthBind`：生成绑定用二维码 URL 与 base32 密钥（不保存）；
+ * - `googleAuthConfirm`：确认绑定，验证令牌并保存密钥；
  * - `googleAuthVerify`：校验一次性口令，成功后创建会话并写入签名 Cookie。
  */
 export default class AuthController extends Controller {
@@ -18,6 +19,29 @@ export default class AuthController extends Controller {
   async googleAuthBind(ctx: Context) {
     const data = await ctx.service.auth.generateBindInfo();
     ctx.body = { code: 200, message: 'success', data };
+  }
+
+  /**
+   * 确认绑定 2FA。
+   *
+   * @param {Context} ctx - Egg 请求上下文，`ctx.request.body.secret` 为密钥，`ctx.request.body.token` 为一次性口令
+   * @returns {Promise<void>} - 根据校验结果设置响应与签名 Cookie（成功 200，失败 401）
+   */
+  async googleAuthConfirm(ctx: Context) {
+    const { secret, token } = ctx.request.body as { secret?: string; token?: string };
+    const result = await ctx.service.auth.confirmBind(secret || '', token || '');
+    if (!result || !result.sessionId) {
+      ctx.status = 401;
+      ctx.body = { code: 401, message: 'Invalid token or binding failed.' };
+      return;
+    }
+    const maxAge = 4 * 60 * 60 * 1000;
+    ctx.cookies.set('ll_session', result.sessionId!, {
+      maxAge,
+      httpOnly: true,
+      signed: true,
+    });
+    ctx.body = { code: 200, message: '2FA binding confirmed successfully.' };
   }
 
   /**
