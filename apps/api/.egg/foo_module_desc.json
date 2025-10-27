@@ -1,1 +1,1 @@
-{"name": "foo","unitPath": "/Users/bt.cn/linglongos/apps/api/app/module/foo","clazzList": [{"name": "HelloService","filePath": "service/HelloService.ts"}],"multiInstanceClazzList": [],"protos": []}
+{"name": "foo","unitPath": "/Users/chudong/Project/linglongos/apps/api/app/module/foo","clazzList": [{"name": "HelloService","filePath": "service/HelloService.ts"}],"multiInstanceClazzList": [],"protos": []}

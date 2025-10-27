@@ -2,6 +2,8 @@
   "config": {
     "middleware": [
       "common",
+      "staticAuth",
+      "staticFiles",
       "auth",
       "bt"
     ],
@@ -117,7 +119,7 @@
     },
     "onerror": {
       "errorPageUrl": "",
-      "templatePath": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs/lib/onerror_page.mustache.html"
+      "templatePath": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs/lib/onerror_page.mustache.html"
     },
     "i18n": {
       "defaultLocale": "en_US",
@@ -132,8 +134,8 @@
     "watcher": {
       "type": "development",
       "eventSources": {
-        "default": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/lib/event-sources/default",
-        "development": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/lib/event-sources/development"
+        "default": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/lib/event-sources/default",
+        "development": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/lib/event-sources/development"
       }
     },
     "customLogger": {
@@ -158,7 +160,7 @@
       "fileExtensions": [],
       "whitelist": null,
       "allowArrayField": false,
-      "tmpdir": "/var/folders/f2/t4lhj4c11bd3lhwywmzsqh_w0000gn/T/egg-multipart-tmp/api",
+      "tmpdir": "/var/folders/5h/qy6ntbt15_z0bspttbqbdl4w0000gn/T/egg-multipart-tmp/@linglongos/api",
       "cleanSchedule": {
         "cron": "0 30 4 * * *",
         "disable": false
@@ -185,14 +187,14 @@
     },
     "static": {
       "prefix": "/public/",
-      "dir": "/Users/bt.cn/linglongos/apps/api/app/public",
+      "dir": "/Users/chudong/Project/linglongos/apps/api/app/public",
       "dynamic": true,
       "preload": false,
       "buffer": false,
       "maxFiles": 1000
     },
     "view": {
-      "root": "/Users/bt.cn/linglongos/apps/api/app/view",
+      "root": "/Users/chudong/Project/linglongos/apps/api/app/view",
       "cache": false,
       "defaultExtension": ".html",
       "defaultViewEngine": "",
@@ -209,8 +211,8 @@
       "Class": "<Class Tracer>"
     },
     "env": "local",
-    "name": "api",
-    "keys": "<String len: 22>",
+    "name": "@linglongos/api",
+    "keys": "<String len: 34>",
     "cookies": {},
     "proxy": false,
     "maxIpsCount": 0,
@@ -219,7 +221,7 @@
     "ipHeaders": "x-forwarded-for",
     "hostHeaders": "",
     "pkg": {
-      "name": "api",
+      "name": "@linglongos/api",
       "version": "1.0.0",
       "description": "",
       "private": true,
@@ -239,6 +241,7 @@
         "lint": "eslint . --ext .ts --cache",
         "tsc": "tsc",
         "clean": "tsc -b --clean && rm -rf dist",
+        "export:openapi": "node ./scripts/export-openapi.js",
         "prepublishOnly": "npm run clean && npm run tsc"
       },
       "dependencies": {
@@ -277,9 +280,9 @@
       "author": "",
       "license": "MIT"
     },
-    "baseDir": "/Users/bt.cn/linglongos/apps/api",
-    "HOME": "/Users/bt.cn",
-    "rundir": "/Users/bt.cn/linglongos/apps/api/run",
+    "baseDir": "/Users/chudong/Project/linglongos/apps/api",
+    "HOME": "/Users/chudong",
+    "rundir": "/Users/chudong/Project/linglongos/apps/api/run",
     "dump": {
       "ignore": "<Set>",
       "timing": {
@@ -299,7 +302,7 @@
     },
     "siteFile": {
       "enable": true,
-      "/favicon.ico": "file:///Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/favicon.png",
+      "/favicon.ico": "file:///Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/favicon.png",
       "cacheControl": "public, max-age=2592000"
     },
     "bodyParser": {
@@ -318,7 +321,7 @@
       "onerror": "<Function onerror>"
     },
     "logger": {
-      "dir": "/Users/bt.cn/linglongos/apps/api/logs/api",
+      "dir": "/Users/chudong/Project/linglongos/apps/api/logs/@linglongos/api",
       "encoding": "utf8",
       "env": "local",
       "level": "INFO",
@@ -326,7 +329,7 @@
       "disableConsoleAfterReady": false,
       "outputJSON": false,
       "buffer": true,
-      "appLogName": "api-web.log",
+      "appLogName": "@linglongos/api-web.log",
       "coreLogName": "egg-web.log",
       "agentLogName": "egg-agent.log",
       "errorLogName": "common-error.log",
@@ -358,8 +361,45 @@
       "maxWaitTime": 60000,
       "responseTimeout": 60000
     },
+    "staticAuth": {},
+    "staticFiles": {
+      "root": "/Users/chudong/Project/linglongos/apps/api/app/public",
+      "allowedExtensions": [
+        ".html",
+        ".htm",
+        ".css",
+        ".js",
+        ".mjs",
+        ".json",
+        ".xml",
+        ".txt",
+        ".md",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".svg",
+        ".ico",
+        ".webp",
+        ".woff",
+        ".woff2",
+        ".ttf",
+        ".eot",
+        ".pdf",
+        ".zip",
+        ".tar",
+        ".gz"
+      ],
+      "maxAge": 86400,
+      "gzip": true,
+      "etag": true,
+      "match": [
+        {}
+      ]
+    },
     "auth": {
       "ignore": [
+        {},
         {},
         {},
         {},
@@ -373,10 +413,10 @@
     },
     "common": {},
     "sqlite": {
-      "path": "/Users/bt.cn/linglongos/apps/api/data/api.db"
+      "path": "/Users/chudong/Project/linglongos/apps/api/data/api.db"
     },
     "bizConfig": {
-      "sourceUrl": "https://github.com/eggjs/examples/tree/master/api"
+      "sourceUrl": "https://github.com/eggjs/examples/tree/master/@linglongos/api"
     },
     "coreMiddlewares": "~config~coreMiddleware",
     "appMiddleware": "~config~middleware",
@@ -392,8 +432,8 @@
         "jsonp"
       ],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs",
       "version": "3.0.0"
     },
     "session": {
@@ -403,8 +443,8 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs",
       "version": "4.0.1"
     },
     "i18n": {
@@ -414,8 +454,8 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs",
       "version": "3.0.1"
     },
     "watcher": {
@@ -425,8 +465,8 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs",
       "version": "4.0.4",
       "dependents": [
         "development"
@@ -441,8 +481,8 @@
         "schedule"
       ],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs",
       "version": "4.0.0"
     },
     "security": {
@@ -454,8 +494,8 @@
         "session"
       ],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs",
       "version": "4.0.1"
     },
     "development": {
@@ -469,8 +509,8 @@
       "env": [
         "local"
       ],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs",
       "version": "4.0.0"
     },
     "logrotator": {
@@ -482,8 +522,8 @@
       ],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs",
       "version": "4.1.0"
     },
     "schedule": {
@@ -493,8 +533,8 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs",
       "version": "5.0.2",
       "dependents": [
         "logrotator",
@@ -508,8 +548,8 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs",
       "version": "3.0.0"
     },
     "jsonp": {
@@ -521,8 +561,8 @@
         "security"
       ],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs",
       "version": "3.0.0"
     },
     "view": {
@@ -532,8 +572,8 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/plugin.js",
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs",
       "version": "3.0.1"
     },
     "tegg": {
@@ -545,8 +585,8 @@
       ],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/apps/api/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/apps/api/node_modules/@eggjs/tegg-plugin",
+      "from": "/Users/chudong/Project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-plugin",
       "version": "3.62.0",
       "dependents": [
         "teggController",
@@ -562,8 +602,8 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/apps/api/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/apps/api/node_modules/@eggjs/tegg-config",
+      "from": "/Users/chudong/Project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-config",
       "version": "3.62.0",
       "dependents": [
         "tegg"
@@ -578,8 +618,8 @@
       ],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/apps/api/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin",
+      "from": "/Users/chudong/Project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin",
       "version": "3.62.0"
     },
     "teggSchedule": {
@@ -592,8 +632,8 @@
       ],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/apps/api/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/apps/api/node_modules/@eggjs/tegg-schedule-plugin",
+      "from": "/Users/chudong/Project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-schedule-plugin",
       "version": "3.62.0"
     },
     "eventbusModule": {
@@ -605,8 +645,8 @@
       ],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/apps/api/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/apps/api/node_modules/@eggjs/tegg-eventbus-plugin",
+      "from": "/Users/chudong/Project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-eventbus-plugin",
       "version": "3.62.0"
     },
     "aopModule": {
@@ -618,8 +658,8 @@
       ],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/apps/api/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/apps/api/node_modules/@eggjs/tegg-aop-plugin",
+      "from": "/Users/chudong/Project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-aop-plugin",
       "version": "3.62.0"
     },
     "tracer": {
@@ -629,19 +669,19 @@
       "dependencies": [],
       "optionalDependencies": [],
       "env": [],
-      "from": "/Users/bt.cn/linglongos/apps/api/config/plugin.js",
-      "path": "/Users/bt.cn/linglongos/apps/api/node_modules/@eggjs/tracer/dist/commonjs",
+      "from": "/Users/chudong/Project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tracer/dist/commonjs",
       "version": "3.0.0"
     }
   },
   "appInfo": {
-    "name": "api",
-    "baseDir": "/Users/bt.cn/linglongos/apps/api",
+    "name": "@linglongos/api",
+    "baseDir": "/Users/chudong/Project/linglongos/apps/api",
     "env": "local",
     "scope": "",
-    "HOME": "/Users/bt.cn",
+    "HOME": "/Users/chudong",
     "pkg": {
-      "name": "api",
+      "name": "@linglongos/api",
       "version": "1.0.0",
       "description": "",
       "private": true,
@@ -661,6 +701,7 @@
         "lint": "eslint . --ext .ts --cache",
         "tsc": "tsc",
         "clean": "tsc -b --clean && rm -rf dist",
+        "export:openapi": "node ./scripts/export-openapi.js",
         "prepublishOnly": "npm run clean && npm run tsc"
       },
       "dependencies": {
@@ -699,6 +740,6 @@
       "author": "",
       "license": "MIT"
     },
-    "root": "/Users/bt.cn/linglongos/apps/api"
+    "root": "/Users/chudong/Project/linglongos/apps/api"
   }
 }

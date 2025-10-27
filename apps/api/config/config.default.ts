@@ -1,4 +1,5 @@
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg';
+import * as path from 'path';
 
 /**
  * 默认环境配置
@@ -18,15 +19,34 @@ export default (appInfo: EggAppInfo) => {
 
   // add your egg config in here
   /**
-   * 全局中间件顺序：`common` → `auth` → `bt`
+   * 全局中间件顺序：`common` → `staticAuth` → `staticFiles` → `auth` → `bt`
    *
+   * - `staticAuth`：静态页面会话验证中间件（在静态文件服务之前）；
+   * - `staticFiles`：静态资源服务中间件；
    * - `auth.ignore`：忽略认证的路由（正则形式）；
    * - `bt.match`：限定 BT 中间件仅在代理请求路由生效；
    * - `common`：通用中间件（当前为空配置）。
    */
-  config.middleware = [ 'common', 'auth', 'bt' ];
+  config.middleware = [ 'common', 'staticAuth', 'staticFiles', 'auth', 'bt' ];
+  (config as any).staticAuth = {
+    // 静态页面会话验证中间件配置
+    // 该中间件会在静态文件服务之前运行，对HTML页面进行会话验证
+  };
+  (config as any).staticFiles = {
+    root: path.join(appInfo.baseDir, 'app/public'),
+    allowedExtensions: [
+      '.html', '.htm', '.css', '.js', '.mjs', '.json', '.xml', '.txt', '.md',
+      '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp',
+      '.woff', '.woff2', '.ttf', '.eot',
+      '.pdf', '.zip', '.tar', '.gz'
+    ],
+    maxAge: 86400, // 1天缓存
+    gzip: true,
+    etag: true,
+    match: [/^\//], // 处理所有根路径开头的静态资源请求
+  };
   (config as any).auth = {
-    ignore: [/^\/api\/v1\/auth\//, /^\/public\//, /^\/ui$/, /^\/api\/v1\/docs\//],
+    ignore: [/^\/api\/v1\/auth\//, /^\/public\//, /^\/ui$/, /^\/api\/v1\/docs\//, /^\/.*\.(css|js|html|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot|pdf|zip|tar|gz|json|xml|txt|md)$/],
   };
   (config as any).bt = {
     match: [/^\/api\/v1\/proxy\/request/],

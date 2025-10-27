@@ -1,5 +1,5 @@
 packages:
   - 'plugin/*'
-  - 'apps/'
+  - 'apps/*'
   - 'packages/*'
   - 'env/*'

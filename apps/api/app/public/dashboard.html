@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仪表板 - LinglongOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- 头部 -->
+        <header class="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="monitor" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">LinglongOS 仪表板</h1>
+                        <p class="text-gray-600">系统管理控制台</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 text-green-600">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span class="text-sm font-medium">已认证</span>
+                    </div>
+                    <button onclick="logout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i>
+                        退出登录
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 状态卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">系统状态</p>
+                        <p class="text-2xl font-bold text-green-600">正常</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i data-lucide="activity" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">会话状态</p>
+                        <p class="text-2xl font-bold text-blue-600" id="sessionStatus">已认证</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">面板连接</p>
+                        <p class="text-2xl font-bold text-purple-600" id="panelStatus">已连接</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i data-lucide="server" class="w-6 h-6 text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- 系统信息 -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="info" class="w-5 h-5 mr-2"></i>
+                    系统信息
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">操作系统</span>
+                        <span class="font-medium">LinglongOS</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">版本</span>
+                        <span class="font-medium">1.0.0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">运行时间</span>
+                        <span class="font-medium" id="uptime">计算中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速操作 -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="zap" class="w-5 h-5 mr-2"></i>
+                    快速操作
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="checkStatus()" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                        <i data-lucide="refresh-cw" class="w-6 h-6 mx-auto mb-2 text-blue-600"></i>
+                        <span class="text-sm font-medium">刷新状态</span>
+                    </button>
+                    <button onclick="viewLogs()" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                        <i data-lucide="file-text" class="w-6 h-6 mx-auto mb-2 text-green-600"></i>
+                        <span class="text-sm font-medium">查看日志</span>
+                    </button>
+                    <button onclick="systemSettings()" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                        <i data-lucide="settings" class="w-6 h-6 mx-auto mb-2 text-purple-600"></i>
+                        <span class="text-sm font-medium">系统设置</span>
+                    </button>
+                    <button onclick="backupData()" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                        <i data-lucide="download" class="w-6 h-6 mx-auto mb-2 text-orange-600"></i>
+                        <span class="text-sm font-medium">数据备份</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提示信息 -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-start">
+                <i data-lucide="info" class="w-5 h-5 text-blue-600 mt-0.5 mr-3"></i>
+                <div>
+                    <h3 class="text-blue-900 font-medium">受保护页面</h3>
+                    <p class="text-blue-700 text-sm mt-1">
+                        此页面需要有效的会话认证才能访问。如果您看到此页面，说明会话验证功能正常工作。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化 Lucide 图标
+        lucide.createIcons();
+
+        // 更新运行时间
+        function updateUptime() {
+            const startTime = new Date().getTime() - Math.random() * 86400000; // 模拟运行时间
+            const uptime = new Date().getTime() - startTime;
+            const hours = Math.floor(uptime / (1000 * 60 * 60));
+            const minutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('uptime').textContent = `${hours}小时 ${minutes}分钟`;
+        }
+
+        // 检查状态
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/v1/init/status');
+                const data = await response.json();
+
+                if (data.code === 200) {
+                    document.getElementById('sessionStatus').textContent = data.data.hasValidSession ? '已认证' : '未认证';
+                    document.getElementById('panelStatus').textContent = data.data.hasPanel ? '已连接' : '未连接';
+                } else {
+                    alert('状态检查失败');
+                }
+            } catch (error) {
+                alert('网络错误：' + error.message);
+            }
+        }
+
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                // 清除会话cookie
+                document.cookie = 'll_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                // 重定向到设置页面
+                window.location.href = '/setup.html';
+            }
+        }
+
+        // 其他功能（示例）
+        function viewLogs() {
+            alert('日志查看功能开发中...');
+        }
+
+        function systemSettings() {
+            alert('系统设置功能开发中...');
+        }
+
+        function backupData() {
+            alert('数据备份功能开发中...');
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUptime();
+            checkStatus();
+
+            // 每分钟更新一次运行时间
+            setInterval(updateUptime, 60000);
+        });
+    </script>
+</body>
+</html>

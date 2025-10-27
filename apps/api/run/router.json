@@ -5,6 +5,18 @@
       "GET"
     ],
     "paramNames": [],
+    "path": "/api/v1/init/status",
+    "regexp": "/^\\/api\\/v1\\/init\\/status(?:\\/(?=$))?$/",
+    "stack": [
+      "wrappedController"
+    ]
+  },
+  {
+    "methods": [
+      "HEAD",
+      "GET"
+    ],
+    "paramNames": [],
     "path": "/api/v1/auth/google-auth-bind",
     "regexp": "/^\\/api\\/v1\\/auth\\/google-auth-bind(?:\\/(?=$))?$/",
     "stack": [
@@ -60,6 +72,7 @@
       "PROPPATCH",
       "PURGE",
       "PUT",
+      "QUERY",
       "REBIND",
       "REPORT",
       "SEARCH",

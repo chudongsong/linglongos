@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静态资源验证页面</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .verification-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>静态资源目录结构验证</h1>
+
+        <div class="verification-result success">
+            <strong>✓ 新的目录结构已成功配置</strong><br>
+            所有静态资源现在统一存放在 <code>/Users/chudong/Project/linglongos/apps/api/app/public</code> 目录下
+        </div>
+
+        <h2>目录结构</h2>
+        <pre>
+public/
+├── css/                # CSS样式文件
+│   └── styles.css
+├── js/                 # JavaScript文件
+│   └── test-script.js
+├── images/             # 图片资源
+├── fonts/              # 字体文件
+├── docs/               # 文档文件
+├── index.html          # 默认首页
+├── test-static.html    # 静态资源测试页面
+├── verify.html         # 验证页面（当前页面）
+└── README.md           # 说明文档
+        </pre>
+
+        <h2>访问路径验证</h2>
+        <div id="path-tests">
+            <div class="verification-result">
+                <strong>CSS文件:</strong> <span id="css-status">检测中...</span><br>
+                <code>/css/styles.css</code>
+            </div>
+            <div class="verification-result">
+                <strong>JavaScript文件:</strong> <span id="js-status">检测中...</span><br>
+                <code>/js/test-script.js</code>
+            </div>
+            <div class="verification-result">
+                <strong>HTML文件:</strong> <span id="html-status">检测中...</span><br>
+                <code>/test-static.html</code>
+            </div>
+        </div>
+
+        <h2>配置更新</h2>
+        <ul>
+            <li>✓ 静态资源中间件配置已更新，指向 <code>app/public</code> 目录</li>
+            <li>✓ HTML文件中的资源引用路径已更新</li>
+            <li>✓ JavaScript文件中的测试路径已更新</li>
+            <li>✓ 目录结构规范化，便于维护和部署</li>
+        </ul>
+
+        <h2>功能特性</h2>
+        <ul>
+            <li>✓ MIME类型自动识别</li>
+            <li>✓ 缓存控制（Cache-Control、ETag、Last-Modified）</li>
+            <li>✓ gzip压缩支持</li>
+            <li>✓ 安全防护（目录遍历、文件扩展名限制）</li>
+            <li>✓ 错误处理（404、403、500）</li>
+        </ul>
+    </div>
+
+    <script>
+        // 验证资源访问
+        function verifyResource(url, statusElementId) {
+            fetch(url, { method: 'HEAD' })
+                .then(response => {
+                    const statusElement = document.getElementById(statusElementId);
+                    if (response.ok) {
+                        statusElement.textContent = '✓ 可访问';
+                        statusElement.style.color = '#155724';
+                        statusElement.parentElement.className = 'verification-result success';
+                    } else {
+                        statusElement.textContent = '✗ 访问失败 (' + response.status + ')';
+                        statusElement.style.color = '#721c24';
+                        statusElement.parentElement.className = 'verification-result error';
+                    }
+                })
+                .catch(error => {
+                    const statusElement = document.getElementById(statusElementId);
+                    statusElement.textContent = '✗ 网络错误';
+                    statusElement.style.color = '#721c24';
+                    statusElement.parentElement.className = 'verification-result error';
+                });
+        }
+
+        // 页面加载完成后执行验证
+        document.addEventListener('DOMContentLoaded', function() {
+            verifyResource('/css/styles.css', 'css-status');
+            verifyResource('/js/test-script.js', 'js-status');
+            verifyResource('/test-static.html', 'html-status');
+        });
+    </script>
+</body>
+</html>

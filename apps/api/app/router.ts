@@ -7,6 +7,7 @@ import type { Application } from 'egg';
  * 中间件绑定在 `config.default.ts` 中通过 `config.middleware` 管理：`common`, `auth`, `bt`。
  *
  * 路由列表：
+ * - `GET /api/v1/init/status` → `controller.init.checkStatus`
  * - `GET /api/v1/auth/google-auth-bind` → `controller.auth.googleAuthBind`
  * - `POST /api/v1/auth/google-auth-verify` → `controller.auth.googleAuthVerify`
  * - `POST /api/v1/proxy/bind-panel-key` → `controller.proxy.bindPanelKey`
@@ -19,6 +20,7 @@ import type { Application } from 'egg';
 export default (app: Application) => {
   const { router, controller } = app;
 
+  router.get('/api/v1/init/status', controller.init.checkStatus);
   router.get('/api/v1/auth/google-auth-bind', controller.auth.googleAuthBind);
   router.post('/api/v1/auth/google-auth-verify', controller.auth.googleAuthVerify);
 

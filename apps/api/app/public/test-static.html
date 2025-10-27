@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静态资源服务测试页面</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>静态资源服务测试页面</h1>
+
+        <div class="status success">
+            <strong>✓ 静态资源服务已启用</strong><br>
+            如果您能看到这个页面的样式，说明CSS文件已成功加载。
+        </div>
+
+        <h2>功能特性</h2>
+        <ul class="feature-list">
+            <li>支持GET方法访问静态文件</li>
+            <li>自动MIME类型识别</li>
+            <li>缓存控制（Cache-Control、ETag）</li>
+            <li>gzip压缩支持</li>
+            <li>安全防护（目录遍历、文件扩展名限制）</li>
+            <li>错误处理（404、403）</li>
+        </ul>
+
+        <h2>测试说明</h2>
+        <p>此页面通过以下路径访问：</p>
+        <ul>
+            <li><code>/test-static.html</code> - 访问此HTML文件</li>
+            <li><code>/css/styles.css</code> - 访问CSS样式文件</li>
+            <li><code>/js/test-script.js</code> - 访问JavaScript文件</li>
+        </ul>
+
+        <h2>安全测试</h2>
+        <p>以下路径应该被阻止访问：</p>
+        <ul>
+            <li><code>/../config/config.default.ts</code> - 目录遍历攻击</li>
+            <li><code>/package.json</code> - 不在允许扩展名列表中</li>
+            <li><code>/app/</code> - 目录访问</li>
+        </ul>
+
+        <div id="js-test">
+            <p>JavaScript测试：<span id="js-status">等待加载...</span></p>
+        </div>
+    </div>
+
+    <script src="/js/test-script.js"></script>
+</body>
+</html>

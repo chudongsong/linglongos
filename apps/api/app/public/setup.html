@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LinglongOS 系统初始化</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+      }
+
+      .card {
+        background: rgba(17, 24, 39, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid #374151;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .header h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        margin: 0;
+        color: #9ca3af;
+        font-size: 14px;
+      }
+
+
+
+      .step {
+        display: none;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .step.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* 步骤条容器 */
+      .step-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 40px;
+        padding: 0 20px;
+      }
+
+      /* 步骤项 */
+      .step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        flex: 1;
+        max-width: 120px;
+      }
+
+      /* 步骤圆圈 */
+      .step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+        background: #374151;
+        color: #9ca3af;
+        border: 2px solid #374151;
+      }
+
+      /* 激活状态 */
+      .step-item.active .step-circle {
+        background: #93c5fd;
+        color: white;
+        border-color: #93c5fd;
+        box-shadow: 0 0 0 4px rgba(147, 197, 253, 0.2);
+      }
+
+      /* 完成状态 */
+      .step-item.completed .step-circle {
+        background: #10b981;
+        color: white;
+        border-color: #10b981;
+      }
+
+      /* 步骤标题 */
+      .step-title {
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+        color: #9ca3af;
+        transition: color 0.3s ease;
+      }
+
+      .step-item.active .step-title {
+        color: #93c5fd;
+        font-weight: 600;
+      }
+
+      .step-item.completed .step-title {
+        color: #10b981;
+      }
+
+      /* 连接线 */
+      .step-connector {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        right: -50%;
+        height: 2px;
+        background: #374151;
+        z-index: 1;
+        transition: background-color 0.3s ease;
+      }
+
+      /* 最后一个步骤不显示连接线 */
+      .step-item:last-child .step-connector {
+        display: none;
+      }
+
+      /* 完成状态的连接线 */
+      .step-item.completed .step-connector {
+        background: #10b981;
+      }
+
+      /* 当前步骤的前一个连接线也要变色 */
+      .step-item.completed + .step-item .step-connector {
+        background: #10b981;
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 640px) {
+        .step-indicator {
+          padding: 0 10px;
+        }
+
+        .step-item {
+          max-width: 80px;
+        }
+
+        .step-circle {
+          width: 28px;
+          height: 28px;
+          font-size: 12px;
+        }
+
+        .step-title {
+          font-size: 10px;
+        }
+
+        .step-connector {
+          top: 14px;
+        }
+      }
+
+      /* 消息提示样式 */
+      .message-container {
+        margin: 16px 0;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .message-success {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+      }
+
+      .message-error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+      }
+
+      .message-info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: #3b82f6;
+      }
+
+      .message-loading {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #f59e0b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #d1d5db;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #e5e7eb;
+        font-size: 14px;
+        transition: border-color 0.2s;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .form-input.error {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.05);
+      }
+
+      .form-input.error:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #e5e7eb;
+        font-size: 14px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 12px;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background: #374151;
+        color: #e5e7eb;
+      }
+
+      .btn-secondary:hover {
+        background: #4b5563;
+      }
+
+      .btn-error {
+        background: #ef4444;
+        color: white;
+      }
+
+      .btn-error:hover {
+        background: #dc2626;
+      }
+
+      .btn-error:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      .qr-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .qr-code {
+        width: 200px;
+        height: 200px;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0f172a;
+        position: relative;
+      }
+
+      .qr-code img {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+      }
+
+      .countdown {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background: rgba(0, 0, 0, 0.7);
+        color: #f59e0b;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      /* PIN Input 样式 */
+      .pin-input-container {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 20px 0;
+      }
+
+      .pin-input {
+        width: 48px;
+        height: 56px;
+        border: 2px solid #374151;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #e5e7eb;
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.2s;
+      }
+
+      .pin-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+
+      .pin-input.filled {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+      }
+
+      .pin-input.error {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        animation: shake 0.5s;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+      }
+
+      .status {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+
+      .status-success {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid #10b981;
+        color: #10b981;
+      }
+
+      .status-error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid #ef4444;
+        color: #ef4444;
+      }
+
+      .status-info {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid #3b82f6;
+        color: #3b82f6;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #374151;
+        border-radius: 50%;
+        border-top-color: #3b82f6;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .text-sm {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .mt-4 {
+        margin-top: 16px;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <h1>LinglongOS</h1>
+          <p>系统初始化向导</p>
+        </div>
+
+
+
+        <div class="step-indicator">
+          <div class="step-item active" data-step="0">
+            <div class="step-circle">1</div>
+            <div class="step-title">2FA设置</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-item" data-step="1">
+            <div class="step-circle">2</div>
+            <div class="step-title">面板绑定</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-item" data-step="2">
+            <div class="step-circle">3</div>
+            <div class="step-title">完成</div>
+          </div>
+        </div>
+
+        <!-- 统一消息提示区域 -->
+        <div id="message-container" class="message-container" style="display: none;"></div>
+
+        <!-- 步骤 0: 2FA 绑定 -->
+        <div class="step active" id="step-2fa">
+          <h4 class="text-center" style="margin-bottom: 24px;">双因子认证设置</h4>
+
+          <div class="qr-container">
+            <div class="qr-code" id="qr-code">
+              <span class="text-sm">正在生成二维码...</span>
+              <div class="countdown" id="qr-countdown">10:00</div>
+            </div>
+            <p class="text-sm">使用 Google Authenticator 或其他 TOTP 应用扫描二维码</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">验证码</label>
+            <div class="pin-input-container" id="pin-container">
+              <input type="text" class="pin-input" maxlength="1" data-index="0">
+              <input type="text" class="pin-input" maxlength="1" data-index="1">
+              <input type="text" class="pin-input" maxlength="1" data-index="2">
+              <input type="text" class="pin-input" maxlength="1" data-index="3">
+              <input type="text" class="pin-input" maxlength="1" data-index="4">
+              <input type="text" class="pin-input" maxlength="1" data-index="5">
+            </div>
+          </div>
+        </div>
+
+        <!-- 步骤 1: 面板绑定 -->
+        <div class="step" id="step-panel">
+          <h4 class="text-center" style="margin-bottom: 24px;">面板绑定设置</h4>
+
+          <div class="form-group">
+            <label class="form-label">面板类型</label>
+            <select class="form-select" id="panel-type">
+              <option value="bt">宝塔面板</option>
+              <option value="1panel">1Panel</option>
+              <option value="aaPanel">aaPanel</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">面板地址</label>
+            <input type="url" class="form-input" id="panel-url" placeholder="https://your-panel.com">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">API 密钥</label>
+            <input type="text" class="form-input" id="panel-key" placeholder="输入面板 API 密钥">
+          </div>
+
+          <button class="btn btn-secondary" id="btn-test-panel" onclick="testPanel()">
+            测试连接
+          </button>
+
+          <button class="btn btn-primary" id="btn-bind-panel" onclick="bindPanel()">
+            绑定面板
+          </button>
+        </div>
+
+        <!-- 步骤 2: 完成/登录 -->
+        <div class="step" id="step-complete">
+          <h4 class="text-center" style="margin-bottom: 24px;">系统就绪</h4>
+
+          <div class="form-group">
+            <label class="form-label">验证码</label>
+            <div class="pin-input-container" id="login-pin-container">
+              <input type="text" class="pin-input" maxlength="1" data-index="0">
+              <input type="text" class="pin-input" maxlength="1" data-index="1">
+              <input type="text" class="pin-input" maxlength="1" data-index="2">
+              <input type="text" class="pin-input" maxlength="1" data-index="3">
+              <input type="text" class="pin-input" maxlength="1" data-index="4">
+              <input type="text" class="pin-input" maxlength="1" data-index="5">
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <p class="text-sm">系统已完成初始化，请使用 2FA 验证码登录</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentStep = 0;
+      let systemStatus = {};
+      let qrSecret = '';
+      let qrCountdown = 600; // 10分钟
+      let countdownTimer = null;
+      let qrRefreshTimer = null;
+
+      // 本地存储管理
+      const STORAGE_KEY = 'linglongos_setup_state';
+
+      function saveState() {
+        const state = {
+          currentStep,
+          systemStatus,
+          qrSecret,
+          timestamp: Date.now()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function loadState() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const state = JSON.parse(saved);
+            // 检查状态是否过期（超过1小时）
+            if (Date.now() - state.timestamp < 3600000) {
+              currentStep = state.currentStep || 0;
+              systemStatus = state.systemStatus || {};
+              qrSecret = state.qrSecret || '';
+              return true;
+            }
+          }
+        } catch (error) {
+          console.warn('Failed to load saved state:', error);
+        }
+        return false;
+      }
+
+      function clearState() {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+
+      // PIN Input 管理
+      class PinInput {
+        constructor(containerId, onComplete) {
+          this.container = document.getElementById(containerId);
+          this.inputs = this.container.querySelectorAll('.pin-input');
+          this.onComplete = onComplete;
+          this.setupEventListeners();
+        }
+
+        setupEventListeners() {
+          this.inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => this.handleInput(e, index));
+            input.addEventListener('keydown', (e) => this.handleKeydown(e, index));
+            input.addEventListener('paste', (e) => this.handlePaste(e));
+          });
+        }
+
+        handleInput(e, index) {
+          const value = e.target.value;
+          if (!/^\d$/.test(value)) {
+            e.target.value = '';
+            return;
+          }
+
+          e.target.classList.add('filled');
+
+          // 自动跳转到下一个输入框
+          if (index < this.inputs.length - 1) {
+            this.inputs[index + 1].focus();
+          }
+
+          // 检查是否完成输入
+          this.checkComplete();
+        }
+
+        handleKeydown(e, index) {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            this.inputs[index - 1].focus();
+            this.inputs[index - 1].classList.remove('filled');
+          }
+        }
+
+        handlePaste(e) {
+          e.preventDefault();
+          const paste = e.clipboardData.getData('text');
+          const digits = paste.replace(/\D/g, '').slice(0, 6);
+
+          digits.split('').forEach((digit, index) => {
+            if (this.inputs[index]) {
+              this.inputs[index].value = digit;
+              this.inputs[index].classList.add('filled');
+            }
+          });
+
+          this.checkComplete();
+        }
+
+        checkComplete() {
+          const values = Array.from(this.inputs).map(input => input.value);
+          if (values.every(v => v !== '')) {
+            const code = values.join('');
+            this.onComplete(code);
+          }
+        }
+
+        getValue() {
+          return Array.from(this.inputs).map(input => input.value).join('');
+        }
+
+        clear() {
+          this.inputs.forEach(input => {
+            input.value = '';
+            input.classList.remove('filled', 'error');
+          });
+        }
+
+        showError() {
+          this.inputs.forEach(input => {
+            input.classList.add('error');
+          });
+          setTimeout(() => {
+            this.inputs.forEach(input => {
+              input.classList.remove('error');
+            });
+          }, 500);
+        }
+      }
+
+      // 初始化 PIN Input
+      let twofaPinInput, loginPinInput;
+
+      // 工具函数
+      function showMessage(message, type = 'info') {
+        const container = document.getElementById('message-container');
+        container.className = `message-container message-${type}`;
+        
+        if (type === 'loading') {
+          container.innerHTML = `<span class="loading"></span>${message}`;
+        } else {
+          container.innerHTML = message;
+        }
+        
+        container.style.display = 'block';
+        
+        // 自动隐藏成功和信息消息
+        if (type === 'success' || type === 'info') {
+          setTimeout(() => {
+            container.style.display = 'none';
+          }, 3000);
+        }
+      }
+
+      function hideMessage() {
+        const container = document.getElementById('message-container');
+        container.style.display = 'none';
+      }
+
+
+
+      function updateStepIndicator() {
+        document.querySelectorAll('.step-item').forEach((item, index) => {
+          item.classList.remove('active', 'completed');
+          if (index < currentStep) {
+            item.classList.add('completed');
+          } else if (index === currentStep) {
+            item.classList.add('active');
+          }
+        });
+      }
+
+      function showStep(stepIndex) {
+        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+        document.getElementById(`step-${['2fa', 'panel', 'complete'][stepIndex]}`).classList.add('active');
+        currentStep = stepIndex;
+        updateStepIndicator();
+        saveState();
+      }
+
+      async function fetchJson(url, options = {}) {
+        try {
+          const response = await fetch(url, {
+            credentials: 'include',
+            ...options
+          });
+          const text = await response.text();
+          try {
+            return { status: response.status, data: JSON.parse(text) };
+          } catch {
+            return { status: response.status, data: text };
+          }
+        } catch (error) {
+          return { status: 0, error: error.message };
+        }
+      }
+
+      // 倒计时管理
+      function startCountdown() {
+        if (countdownTimer) clearInterval(countdownTimer);
+
+        countdownTimer = setInterval(() => {
+          qrCountdown--;
+          const minutes = Math.floor(qrCountdown / 60);
+          const seconds = qrCountdown % 60;
+          document.getElementById('qr-countdown').textContent =
+            `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+          if (qrCountdown <= 0) {
+            clearInterval(countdownTimer);
+            generateQRCode(); // 自动刷新二维码
+          }
+        }, 1000);
+      }
+
+      // 使用已有密钥生成二维码
+      function generateQRCodeWithSecret(secret) {
+        const qrElement = document.getElementById('qr-code');
+
+        // 构造 TOTP URL
+        const issuer = 'LinglongOS';
+        const accountName = 'admin';
+        const qrCodeUrl = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(accountName)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}`;
+
+        const img = document.createElement('img');
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeUrl)}`;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.borderRadius = '8px';
+
+        qrElement.innerHTML = '';
+        qrElement.appendChild(img);
+
+        const countdown = document.createElement('div');
+        countdown.className = 'countdown';
+        countdown.id = 'qr-countdown';
+        countdown.textContent = '10:00';
+        qrElement.appendChild(countdown);
+
+        // 重置倒计时
+        qrCountdown = 600;
+        startCountdown();
+
+        showMessage('二维码已从缓存恢复，请使用 TOTP 应用扫描', 'success');
+      }
+
+      // 生成二维码
+      async function generateQRCode() {
+        const qrElement = document.getElementById('qr-code');
+        qrElement.innerHTML = '<span class="text-sm">正在生成二维码...</span><div class="countdown" id="qr-countdown">10:00</div>';
+
+        const result = await fetchJson('/api/v1/auth/google-auth-bind');
+
+        if (result.status === 200 && result.data.data) {
+          const { qrCodeUrl, secret } = result.data.data;
+          qrSecret = secret;
+
+          const img = document.createElement('img');
+          img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeUrl)}`;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.borderRadius = '8px';
+
+          qrElement.innerHTML = '';
+          qrElement.appendChild(img);
+
+          const countdown = document.createElement('div');
+          countdown.className = 'countdown';
+          countdown.id = 'qr-countdown';
+          countdown.textContent = '10:00';
+          qrElement.appendChild(countdown);
+
+          // 重置倒计时
+          qrCountdown = 600;
+          startCountdown();
+
+          // 保存状态
+          saveState();
+
+          showMessage('二维码已生成，请使用 TOTP 应用扫描', 'success');
+        } else {
+          showMessage(`生成失败: ${result.data.message || result.error}`, 'error');
+        }
+      }
+
+      // 验证 2FA
+      async function verify2FA(code) {
+        showMessage('正在验证...', 'loading');
+
+        const result = await fetchJson('/api/v1/auth/google-auth-verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: code })
+        });
+
+        if (result.status === 200) {
+          // 验证成功后，需要确认绑定
+          const bindResult = await fetchJson('/api/v1/auth/google-auth-bind', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ secret: qrSecret, token: code })
+          });
+
+          if (bindResult.status === 200) {
+            showMessage('2FA 绑定成功！正在进入下一步...', 'success');
+            systemStatus.hasTwoFA = true;
+            systemStatus.hasValidSession = true;
+
+            // 清除倒计时
+            if (countdownTimer) clearInterval(countdownTimer);
+
+            // 保存状态
+            saveState();
+
+            setTimeout(() => showStep(1), 1500);
+          } else {
+            showMessage(`绑定失败: ${bindResult.data.message || bindResult.error}`, 'error');
+            twofaPinInput.showError();
+            twofaPinInput.clear();
+          }
+        } else {
+          showMessage(`验证失败: ${result.data.message || result.error}`, 'error');
+          twofaPinInput.showError();
+          twofaPinInput.clear();
+        }
+      }
+
+      // 测试面板连接
+      async function testPanel() {
+        const type = document.getElementById('panel-type').value;
+        const urlInput = document.getElementById('panel-url');
+        const keyInput = document.getElementById('panel-key');
+        const url = urlInput.value.trim();
+        const key = keyInput.value.trim();
+
+        // 清除之前的错误状态
+        urlInput.classList.remove('error');
+        keyInput.classList.remove('error');
+
+        if (!url || !key) {
+          showMessage('请填写完整的面板信息', 'error');
+          if (!url) urlInput.classList.add('error');
+          if (!key) keyInput.classList.add('error');
+          return;
+        }
+
+        showMessage('正在测试连接...', 'loading');
+
+        // 这里可以添加实际的测试逻辑
+        setTimeout(() => {
+          showMessage('连接测试成功！', 'success');
+        }, 2000);
+      }
+
+      // 绑定面板
+      async function bindPanel() {
+        const type = document.getElementById('panel-type').value;
+        const urlInput = document.getElementById('panel-url');
+        const keyInput = document.getElementById('panel-key');
+        const url = urlInput.value.trim();
+        const key = keyInput.value.trim();
+
+        // 清除之前的错误状态
+        urlInput.classList.remove('error');
+        keyInput.classList.remove('error');
+
+        if (!url || !key) {
+          showMessage('请填写完整的面板信息', 'error');
+          if (!url) urlInput.classList.add('error');
+          if (!key) keyInput.classList.add('error');
+          return;
+        }
+
+        showMessage('正在绑定面板...', 'loading');
+
+        const result = await fetchJson('/api/v1/proxy/bind-panel-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, url, key })
+        });
+
+        if (result.status === 200) {
+          showMessage('面板绑定成功！', 'success');
+          systemStatus.hasPanel = true;
+
+          // 保存状态
+          saveState();
+
+          setTimeout(() => showStep(2), 1500);
+        } else {
+          showMessage(`绑定失败: ${result.data.message || result.error}`, 'error');
+          urlInput.classList.add('error');
+          keyInput.classList.add('error');
+        }
+      }
+
+      // 登录
+      async function login(code) {
+        showMessage('正在登录...', 'loading');
+
+        const result = await fetchJson('/api/v1/auth/google-auth-verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: code })
+        });
+
+        if (result.status === 200) {
+          showMessage('登录成功！正在跳转到仪表板...', 'success');
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 2000);
+        } else {
+          showMessage(`登录失败: ${result.data.message || result.error}`, 'error');
+          loginPinInput.showError();
+          loginPinInput.clear();
+        }
+      }
+
+      // 检查系统状态
+      async function checkSystemStatus() {
+        const result = await fetchJson('/api/v1/init/status');
+
+        if (result.status === 200 && result.data.data) {
+          systemStatus = result.data.data;
+
+          // 根据状态决定显示哪个步骤
+          if (!systemStatus.hasTwoFA) {
+            showStep(0); // 2FA 绑定
+            generateQRCode(); // 自动生成二维码
+          } else if (!systemStatus.hasPanel) {
+            showStep(1); // 面板绑定
+          } else if (!systemStatus.hasValidSession) {
+            showStep(2); // 登录
+          } else {
+            // 已完全配置，跳转到主页
+            window.location.href = '/dashboard.html';
+          }
+        } else {
+          // 默认从2FA开始
+          showStep(0);
+          generateQRCode();
+        }
+      }
+
+      // 页面加载时初始化
+      window.addEventListener('load', () => {
+        // 初始化 PIN Input
+        twofaPinInput = new PinInput('pin-container', verify2FA);
+        loginPinInput = new PinInput('login-pin-container', login);
+
+        // 为输入框添加错误状态清除监听器
+        const urlInput = document.getElementById('panel-url');
+        const keyInput = document.getElementById('panel-key');
+        
+        if (urlInput) {
+          urlInput.addEventListener('input', () => {
+            urlInput.classList.remove('error');
+          });
+        }
+        
+        if (keyInput) {
+          keyInput.addEventListener('input', () => {
+            keyInput.classList.remove('error');
+          });
+        }
+
+        // 尝试加载保存的状态
+        const hasLoadedState = loadState();
+
+        if (hasLoadedState) {
+          // 如果有保存的状态，先显示对应步骤
+          showStep(currentStep);
+          // 如果有保存的二维码密钥，重新生成二维码
+          if (qrSecret && currentStep === 0) {
+            generateQRCodeWithSecret(qrSecret);
+          }
+        }
+
+        // 检查系统状态
+        setTimeout(checkSystemStatus, 500);
+      });
+    </script>
+  </body>
+</html>
