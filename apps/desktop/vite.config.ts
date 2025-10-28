@@ -19,6 +19,7 @@ export default defineConfig({
 			'@features': fileURLToPath(new URL('./src/features', import.meta.url)),
 			'@services': fileURLToPath(new URL('./src/services', import.meta.url)),
 			'@store': fileURLToPath(new URL('./src/store', import.meta.url)),
+			'@/lib': fileURLToPath(new URL('./src/lib', import.meta.url)),
 		},
 	},
 	// Vitest 配置：对齐 jsdom 环境、全局 API 与覆盖率输出

@@ -46,7 +46,7 @@ vi.mock('react-dnd-html5-backend', () => {
 	}
 })
 
-import React from 'react'
+
 import { render } from '@testing-library/react'
 import { useDesktopIconDrag } from '@hooks/useDesktopIconDrag'
 import type { FC } from 'react'

@@ -1,4 +1,4 @@
-import { SNAP_THRESHOLD, GRID_SIZE, snapTo, snapToGrid, computeBestSnapX, computeBestSnapY } from '@/utils/snap'
+import { snapTo, snapToGrid, computeBestSnapX, computeBestSnapY } from '@/utils/snap'
 import * as Snap from '@/utils/snap'
 import { describe, test, expect, vi } from 'vitest'
 

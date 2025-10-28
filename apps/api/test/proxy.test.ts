@@ -7,11 +7,11 @@ async function getSessionCookie(): Promise<string> {
   const resBind = await app.httpRequest().get('/api/v1/auth/google-auth-bind');
   const secret: string = resBind.body.data.secret;
   const token = speakeasy.totp({ secret, encoding: 'base32' });
-  const resVerify = await app
+  const resConfirm = await app
     .httpRequest()
-    .post('/api/v1/auth/google-auth-verify')
-    .send({ token });
-  const raw = resVerify.headers['set-cookie'] as string | string[] | undefined;
+    .post('/api/v1/auth/google-auth-confirm')
+    .send({ secret, token });
+  const raw = resConfirm.headers['set-cookie'] as string | string[] | undefined;
   const setCookie = Array.isArray(raw) ? raw : (raw ? [raw] : []);
   assert(setCookie.length > 0, 'should set cookie');
   const cookieParts = setCookie
@@ -28,7 +28,7 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .post('/api/v1/proxy/bind-panel-key')
       .set('Cookie', cookie)
-      .send({ type: 'bt', url: 'https://httpbin.org', key: 'abc123' })
+      .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
       .expect(200);
     assert(resBind.body.code === 200);
 
@@ -36,19 +36,19 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .get('/api/v1/proxy/request')
       .set('Cookie', cookie)
-      .query({ panelType: 'bt', url: '/get', method: 'GET' })
+      .query({ panelType: 'bt', url: '/posts/1', method: 'GET' })
       .expect(200);
     assert(resGet.body.code === 200);
-    assert(resGet.body.data?.url?.includes('/get'));
+    assert(resGet.body.data?.id === 1);
   });
 
-  it('should passthrough non-200 status (418)', async () => {
+  it('should passthrough non-200 status (404)', async () => {
     const cookie = await getSessionCookie();
     const resBind = await app
       .httpRequest()
       .post('/api/v1/proxy/bind-panel-key')
       .set('Cookie', cookie)
-      .send({ type: 'bt', url: 'https://httpbin.org', key: 'abc123' })
+      .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
       .expect(200);
     assert(resBind.body.code === 200);
 
@@ -56,8 +56,8 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .post('/api/v1/proxy/request')
       .set('Cookie', cookie)
-      .send({ panelType: 'bt', url: '/status/418', method: 'GET' })
-      .expect(418);
+      .send({ panelType: 'bt', url: '/posts/999999', method: 'GET' })
+      .expect(404);
   });
 
   it('should include bt auth params on POST and verify token', async () => {
@@ -67,7 +67,7 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .post('/api/v1/proxy/bind-panel-key')
       .set('Cookie', cookie)
-      .send({ type: 'bt', url: 'https://httpbin.org', key })
+      .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key })
       .expect(200);
     assert(resBind.body.code === 200);
 
@@ -75,15 +75,15 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .post('/api/v1/proxy/request')
       .set('Cookie', cookie)
-      .send({ panelType: 'bt', url: '/post', method: 'POST', params: { foo: 'bar' } })
+      .send({ panelType: 'bt', url: '/posts', method: 'POST', params: { foo: 'bar' } })
       .expect(200);
     assert(resPost.body.code === 200);
-    const json = resPost.body.data?.json || {};
-    assert(json.foo === 'bar');
-    assert(typeof json.request_time === 'number');
-    assert(typeof json.request_token === 'string');
-    const expected = md5(key + json.request_time);
-    assert(json.request_token === expected, 'bt request_token should match md5(key + request_time)');
+    const data = resPost.body.data || {};
+    assert(data.foo === 'bar');
+    assert(typeof data.request_time === 'number');
+    assert(typeof data.request_token === 'string');
+    const expected = md5(key + data.request_time);
+    assert(data.request_token === expected, 'bt request_token should match md5(key + request_time)');
   });
 
   it('should proxy GET via 1panel', async () => {
@@ -92,7 +92,7 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .post('/api/v1/proxy/bind-panel-key')
       .set('Cookie', cookie)
-      .send({ type: '1panel', url: 'https://httpbin.org', key: 'abc123' })
+      .send({ type: '1panel', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
       .expect(200);
     assert(resBind.body.code === 200);
 
@@ -100,10 +100,10 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .get('/api/v1/proxy/request')
       .set('Cookie', cookie)
-      .query({ panelType: '1panel', url: '/get', method: 'GET' })
+      .query({ panelType: '1panel', url: '/posts/1', method: 'GET' })
       .expect(200);
     assert(resGet.body.code === 200);
-    assert(resGet.body.data?.url?.includes('/get'));
+    assert(resGet.body.data?.id === 1);
   });
 
   it('should build path without leading slash and use GET when override', async () => {
@@ -112,13 +112,13 @@ describe('Proxy Controller', () => {
       .httpRequest()
       .post('/api/v1/proxy/bind-panel-key')
       .set('Cookie', cookie)
-      .send({ type: 'bt', url: 'https://httpbin.org/', key: 'abc123' })
+      .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com/', key: 'abc123' })
       .expect(200);
     const resGet = await app
       .httpRequest()
       .get('/api/v1/proxy/request')
       .set('Cookie', cookie)
-      .query({ panelType: 'bt', url: 'get', method: 'GET' })
+      .query({ panelType: 'bt', url: 'posts/1', method: 'GET' })
       .expect(200);
     assert(resGet.body.code === 200);
   });

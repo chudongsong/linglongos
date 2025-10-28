@@ -12,7 +12,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse 
  * 创建 Axios 实例
  */
 const api: AxiosInstance = axios.create({
-  baseURL: '/', // 与前端同源，便于本地开发与生产部署
+  baseURL: 'http://127.0.0.1:7001/api/v1', // API服务器地址
   timeout: 10000,
   headers: {
     'Accept': 'application/json, text/plain, */*',

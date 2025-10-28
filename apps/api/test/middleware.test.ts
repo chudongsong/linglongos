@@ -6,11 +6,11 @@ async function getSessionCookie(): Promise<string> {
   const secret: string = resBind.body.data.secret;
   const speakeasy = await import('speakeasy');
   const token = speakeasy.totp({ secret, encoding: 'base32' });
-  const resVerify = await app
+  const resConfirm = await app
     .httpRequest()
-    .post('/api/v1/auth/google-auth-verify')
-    .send({ token });
-  const raw = resVerify.headers['set-cookie'] as string | string[] | undefined;
+    .post('/api/v1/auth/google-auth-confirm')
+    .send({ secret, token });
+  const raw = resConfirm.headers['set-cookie'] as string | string[] | undefined;
   const setCookie = Array.isArray(raw) ? raw : (raw ? [raw] : []);
   assert(setCookie.length > 0, 'should set cookie');
   const cookieParts = setCookie
@@ -36,12 +36,12 @@ describe('Middleware chain', () => {
       .httpRequest()
       .post('/api/v1/proxy/bind-panel-key')
       .set('Cookie', cookie)
-      .send({ type: 'bt', url: 'https://httpbin.org', key: 'abc123' })
+      .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
       .expect(200);
     const res = await app.httpRequest()
       .get('/api/v1/proxy/request')
       .set('Cookie', cookie)
-      .query({ panelType: 'bt', url: '/get', method: 'GET' })
+      .query({ panelType: 'bt', url: '/posts/1', method: 'GET' })
       .expect(200);
     assert(res.headers['x-common-middleware'] === 'enabled');
     assert(res.headers['x-bt-middleware'] === 'enabled');

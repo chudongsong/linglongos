@@ -10,6 +10,7 @@
 
 import React, { forwardRef, useImperativeHandle } from 'react'
 import { render, waitFor, act } from '@testing-library/react'
+import { describe, test, expect } from 'vitest'
 import { useGridSystem } from '@hooks/useGridSystem'
 import type { FullConfig } from '@/types/config'
 

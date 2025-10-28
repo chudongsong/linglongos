@@ -16,7 +16,7 @@
 		"preci": "npm run clean && npm run lint",
 		"ci": "egg-bin cov",
 		"postci": "npm run prepublishOnly && npm start && npm stop && npm run clean",
-		"lint": "eslint . --ext .ts --cache",
+		"lint": "eslint . --cache",
 		"tsc": "tsc",
 		"clean": "tsc -b --clean && rm -rf dist",
 		"export:openapi": "node ./scripts/export-openapi.js",
@@ -36,6 +36,8 @@
 		"axios": "^1.7.7",
 		"better-sqlite3": "^9.6.0",
 		"egg": "^4.0.0",
+		"egg-cors": "^3.0.1",
+		"egg-validate": "^2.0.2",
 		"md5": "^2.3.0",
 		"speakeasy": "^2.0.0",
 		"sqlite3": "^5.1.7"

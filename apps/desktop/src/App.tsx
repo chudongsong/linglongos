@@ -1,19 +1,16 @@
 import { useEffect } from 'react'
-import Desktop from '@features/desktop/Desktop'
-import WindowManager from '@components/WindowManager'
-import Dock from '@components/Dock'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { RouterProvider } from 'react-router-dom'
+import router from '@/routes'
 
 /**
  * App 根组件
  *
- * 负责应用级初始化（例如：首屏配置加载、主题变量预置），并提供全局的 `react-dnd` 拖拽上下文。
+ * 负责应用级初始化（例如：首屏配置加载、主题变量预置），并提供路由管理。
  * 当前实现为最小可用版本，后续可以在 `useEffect` 中补充配置拉取与全局状态初始化逻辑。
  *
  * @remarks
- * - 通过 `DndProvider` 提供 HTML5 后端支持，供桌面图标与 Dock 等组件使用。
- * - 子组件包含 `Desktop`、`WindowManager` 与 `Dock`，共同组成桌面主界面。
+ * - 通过 `RouterProvider` 提供路由管理，根据系统状态显示不同页面。
+ * - 路由守卫会自动检查系统初始化状态并重定向到相应页面。
  *
  * @returns 应用根节点的 JSX 结构
  */
@@ -22,16 +19,7 @@ function App() {
 		// 后续：在这里完成配置拉取与全局状态初始化
 	}, [])
 
-	return (
-		<DndProvider backend={HTML5Backend}>
-			{/* 提供拖拽上下文（HTML5 Backend） */}
-			<div className="app-root">
-				<Desktop />
-				<WindowManager />
-				<Dock />
-			</div>
-		</DndProvider>
-	)
+	return <RouterProvider router={router} />
 }
 
 export default App

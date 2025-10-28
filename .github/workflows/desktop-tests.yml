@@ -1,0 +1,76 @@
+name: Desktop Tests
+
+on:
+  push:
+    paths:
+      - 'apps/desktop/**'
+      - 'packages/**'
+      - '.github/workflows/desktop-tests.yml'
+  pull_request:
+    paths:
+      - 'apps/desktop/**'
+      - 'packages/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install -r --frozen-lockfile
+      
+      - name: Run type checking
+        run: pnpm -C apps/desktop run type-check
+      
+      - name: Run linting
+        run: pnpm -C apps/desktop run lint
+      
+      - name: Run tests
+        run: pnpm -C apps/desktop test
+      
+      - name: Build application
+        run: pnpm -C apps/desktop run build
+
+  build-preview:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install -r --frozen-lockfile
+      
+      - name: Build for preview
+        run: pnpm -C apps/desktop run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-build
+          path: apps/desktop/dist/
+          retention-days: 7

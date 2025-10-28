@@ -142,6 +142,7 @@ export default function Settings() {
       }, 5000)
       return () => clearTimeout(timer)
     }
+    return undefined
   }, [error, dispatch])
 
   /**

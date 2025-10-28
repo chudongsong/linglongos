@@ -3,7 +3,7 @@
  */
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@store/index'
-import { updateBackground, enablePreview, disablePreview, applyPreview } from '@store/slices/settings.slice'
+import { enablePreview, disablePreview, applyPreview } from '@store/slices/settings.slice'
 import { Monitor, Upload, Eye, Check, X } from 'lucide-react'
 import type { BackgroundConfig } from '@/types/settings'
 

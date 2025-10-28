@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle } from 'react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { render, act } from '@testing-library/react'
 import { useAppLauncher } from '@hooks/useAppLauncher'

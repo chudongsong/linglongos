@@ -38,31 +38,23 @@ export default class InitController extends Controller {
         hasValidSession = storage.isValidSession(sessionId);
       }
 
-      ctx.body = {
-        code: 200,
-        message: 'success',
-        data: {
-          hasTwoFA,
-          hasPanel,
-          hasValidSession,
-          needsInitialization: !hasTwoFA || !hasPanel,
-          // 添加调试信息
-          debug: {
-            sessionCookie: sessionId ? 'present' : 'missing',
-            twoFASecret: twoFASecret ? 'present' : 'missing',
-            panelConfig: panelConfig ? 'present' : 'missing',
-            timestamp: new Date().toISOString(),
-          },
+      ctx.success({
+        hasTwoFA,
+        hasPanel,
+        hasValidSession,
+        needsInitialization: !hasTwoFA || !hasPanel,
+        // 添加调试信息
+        debug: {
+          sessionCookie: sessionId ? 'present' : 'missing',
+          twoFASecret: twoFASecret ? 'present' : 'missing',
+          panelConfig: panelConfig ? 'present' : 'missing',
+          timestamp: new Date().toISOString(),
         },
-      };
+      });
     } catch (error) {
       ctx.logger.error('检查初始化状态失败:', error);
-      ctx.status = 500;
-      ctx.body = {
-        code: 500,
-        message: '检查初始化状态失败',
-        data: null,
-      };
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      ctx.internalError('检查初始化状态失败', errorMessage);
     }
   }
 }

@@ -3,7 +3,7 @@
  */
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@store/index'
-import { updateTheme, enablePreview, disablePreview, applyPreview } from '@store/slices/settings.slice'
+import { enablePreview, disablePreview, applyPreview } from '@store/slices/settings.slice'
 import { Palette, Eye, Check, X, Sun, Moon, Monitor } from 'lucide-react'
 import type { ThemeConfig } from '@/types/settings'
 

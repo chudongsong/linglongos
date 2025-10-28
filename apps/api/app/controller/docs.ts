@@ -77,6 +77,6 @@ export default class DocsController extends Controller {
 		}
 
 		ctx.set('Content-Type', 'application/json; charset=utf-8')
-		ctx.body = doc
+		ctx.success(doc)
 	}
 }

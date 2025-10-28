@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle } from 'react'
 import { describe, test, expect, vi, afterEach } from 'vitest'
 import { render, act } from '@testing-library/react'
 import { useContainerSize } from '@hooks/useContainerSize'
@@ -6,7 +6,7 @@ import { useContainerSize } from '@hooks/useContainerSize'
 /**
  * 测试探针：导出 hook 返回的状态以供断言
  */
-const SizeProbe = forwardRef((props: {}, ref) => {
+const SizeProbe = forwardRef((_props: {}, ref) => {
   const { containerRef, containerWidth, containerHeight } = useContainerSize()
   useImperativeHandle(ref, () => ({ containerRef, containerWidth, containerHeight }), [containerRef, containerWidth, containerHeight])
   return null

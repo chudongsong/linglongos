@@ -10,7 +10,6 @@ import type {
   SettingsState,
   BackgroundConfig,
   ThemeConfig,
-  VersionInfo,
   GoogleAuthConfig,
   BaotaAccountConfig,
   AdminApiConfig
@@ -63,6 +62,7 @@ const initialState: SettingsState = {
   
   googleAuth: {
     enabled: false,
+    verified: false,
     backupCodes: []
   },
   
@@ -326,7 +326,7 @@ const settingsSlice = createSlice({
       })
       
       // 宝塔配置同步
-      .addCase(syncBaotaConfiguration.fulfilled, (state, action) => {
+      .addCase(syncBaotaConfiguration.fulfilled, (state, _action) => {
         state.baotaAccount.lastSync = new Date().toISOString()
       })
       .addCase(syncBaotaConfiguration.rejected, (state, action) => {

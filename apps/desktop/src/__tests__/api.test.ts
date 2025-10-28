@@ -26,7 +26,7 @@ vi.mock('axios', () => ({
 }))
 
 // 在 mock 注册之后再导入被测模块
-import api, { getJson, postJson, putJson, delJson } from '@/services/api'
+import { getJson, postJson, putJson, delJson } from '@/services/api'
 
 beforeEach(() => {
   // 仅重置请求相关方法的调用记录，避免清空 axios.create 的初始化调用次数

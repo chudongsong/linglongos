@@ -35,6 +35,10 @@ export function VersionInfo() {
       return <RefreshCw className="w-5 h-5 text-blue-600 animate-spin" />
     }
     
+    if (!version) {
+      return <Info className="w-5 h-5 text-gray-600" />
+    }
+    
     switch (version.updateStatus) {
       case 'available':
         return <Download className="w-5 h-5 text-orange-600" />
@@ -51,6 +55,10 @@ export function VersionInfo() {
    * 获取更新状态文本
    */
   const getUpdateStatusText = () => {
+    if (!version) {
+      return '未知状态'
+    }
+    
     switch (version.updateStatus) {
       case 'available':
         return '有可用更新'
@@ -67,6 +75,10 @@ export function VersionInfo() {
    * 获取更新状态颜色类
    */
   const getUpdateStatusColor = () => {
+    if (!version) {
+      return 'text-gray-600 bg-gray-50 border-gray-200'
+    }
+    
     switch (version.updateStatus) {
       case 'available':
         return 'text-orange-600 bg-orange-50 border-orange-200'
@@ -77,6 +89,24 @@ export function VersionInfo() {
       default:
         return 'text-gray-600 bg-gray-50 border-gray-200'
     }
+  }
+
+  // 如果版本信息未加载，显示加载状态
+  if (!version) {
+    return (
+      <div className="p-6">
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">版本信息</h2>
+          <p className="text-gray-600">查看当前系统版本和更新状态</p>
+        </div>
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="flex items-center justify-center h-32">
+            <RefreshCw className="w-6 h-6 text-blue-600 animate-spin mr-2" />
+            <span className="text-gray-600">正在加载版本信息...</span>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -95,7 +125,7 @@ export function VersionInfo() {
             <p className="text-gray-600">现代化的Web桌面操作系统</p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-gray-900">{version.current}</p>
+            <p className="text-2xl font-bold text-gray-900">{version.version}</p>
             <p className="text-sm text-gray-500">当前版本</p>
           </div>
         </div>

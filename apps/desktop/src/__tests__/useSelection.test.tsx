@@ -1,5 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
 import { render, act } from '@testing-library/react'
+import { describe, test, expect } from 'vitest'
 import { useSelection } from '@hooks/useSelection'
 
 /**

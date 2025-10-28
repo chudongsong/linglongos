@@ -10,12 +10,14 @@ import type { TypedUseSelectorHook } from 'react-redux'
 import desktopReducer from '@store/slices/desktop.slice'
 import windowReducer from '@store/slices/window.slice'
 import settingsReducer from '@store/slices/settings.slice'
+import setupReducer from '@/features/Setup/setupSlice'
 
 export const store = configureStore({
 	reducer: {
 		desktop: desktopReducer,
 		window: windowReducer,
 		settings: settingsReducer,
+		setup: setupReducer,
 	},
 })
 

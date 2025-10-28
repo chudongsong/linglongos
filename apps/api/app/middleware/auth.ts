@@ -27,8 +27,7 @@ export default function authMiddleware() {
     const sid = ctx.cookies.get('ll_session', { signed: true });
     const ok = sid ? ctx.service.storage.isValidSession(sid) : false;
     if (!ok) {
-      ctx.status = 401;
-      ctx.body = { code: 401, message: 'AUTH_REQUIRED' };
+      ctx.unauthorized('AUTH_REQUIRED');
       return;
     }
     await next();

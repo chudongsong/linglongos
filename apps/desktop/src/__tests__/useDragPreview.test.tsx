@@ -56,7 +56,7 @@ vi.mock('react-dnd', () => {
   }
 })
 
-import React from 'react'
+
 import { render, screen } from '@testing-library/react'
 import { useDragPreview } from '@hooks/useDragPreview'
 import { ITEM_TYPE } from '@/types/dnd'

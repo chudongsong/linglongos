@@ -57,7 +57,10 @@ export const checkVersion = async (): Promise<VersionInfo> => {
     return {
       version: '1.0.0',
       buildDate: new Date().toISOString(),
-      updateAvailable: false
+      updateAvailable: false,
+      updateStatus: 'error',
+      buildNumber: '1000',
+      releaseDate: new Date().toISOString()
     }
   }
 }

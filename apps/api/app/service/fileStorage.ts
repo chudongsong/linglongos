@@ -62,19 +62,19 @@ export default class FileStorageService extends Service {
         this.data = {
           auth: parsedData.auth,
           sessions: parsedData.sessions || {},
-          panels: parsedData.panels || {} as Record<PanelType, any>
+          panels: parsedData.panels || {} as Record<PanelType, any>,
         };
       } else {
         this.data = {
           sessions: {},
-          panels: {} as Record<PanelType, any>
+          panels: {} as Record<PanelType, any>,
         };
       }
     } catch (error) {
       this.ctx.logger.warn('加载存储文件失败，使用默认数据:', error);
       this.data = {
         sessions: {},
-        panels: {} as Record<PanelType, any>
+        panels: {} as Record<PanelType, any>,
       };
     }
   }
@@ -97,7 +97,7 @@ export default class FileStorageService extends Service {
   setTwoFASecret(secret: string) {
     this.data.auth = {
       secret,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     };
     this.saveData();
   }
@@ -118,7 +118,7 @@ export default class FileStorageService extends Service {
 
     this.data.sessions[sessionId] = {
       expiresAt: now + ttlMs,
-      createdAt: now
+      createdAt: now,
     };
 
     // 清理过期会话
@@ -171,7 +171,7 @@ export default class FileStorageService extends Service {
     this.data.panels[type] = {
       url,
       key,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     };
     this.saveData();
   }

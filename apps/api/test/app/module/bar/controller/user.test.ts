@@ -6,11 +6,11 @@ async function getSessionCookie(): Promise<string> {
   const secret: string = resBind.body.data.secret;
   const speakeasy = await import('speakeasy');
   const token = speakeasy.totp({ secret, encoding: 'base32' });
-  const resVerify = await app
+  const resConfirm = await app
     .httpRequest()
-    .post('/api/v1/auth/google-auth-verify')
-    .send({ token });
-  const raw = resVerify.headers['set-cookie'] as string | string[] | undefined;
+    .post('/api/v1/auth/google-auth-confirm')
+    .send({ secret, token });
+  const raw = resConfirm.headers['set-cookie'] as string | string[] | undefined;
   const setCookie = Array.isArray(raw) ? raw : (raw ? [raw] : []);
   const cookieParts = setCookie
     .map(c => c.split(';')[0])

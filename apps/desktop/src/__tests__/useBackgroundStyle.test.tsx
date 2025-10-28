@@ -1,5 +1,5 @@
-import React from 'react'
 import { render, screen } from '@testing-library/react'
+import { describe, test, expect } from 'vitest'
 import { useBackgroundStyle } from '@hooks/useBackgroundStyle'
 import type { FullConfig } from '@/types/config'
 

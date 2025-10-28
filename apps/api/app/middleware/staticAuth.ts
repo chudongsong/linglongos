@@ -14,21 +14,21 @@ import * as fs from 'fs'
 export default function staticAuthMiddleware() {
 	// 公开访问的页面（不需要会话验证）
 	const publicPages = [
-		'/setup.html', // 初始化设置页面
-		'/test-static.html', // 测试页面
+		'/public/setup.html', // 初始化设置页面
+		'/public/test-static.html', // 测试页面
 	]
 
 	// 受保护的页面（需要会话验证）
 	const protectedPages = [
-		'/verify.html', // 验证页面
-		'/dashboard.html', // 仪表板页面
-		'/index.html', // 演示页面（可选择是否保护）
-		'/admin.html', // 管理页面（如果存在）
+		'/public/verify.html', // 验证页面
+		'/public/dashboard.html', // 仪表板页面
+		'/public/index.html', // 演示页面（可选择是否保护）
+		'/public/admin.html', // 管理页面（如果存在）
 		'/',
 	]
 
 	// 登录重定向页面
-	const loginPage = '/setup.html'
+	const loginPage = '/public/setup.html'
 
 	return async (ctx: Context, next: () => Promise<any>) => {
 		const requestPath = ctx.path

@@ -1,7 +1,7 @@
 /**
  * 管理面板API设置组件
  */
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@store/index'
 import { updateAdminApi } from '@store/slices/settings.slice'
 import { 
@@ -15,9 +15,7 @@ import {
   Plus, 
   Trash2, 
   CheckCircle, 
-  AlertCircle,
   Book,
-  Code,
   Lock
 } from 'lucide-react'
 
@@ -62,14 +60,7 @@ const apiEndpoints = [
   }
 ]
 
-/**
- * 权限级别
- */
-const permissionLevels = [
-  { value: 'read', label: '只读', description: '只能查看信息，不能修改' },
-  { value: 'write', label: '读写', description: '可以查看和修改配置' },
-  { value: 'admin', label: '管理员', description: '完全访问权限' }
-]
+
 
 /**
  * 管理面板API设置组件

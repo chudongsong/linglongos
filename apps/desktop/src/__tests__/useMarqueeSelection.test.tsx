@@ -1,5 +1,6 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { render, act } from '@testing-library/react'
+import { describe, test, expect } from 'vitest'
 import { useMarqueeSelection } from '@hooks/useMarqueeSelection'
 import type { FullConfig } from '@/types/config'
 
@@ -34,7 +35,7 @@ function makeConfig(): FullConfig {
 /**
  * 测试驱动组件：在容器元素上绑定事件，暴露 Hook 的方法以便测试调用。
  */
-const MarqueeTester = forwardRef((props: {}, ref) => {
+const MarqueeTester = forwardRef((_props: {}, ref) => {
   const config = makeConfig()
   const positions: Record<string, { row: number; col: number }> = {
     a1: { row: 1, col: 1 },
@@ -44,24 +45,25 @@ const MarqueeTester = forwardRef((props: {}, ref) => {
   const grid = { width: 100, height: 100 }
   const toPixels = (row: number, col: number) => ({ left: (col - 1) * 100, top: (row - 1) * 100 })
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const selectedRef = useRef<Set<string>>(new Set())
-  const setSelected = (updater: (prev: Set<string>) => Set<string>) => {
-    selectedRef.current = updater(selectedRef.current)
-  }
+  const [selected, setSelectedState] = useState<Set<string>>(new Set())
   const suppressNextClickClearRef = useRef<boolean>(false)
+
+  const setSelected = (updater: (prev: Set<string>) => Set<string>) => {
+    setSelectedState(updater)
+  }
 
   const hook = useMarqueeSelection({
     grid,
     config,
     positions,
     toPixels,
-    selected: selectedRef.current,
+    selected,
     setSelected,
     suppressNextClickClearRef,
   })
 
   useImperativeHandle(ref, () => ({
-    getSelected: () => selectedRef.current,
+    getSelected: () => selected,
     getVisualSelected: () => hook.visualSelected,
     // 模拟鼠标在容器上的事件（传入容器元素计算坐标）
     mousedown: (x: number, y: number, additive = false) => {
@@ -71,7 +73,7 @@ const MarqueeTester = forwardRef((props: {}, ref) => {
     },
     mousemove: (x: number, y: number) => {
       const rect = containerRef.current!.getBoundingClientRect()
-      const e: any = { clientX: rect.left + x, clientY: rect.top + y }
+      const e: any = { clientX: rect.left + x, clientY: rect.top + y, buttons: 1 }
       hook.handleMouseMove(e as unknown as React.MouseEvent, containerRef.current)
     },
     mouseup: () => {

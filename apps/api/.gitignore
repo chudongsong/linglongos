@@ -1,23 +1,49 @@
+# Dependencies
+node_modules/
+package-lock.json
+.package-lock.json
+
+# Logs
 logs/
 npm-debug.log
-node_modules/
+*.log
+
+# Coverage directory used by tools like istanbul
 coverage/
+
+# IDE files
 .idea/
-run/
-logs/
+.vscode/
 .DS_Store
-.vscode
 *.swp
-*.lock
-*.js
+
+# Runtime data
+run/
 .eslintcache
 
+# Compiled files
+*.js
+*.map
 app/**/*.js
 test/**/*.js
 config/**/*.js
 app/**/*.map
 test/**/*.map
 config/**/*.map
-package-lock.json
-.package-lock.json
 dist/
+
+# Database files
+data/database/*.db
+data/database/*.sqlite
+data/database/*.sqlite3
+
+# Backup files
+data/backup/*
+*.backup.*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Lock files
+*.lock

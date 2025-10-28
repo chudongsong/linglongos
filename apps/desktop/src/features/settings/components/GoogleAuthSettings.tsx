@@ -29,7 +29,7 @@ export function GoogleAuthSettings() {
    */
   const handleVerifyCode = () => {
     if (verificationCode.length === 6) {
-      dispatch(verifyGoogleAuth({ code: verificationCode }))
+      dispatch(verifyGoogleAuth(verificationCode))
     }
   }
 
@@ -54,7 +54,7 @@ export function GoogleAuthSettings() {
   const handleDisable = () => {
     // 这里应该有确认对话框
     if (confirm('确定要禁用双重验证吗？这将降低账户安全性。')) {
-      dispatch(setupGoogleAuth({ enabled: false }))
+      dispatch(setupGoogleAuth())
       setShowSetup(false)
       setVerificationCode('')
     }

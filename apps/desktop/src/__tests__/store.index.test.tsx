@@ -1,4 +1,3 @@
-import React from 'react'
 import { describe, test, expect } from 'vitest'
 import { Provider } from 'react-redux'
 import { render, screen, fireEvent } from '@testing-library/react'

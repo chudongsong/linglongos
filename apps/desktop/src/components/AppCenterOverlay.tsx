@@ -316,7 +316,7 @@ export default function AppCenterOverlay(props: AppCenterOverlayProps) {
 								gap,
 							}}
 						>
-							{pageItems.map((app, i) => (
+							{pageItems.map((app, _i) => (
 								<AppTile
 									key={app.id}
 									app={app}

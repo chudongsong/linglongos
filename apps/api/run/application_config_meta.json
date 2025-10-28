@@ -75,6 +75,11 @@
     },
     "ssrf": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
   },
+  "cors": {
+    "origin": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
+    "allowMethods": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
+    "credentials": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
+  },
   "sqlite": {
     "path": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
   },
@@ -195,6 +200,7 @@
   "tracer": {
     "Class": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tracer/dist/commonjs/config/config.default.js"
   },
+  "validate": "/Users/bt.cn/project/linglongos/apps/api/node_modules/egg-validate/config/config.default.js",
   "env": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
   "name": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
   "cookies": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
@@ -242,6 +248,8 @@
       "axios": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "better-sqlite3": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "egg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "egg-cors": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "egg-validate": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "md5": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "speakeasy": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
       "sqlite3": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"

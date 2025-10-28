@@ -1,6 +1,7 @@
 {
   "config": {
     "middleware": [
+      "errorHandler",
       "common",
       "staticAuth",
       "staticFiles",
@@ -8,6 +9,7 @@
       "bt"
     ],
     "coreMiddleware": [
+      "cors",
       "meta",
       "siteFile",
       "notfound",
@@ -157,6 +159,8 @@
         "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tegg-eventbus-plugin/config/locales",
         "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tegg-aop-plugin/config/locales",
         "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tracer/dist/commonjs/config/locales",
+        "/Users/bt.cn/project/linglongos/apps/api/node_modules/egg-cors/config/locales",
+        "/Users/bt.cn/project/linglongos/apps/api/node_modules/egg-validate/config/locales",
         "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/locales",
         "/Users/bt.cn/project/linglongos/apps/api/config/locales"
       ],
@@ -248,6 +252,13 @@
     "tracer": {
       "Class": "<Class Tracer>"
     },
+    "cors": {
+      "origin": "*",
+      "allowMethods": "GET,HEAD,PUT,POST,DELETE,PATCH",
+      "credentials": true,
+      "hasCustomOriginHandler": true
+    },
+    "validate": {},
     "env": "local",
     "name": "@linglongos/api",
     "keys": "<String len: 34>",
@@ -276,7 +287,7 @@
         "preci": "npm run clean && npm run lint",
         "ci": "egg-bin cov",
         "postci": "npm run prepublishOnly && npm start && npm stop && npm run clean",
-        "lint": "eslint . --ext .ts --cache",
+        "lint": "eslint . --cache",
         "tsc": "tsc",
         "clean": "tsc -b --clean && rm -rf dist",
         "export:openapi": "node ./scripts/export-openapi.js",
@@ -296,6 +307,8 @@
         "axios": "^1.7.7",
         "better-sqlite3": "^9.6.0",
         "egg": "^4.0.0",
+        "egg-cors": "^3.0.1",
+        "egg-validate": "^2.0.2",
         "md5": "^2.3.0",
         "speakeasy": "^2.0.0",
         "sqlite3": "^5.1.7"
@@ -434,6 +447,7 @@
       "gzip": true,
       "etag": true,
       "match": [
+        {},
         {}
       ]
     },
@@ -712,6 +726,28 @@
       "from": "/Users/bt.cn/project/linglongos/apps/api/config/plugin.ts",
       "path": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tracer/dist/commonjs",
       "version": "3.0.0"
+    },
+    "cors": {
+      "enable": true,
+      "package": "egg-cors",
+      "name": "cors",
+      "dependencies": [],
+      "optionalDependencies": [],
+      "env": [],
+      "from": "/Users/bt.cn/project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/bt.cn/project/linglongos/apps/api/node_modules/egg-cors",
+      "version": "3.0.1"
+    },
+    "validate": {
+      "enable": true,
+      "package": "egg-validate",
+      "name": "validate",
+      "dependencies": [],
+      "optionalDependencies": [],
+      "env": [],
+      "from": "/Users/bt.cn/project/linglongos/apps/api/config/plugin.ts",
+      "path": "/Users/bt.cn/project/linglongos/apps/api/node_modules/egg-validate",
+      "version": "2.0.2"
     }
   },
   "appInfo": {
@@ -738,7 +774,7 @@
         "preci": "npm run clean && npm run lint",
         "ci": "egg-bin cov",
         "postci": "npm run prepublishOnly && npm start && npm stop && npm run clean",
-        "lint": "eslint . --ext .ts --cache",
+        "lint": "eslint . --cache",
         "tsc": "tsc",
         "clean": "tsc -b --clean && rm -rf dist",
         "export:openapi": "node ./scripts/export-openapi.js",
@@ -758,6 +794,8 @@
         "axios": "^1.7.7",
         "better-sqlite3": "^9.6.0",
         "egg": "^4.0.0",
+        "egg-cors": "^3.0.1",
+        "egg-validate": "^2.0.2",
         "md5": "^2.3.0",
         "speakeasy": "^2.0.0",
         "sqlite3": "^5.1.7"

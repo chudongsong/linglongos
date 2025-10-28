@@ -17,8 +17,14 @@ export default class AuthController extends Controller {
    * @returns {Promise<void>} - 设置 `ctx.body` 为 `{ code, message, data: { qrCodeUrl, secret } }`
    */
   async googleAuthBind(ctx: Context) {
-    const data = await ctx.service.auth.generateBindInfo();
-    ctx.body = { code: 200, message: 'success', data };
+    try {
+      const data = await ctx.service.auth.generateBindInfo();
+      ctx.success(data);
+    } catch (error) {
+      ctx.logger.error('生成绑定信息失败:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      ctx.internalError('生成绑定信息失败', errorMessage);
+    }
   }
 
   /**
@@ -28,20 +34,25 @@ export default class AuthController extends Controller {
    * @returns {Promise<void>} - 根据校验结果设置响应与签名 Cookie（成功 200，失败 401）
    */
   async googleAuthConfirm(ctx: Context) {
-    const { secret, token } = ctx.request.body as { secret?: string; token?: string };
-    const result = await ctx.service.auth.confirmBind(secret || '', token || '');
-    if (!result || !result.sessionId) {
-      ctx.status = 401;
-      ctx.body = { code: 401, message: 'Invalid token or binding failed.' };
-      return;
+    try {
+      const { secret, token } = ctx.request.body as { secret?: string; token?: string };
+      const result = await ctx.service.auth.confirmBind(secret || '', token || '');
+      if (!result || !result.sessionId) {
+        ctx.unauthorized('Invalid token or binding failed.');
+        return;
+      }
+      const maxAge = 4 * 60 * 60 * 1000;
+      ctx.cookies.set('ll_session', result.sessionId!, {
+        maxAge,
+        httpOnly: true,
+        signed: true,
+      });
+      ctx.success(null, '2FA binding confirmed successfully.');
+    } catch (error) {
+      ctx.logger.error('确认绑定失败:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      ctx.internalError('确认绑定失败', errorMessage);
     }
-    const maxAge = 4 * 60 * 60 * 1000;
-    ctx.cookies.set('ll_session', result.sessionId!, {
-      maxAge,
-      httpOnly: true,
-      signed: true,
-    });
-    ctx.body = { code: 200, message: '2FA binding confirmed successfully.' };
   }
 
   /**
@@ -51,19 +62,26 @@ export default class AuthController extends Controller {
    * @returns {Promise<void>} - 根据校验结果设置响应与签名 Cookie（成功 200，失败 401）
    */
   async googleAuthVerify(ctx: Context) {
-    const token = ctx.request.body?.token as string;
-    const result = await ctx.service.auth.verifyTokenAndCreateSession(token);
-    if (!result || !result.sessionId) {
-      ctx.status = 401;
-      ctx.body = { code: 401, message: 'Invalid token or session expired.' };
-      return;
+    try {
+      const token = ctx.request.body?.token as string;
+      const result = await ctx.service.auth.verifyTokenAndCreateSession(token);
+      if (!result || !result.sessionId) {
+        ctx.unauthorized('Invalid token or session expired.');
+        return;
+      }
+      const maxAge = 4 * 60 * 60 * 1000;
+      ctx.cookies.set('ll_session', result.sessionId!, {
+        maxAge,
+        httpOnly: true,
+        signed: true,
+      });
+      ctx.success(null, 'Authentication successful, session created.');
+    } catch (error) {
+      ctx.logger.error('验证令牌失败:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      ctx.internalError('验证令牌失败', errorMessage);
     }
-    const maxAge = 4 * 60 * 60 * 1000;
-    ctx.cookies.set('ll_session', result.sessionId!, {
-      maxAge,
-      httpOnly: true,
-      signed: true,
-    });
-    ctx.body = { code: 200, message: 'Authentication successful, session created.' };
   }
+
+
 }

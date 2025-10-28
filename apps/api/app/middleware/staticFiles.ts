@@ -93,7 +93,7 @@ export default function staticFilesMiddleware(options: StaticOptions) {
 		const requestPath = ctx.path
 
 		// 直接使用请求路径作为文件路径
-		let filePath = requestPath
+		const filePath = requestPath
 
 		// 安全检查：防止目录遍历攻击
 		if (filePath.includes('..') || filePath.includes('\\') || filePath.includes('\0')) {

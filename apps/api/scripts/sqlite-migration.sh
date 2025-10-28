@@ -11,8 +11,8 @@ echo "🚀 开始数据迁移：从 JSON 文件迁移到 SQLite 数据库..."
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 DATA_DIR="$PROJECT_DIR/data"
-JSON_FILE="$DATA_DIR/storage.json"
-DB_FILE="$DATA_DIR/storage.db"
+JSON_FILE="$DATA_DIR/config/storage.json"
+DB_FILE="$DATA_DIR/database/storage.db"
 
 # 检查 JSON 文件是否存在
 if [ ! -f "$JSON_FILE" ]; then

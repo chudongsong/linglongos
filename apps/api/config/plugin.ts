@@ -38,6 +38,14 @@ const plugin: EggPlugin = {
     enable: true,
     package: '@eggjs/tracer',
   },
+  cors: {
+    enable: true,
+    package: 'egg-cors',
+  },
+  validate: {
+    enable: true,
+    package: 'egg-validate',
+  },
 };
 
 export default plugin;

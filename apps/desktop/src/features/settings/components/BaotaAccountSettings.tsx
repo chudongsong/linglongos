@@ -4,7 +4,7 @@
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@store/index'
 import { connectBaotaAccount, disconnectBaotaAccount, syncBaotaConfig } from '@store/slices/settings.slice'
-import { Cloud, Link, Unlink, RefreshCw, CheckCircle, AlertCircle, User, Calendar } from 'lucide-react'
+import { Cloud, Link, Unlink, RefreshCw, CheckCircle, User, Calendar } from 'lucide-react'
 
 /**
  * 宝塔账号设置组件

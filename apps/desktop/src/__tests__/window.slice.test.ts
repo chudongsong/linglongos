@@ -42,7 +42,6 @@ describe('window.slice', () => {
     const ws = store.getState().window.windows
     expect(ws).toHaveLength(2)
     const w1 = ws[0]!
-    const w2 = ws[1]!
     store.dispatch(focusWindow(w1.id))
     const st = store.getState().window
     const nw1 = st.windows.find(w => w.id === w1.id)!
