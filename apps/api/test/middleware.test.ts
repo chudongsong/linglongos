@@ -27,17 +27,17 @@ describe('Middleware chain', () => {
       .expect(401);
     assert(res.headers['x-common-middleware'] === 'enabled');
     assert(!res.headers['x-bt-middleware'], 'bt header should be absent when auth fails');
-    assert(res.body && res.body.code === 401 && res.body.message === 'AUTH_REQUIRED');
+    assert(res.body && res.body.code === 401 && res.body.error && res.body.error.details === 'AUTH_REQUIRED');
   });
 
   it('should pass auth and include both common and bt headers', async () => {
     const cookie = await getSessionCookie();
     await app
       .httpRequest()
-      .post('/api/v1/proxy/bind-panel-key')
+      .post('/api/v1/panels/set_proxy_panel')
       .set('Cookie', cookie)
       .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
-      .expect(200);
+      .expect(201);
     const res = await app.httpRequest()
       .get('/api/v1/proxy/request')
       .set('Cookie', cookie)

@@ -21,6 +21,7 @@
 		"clean": "tsc -b --clean && rm -rf dist",
 		"export:openapi": "node ./scripts/export-openapi.js",
 		"migrate:to-sqlite": "node ./scripts/run-migration.js",
+		"test:storage": "npm run tsc && node ./scripts/test-storage.js",
 		"prepublishOnly": "npm run clean && npm run tsc"
 	},
 	"dependencies": {
@@ -37,6 +38,7 @@
 		"better-sqlite3": "^9.6.0",
 		"egg": "^4.0.0",
 		"egg-cors": "^3.0.1",
+		"egg-swagger-doc": "^2.3.2",
 		"egg-validate": "^2.0.2",
 		"md5": "^2.3.0",
 		"speakeasy": "^2.0.0",
@@ -46,6 +48,7 @@
 		"@eggjs/bin": "7",
 		"@eggjs/mock": "6",
 		"@eggjs/tsconfig": "1",
+		"@types/better-sqlite3": "^7.6.13",
 		"@types/mocha": "10",
 		"@types/node": "22",
 		"eslint": "8",

@@ -19,16 +19,17 @@ export default (appInfo: EggAppInfo) => {
 
   // add your egg config in here
   /**
-   * 全局中间件顺序：`errorHandler` → `common` → `staticAuth` → `staticFiles` → `auth` → `bt`
+   * 全局中间件顺序：`requestId` → `errorHandler` → `common` → `staticAuth` → `staticFiles` → `auth` → `bt`
    *
-   * - `errorHandler`：全局错误处理中间件（必须在最前面）；
+   * - `requestId`：请求ID生成中间件（用于日志追踪和响应标识）；
+   * - `errorHandler`：全局错误处理中间件；
    * - `staticAuth`：静态页面会话验证中间件（在静态文件服务之前）；
    * - `staticFiles`：静态资源服务中间件；
    * - `auth.ignore`：忽略认证的路由（正则形式）；
    * - `bt.match`：限定 BT 中间件仅在代理请求路由生效；
    * - `common`：通用中间件（当前为空配置）。
    */
-  config.middleware = [ 'errorHandler', 'common', 'staticAuth', 'staticFiles', 'auth', 'bt' ];
+  config.middleware = [ 'requestId', 'errorHandler', 'common', 'staticAuth', 'staticFiles', 'auth', 'bt' ];
   (config as any).staticAuth = {
     // 静态页面会话验证中间件配置
     // 该中间件会在静态文件服务之前运行，对HTML页面进行会话验证
@@ -68,6 +69,40 @@ export default (appInfo: EggAppInfo) => {
     origin: '*', // 允许所有域名，生产环境应该限制为具体域名
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
     credentials: true, // 允许携带凭证
+  };
+
+  /**
+   * Swagger API 文档配置
+   */
+  (config as any).swaggerdoc = {
+    dirScanner: './app/controller',
+    apiInfo: {
+      title: 'LinglongOS API',
+      description: '统一面板代理与认证服务 API - 符合动词+宾语命名规范',
+      version: '1.0.0',
+      termsOfService: '',
+      contact: {
+        email: 'api@linglongos.com',
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT',
+      },
+    },
+    schemes: ['http', 'https'],
+    consumes: ['application/json'],
+    produces: ['application/json'],
+    securityDefinitions: {
+      bearerAuth: {
+        type: 'apiKey',
+        name: 'Authorization',
+        in: 'header',
+        description: 'Bearer token for authentication',
+      },
+    },
+    enableSecurity: true,
+    routerMap: true,
+    enable: true,
   };
 
   /**

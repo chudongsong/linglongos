@@ -108,6 +108,9 @@ importers:
       egg-cors:
         specifier: ^3.0.1
         version: 3.0.1
+      egg-swagger-doc:
+        specifier: ^2.3.2
+        version: 2.3.2
       egg-validate:
         specifier: ^2.0.2
         version: 2.0.2
@@ -130,6 +133,9 @@ importers:
       '@eggjs/tsconfig':
         specifier: '1'
         version: 1.3.3
+      '@types/better-sqlite3':
+        specifier: ^7.6.13
+        version: 7.6.13
       '@types/mocha':
         specifier: '10'
         version: 10.0.10
@@ -2101,6 +2107,9 @@ packages:
   '@types/babel__traverse@7.28.0':
     resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
 
+  '@types/better-sqlite3@7.6.13':
+    resolution: {integrity: sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA==}
+
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
@@ -2972,6 +2981,10 @@ packages:
   component-emitter@1.3.1:
     resolution: {integrity: sha512-T0+barUSQRTUQASh8bx02dl+DhF54GtIDY13Y3m9oWTklKbb3Wv974meRpeZ3lp1JpLVECWWNHC4vaG2XHXouQ==}
 
+  compressible@2.0.18:
+    resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
+    engines: {node: '>= 0.6'}
+
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
@@ -3331,6 +3344,10 @@ packages:
 
   egg-path-matching@2.1.0:
     resolution: {integrity: sha512-g2V2ohTSf/WN1UNtUdeUAhu/xbA97uAJHgqRpRInR2KT77MRxrG4XtcsjbZudQmB5XRPvYSbnny/1m/57+UadA==}
+
+  egg-swagger-doc@2.3.2:
+    resolution: {integrity: sha512-/rLbxdTAN7wcR0b61lwsCMEh+qHj2zSHLbW0xdYMHSWRS+UVnO2A7ylfR1b2tsnHZuWGpdtVovfMLfKS7UKOwQ==}
+    engines: {node: '>=8.0.0'}
 
   egg-ts-helper@3.2.0:
     resolution: {integrity: sha512-rsWyzZfv7AaQEAjv5zJIra4V1K/3/6NTvbwUEzyZ9zPTxJCYML9vnJgFO9nj+BMVO6i+dziX03zbvqQQnXyMfQ==}
@@ -4567,6 +4584,7 @@ packages:
   keygrip@1.1.0:
     resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
     engines: {node: '>= 0.6'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -4613,6 +4631,10 @@ packages:
   koa-session@7.0.2:
     resolution: {integrity: sha512-nMWJndLmIuKQMTYPr5NokGQOGD2Aqal5GVi1xAhrQjrrzKq1ASy1WTFVkZ/xhwhtC4KpWi5KdqNYewZo7KJb4w==}
     engines: {node: '>= 18.19.0'}
+
+  koa-static-cache@5.1.4:
+    resolution: {integrity: sha512-abVWOHY6z6qSTvNtapWMAnvHS9SUiUCaQQQubClSAT9ybQPsZ6ioKcRarnownS4fMD0sXQgQ5ey8CYEuwoa1Yg==}
+    engines: {node: '>= 7.6.0'}
 
   leoric@2.13.9:
     resolution: {integrity: sha512-9F3Jezyxp4XNYspDjdl+gT6FCydHllydBgzUCqukbIbM0V5BgfAE5iwMKjyioaz8MAor9n91HVxXmgPUH5YVaw==}
@@ -8589,7 +8611,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.18.12
+      '@types/node': 24.9.1
       '@types/yargs': 17.0.34
       chalk: 4.1.2
 
@@ -8981,6 +9003,10 @@ snapshots:
     dependencies:
       '@babel/types': 7.28.5
 
+  '@types/better-sqlite3@7.6.13':
+    dependencies:
+      '@types/node': 24.9.1
+
   '@types/chai@5.2.3':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -9001,7 +9027,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
-      '@types/node': 22.18.12
+      '@types/node': 24.9.1
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -9047,7 +9073,7 @@ snapshots:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 22.18.12
+      '@types/node': 24.9.1
       form-data: 4.0.4
 
   '@types/supertest@6.0.3':
@@ -10146,6 +10172,10 @@ snapshots:
 
   component-emitter@1.3.1: {}
 
+  compressible@2.0.18:
+    dependencies:
+      mime-db: 1.54.0
+
   concat-map@0.0.1: {}
 
   confbox@0.1.8: {}
@@ -10493,6 +10523,12 @@ snapshots:
   egg-path-matching@2.1.0:
     dependencies:
       path-to-regexp: 6.3.0
+
+  egg-swagger-doc@2.3.2:
+    dependencies:
+      koa-static-cache: 5.1.4
+    transitivePeerDependencies:
+      - supports-color
 
   egg-ts-helper@3.2.0(@types/node@22.18.12):
     dependencies:
@@ -11901,7 +11937,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.18.12
+      '@types/node': 24.9.1
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -12056,6 +12092,16 @@ snapshots:
       crc: 3.8.0
       is-type-of: 2.2.0
       zod: 3.25.76
+
+  koa-static-cache@5.1.4:
+    dependencies:
+      compressible: 2.0.18
+      debug: 3.2.7
+      fs-readdir-recursive: 1.1.0
+      mime-types: 2.1.35
+      mz: 2.7.0
+    transitivePeerDependencies:
+      - supports-color
 
   leoric@2.13.9(mysql2@3.15.3)(sqlite3@5.1.7):
     dependencies:

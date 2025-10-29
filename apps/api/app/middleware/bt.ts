@@ -1,4 +1,4 @@
-import type { Context } from 'egg';
+import type { Context } from 'egg'
 
 /**
  * BT 中间件：为响应设置标识头 `X-BT-Middleware`。
@@ -8,8 +8,8 @@ import type { Context } from 'egg';
  * @returns {(ctx: Context, next: () => Promise<any>) => Promise<void>} - 返回 Egg 中间件函数
  */
 export default function btMiddleware() {
-  return async (ctx: Context, next: () => Promise<any>) => {
-    ctx.set('X-BT-Middleware', 'enabled');
-    await next();
-  };
+	return async (ctx: Context, next: () => Promise<any>) => {
+		ctx.set('X-BT-Middleware', 'enabled')
+		await next()
+	}
 }

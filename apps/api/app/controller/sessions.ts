@@ -7,14 +7,15 @@ import type { Context } from 'egg';
  * 符合 Egg.js RESTful 标准的认证会话控制器：
  * - `new`：获取绑定信息（生成二维码 URL 与 base32 密钥）
  * - `create`：创建会话（确认绑定或验证令牌）
+ * @controller Sessions
  */
 export default class SessionsController extends Controller {
   /**
-   * 获取绑定信息（二维码 URL 与 base32 密钥）
-   * GET /api/v2/sessions/new
-   *
-   * @param {Context} ctx - Egg 请求上下文
-   * @returns {Promise<void>} - 返回绑定信息
+   * 获取绑定信息
+   * 生成 TOTP 二维码 URL 与 base32 密钥
+   * @summary 获取TOTP绑定信息
+   * @description 生成用于双因子认证的TOTP二维码URL和base32密钥
+   * @router get /api/v2/generate_bind_info
    */
   async new(ctx: Context) {
     try {
@@ -28,11 +29,11 @@ export default class SessionsController extends Controller {
   }
 
   /**
-   * 创建会话（确认绑定或验证令牌）
-   * POST /api/v2/sessions
-   *
-   * @param {Context} ctx - Egg 请求上下文
-   * @returns {Promise<void>} - 创建会话并设置 Cookie
+   * 创建会话
+   * 确认绑定或验证令牌
+   * @summary 创建认证会话
+   * @description 通过TOTP令牌验证创建用户认证会话
+   * @router post /api/v2/create_session
    */
   async create(ctx: Context) {
     // 定义验证规则
@@ -99,7 +100,7 @@ export default class SessionsController extends Controller {
 
   /**
    * 更新会话（暂不实现）
-   * PUT /api/v2/sessions/:id
+   * POST /api/v1/sessions/update_session
    */
   async update(ctx: Context) {
     ctx.notImplemented('更新会话功能暂未实现');
@@ -107,11 +108,13 @@ export default class SessionsController extends Controller {
 
   /**
    * 删除会话（登出）
-   * DELETE /api/v2/sessions/:id
+   * POST /api/v1/sessions/delete_session
    */
   async destroy(ctx: Context) {
     try {
-      const sessionId = ctx.params?.id || ctx.cookies.get('ll_session');
+      // 从请求体或Cookie中获取sessionId
+      const { id: sessionIdFromBody } = ctx.request.body as { id?: string };
+      const sessionId = sessionIdFromBody || ctx.cookies.get('ll_session');
 
       if (sessionId) {
         // 清除服务端会话

@@ -1,359 +1,393 @@
 {
-  "keys": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-  "middleware": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-  "staticAuth": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
+  "keys": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+  "middleware": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+  "staticAuth": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
   "staticFiles": {
-    "root": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "allowedExtensions": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "maxAge": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "gzip": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "etag": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "match": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
+    "root": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "allowedExtensions": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "maxAge": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "gzip": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "etag": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "match": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
   },
   "auth": {
-    "ignore": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
+    "ignore": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
   },
   "bt": {
-    "match": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
+    "match": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
   },
-  "common": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
+  "common": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
   "security": {
     "csrf": {
-      "enable": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-      "type": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "ignoreJSON": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "cookieName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "sessionName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "headerName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "bodyName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "queryName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "rotateWhenInvalid": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "useSession": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "supportedRequests": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "refererWhiteList": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "enable": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "type": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "ignoreJSON": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "cookieName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "sessionName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "headerName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "bodyName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "queryName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "rotateWhenInvalid": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "useSession": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "supportedRequests": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "refererWhiteList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
       "cookieOptions": {
-        "signed": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-        "httpOnly": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-        "overwrite": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+        "signed": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+        "httpOnly": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+        "overwrite": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
       }
     },
-    "domainWhiteList": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-    "protocolWhiteList": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-    "defaultMiddleware": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+    "domainWhiteList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+    "protocolWhiteList": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+    "defaultMiddleware": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
     "xframe": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "value": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "value": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "hsts": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.local.js",
-      "maxAge": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "includeSubdomains": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.local.js",
+      "maxAge": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "includeSubdomains": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "methodnoallow": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "noopen": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "nosniff": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "xssProtection": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "value": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "value": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "csp": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "policy": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "policy": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "referrerPolicy": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
-      "value": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js",
+      "value": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
     "dta": {
-      "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+      "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
     },
-    "ssrf": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+    "ssrf": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
   },
   "cors": {
-    "origin": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "allowMethods": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "credentials": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
+    "origin": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "allowMethods": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "credentials": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+  },
+  "swaggerdoc": {
+    "dirScanner": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "apiInfo": {
+      "title": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "description": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "version": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "termsOfService": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+      "contact": {
+        "email": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+      },
+      "license": {
+        "name": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+        "url": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+      }
+    },
+    "schemes": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "consumes": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "produces": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "securityDefinitions": {
+      "bearerAuth": {
+        "type": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+        "name": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+        "in": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+        "description": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
+      }
+    },
+    "enableSecurity": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "routerMap": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "enable": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "basePath": "/Users/chudong/Project/linglongos/apps/api/node_modules/egg-swagger-doc/config/config.default.js"
   },
   "sqlite": {
-    "path": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
+    "path": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
   },
   "multipart": {
-    "mode": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts",
-    "autoFields": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "defaultCharset": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "defaultParamCharset": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "fieldNameSize": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "fieldSize": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "fields": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "fileSize": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "files": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "fileExtensions": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "whitelist": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "allowArrayField": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-    "tmpdir": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "mode": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts",
+    "autoFields": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "defaultCharset": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "defaultParamCharset": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "fieldNameSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "fieldSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "fields": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "fileSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "files": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "fileExtensions": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "whitelist": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "allowArrayField": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+    "tmpdir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
     "cleanSchedule": {
-      "cron": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
-      "disable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js"
+      "cron": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js",
+      "disable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+multipart@4.0.0/node_modules/@eggjs/multipart/dist/commonjs/config/config.default.js"
     }
   },
   "bizConfig": {
-    "sourceUrl": "/Users/bt.cn/project/linglongos/apps/api/config/config.default.ts"
+    "sourceUrl": "/Users/chudong/Project/linglongos/apps/api/config/config.default.ts"
   },
   "session": {
-    "key": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "maxAge": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "autoCommit": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "overwrite": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "httpOnly": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "signed": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "rolling": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "renew": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "encode": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "decode": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
-    "logValue": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js"
+    "key": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "maxAge": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "autoCommit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "overwrite": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "httpOnly": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "signed": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "rolling": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "renew": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "encode": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "decode": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js",
+    "logValue": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+session@4.0.1/node_modules/@eggjs/session/dist/commonjs/config/config.default.js"
   },
   "helper": {
-    "shtml": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
+    "shtml": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+security@4.0.1/node_modules/@eggjs/security/dist/commonjs/config/config.default.js"
   },
   "jsonp": {
-    "limit": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs/config/config.default.js",
-    "callback": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs/config/config.default.js",
-    "csrf": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs/config/config.default.js"
+    "limit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs/config/config.default.js",
+    "callback": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs/config/config.default.js",
+    "csrf": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+jsonp@3.0.0/node_modules/@eggjs/jsonp/dist/commonjs/config/config.default.js"
   },
   "onerror": {
-    "errorPageUrl": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs/config/config.default.js",
-    "templatePath": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs/config/config.default.js"
+    "errorPageUrl": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs/config/config.default.js",
+    "templatePath": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+onerror@3.0.0/node_modules/@eggjs/onerror/dist/commonjs/config/config.default.js"
   },
   "i18n": {
-    "defaultLocale": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
-    "dirs": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
-    "queryField": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
-    "cookieField": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
-    "cookieDomain": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
-    "cookieMaxAge": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
-    "localeAlias": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
-    "writeCookie": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js"
+    "defaultLocale": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
+    "dirs": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
+    "queryField": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
+    "cookieField": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
+    "cookieDomain": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
+    "cookieMaxAge": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
+    "localeAlias": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js",
+    "writeCookie": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+i18n@3.0.1/node_modules/@eggjs/i18n/dist/commonjs/config/config.default.js"
   },
   "watcher": {
-    "type": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/config/config.local.js",
+    "type": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/config/config.local.js",
     "eventSources": {
-      "default": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/config/config.default.js",
-      "development": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/config/config.default.js"
+      "default": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/config/config.default.js",
+      "development": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+watcher@4.0.4/node_modules/@eggjs/watcher/dist/commonjs/config/config.default.js"
     }
   },
   "customLogger": {
     "scheduleLogger": {
-      "consoleLevel": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs/config/config.default.js",
-      "file": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs/config/config.default.js"
+      "consoleLevel": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs/config/config.default.js",
+      "file": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs/config/config.default.js"
     }
   },
   "schedule": {
-    "directory": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs/config/config.default.js"
+    "directory": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+schedule@5.0.2/node_modules/@eggjs/schedule/dist/commonjs/config/config.default.js"
   },
   "development": {
-    "watchDirs": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
-    "ignoreDirs": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
-    "fastReady": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
-    "reloadOnDebug": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
-    "overrideDefault": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
-    "overrideIgnore": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js"
+    "watchDirs": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
+    "ignoreDirs": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
+    "fastReady": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
+    "reloadOnDebug": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
+    "overrideDefault": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js",
+    "overrideIgnore": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+development@4.0.0/node_modules/@eggjs/development/dist/commonjs/config/config.default.js"
   },
   "logrotator": {
-    "disableRotateByDay": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "filesRotateByHour": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "hourDelimiter": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "filesRotateBySize": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "maxFileSize": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "maxFiles": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "rotateDuration": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "maxDays": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
-    "gzip": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js"
+    "disableRotateByDay": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "filesRotateByHour": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "hourDelimiter": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "filesRotateBySize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "maxFileSize": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "maxFiles": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "rotateDuration": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "maxDays": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js",
+    "gzip": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+logrotator@4.1.0/node_modules/@eggjs/logrotator/dist/commonjs/config/config.default.js"
   },
   "static": {
-    "prefix": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
-    "dir": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
-    "dynamic": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
-    "preload": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
-    "buffer": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
-    "maxFiles": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js"
+    "prefix": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
+    "dir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
+    "dynamic": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
+    "preload": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
+    "buffer": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js",
+    "maxFiles": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+static@3.0.0/node_modules/@eggjs/static/dist/commonjs/config/config.default.js"
   },
   "view": {
-    "root": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js",
-    "cache": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.local.js",
-    "defaultExtension": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js",
-    "defaultViewEngine": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js",
-    "mapping": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js"
+    "root": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js",
+    "cache": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.local.js",
+    "defaultExtension": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js",
+    "defaultViewEngine": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js",
+    "mapping": "/Users/chudong/Project/linglongos/node_modules/.pnpm/@eggjs+view@3.0.1/node_modules/@eggjs/view/dist/commonjs/config/config.default.js"
   },
   "mcp": {
-    "sseInitPath": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
-    "sseMessagePath": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
-    "streamPath": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
-    "statelessStreamPath": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
-    "sessionIdGenerator": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js"
+    "sseInitPath": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
+    "sseMessagePath": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
+    "streamPath": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
+    "statelessStreamPath": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js",
+    "sessionIdGenerator": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tegg-controller-plugin/config/config.default.js"
   },
   "tracer": {
-    "Class": "/Users/bt.cn/project/linglongos/apps/api/node_modules/@eggjs/tracer/dist/commonjs/config/config.default.js"
+    "Class": "/Users/chudong/Project/linglongos/apps/api/node_modules/@eggjs/tracer/dist/commonjs/config/config.default.js"
   },
-  "validate": "/Users/bt.cn/project/linglongos/apps/api/node_modules/egg-validate/config/config.default.js",
-  "env": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "name": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "cookies": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "proxy": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "maxIpsCount": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "maxProxyCount": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "protocolHeaders": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "ipHeaders": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "hostHeaders": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "validate": "/Users/chudong/Project/linglongos/apps/api/node_modules/egg-validate/config/config.default.js",
+  "env": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "name": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "cookies": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "proxy": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "maxIpsCount": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "maxProxyCount": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "protocolHeaders": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "ipHeaders": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "hostHeaders": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
   "pkg": {
-    "name": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "version": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "description": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "private": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "name": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "version": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "description": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "private": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
     "egg": {
-      "typescript": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "typescript": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
     "scripts": {
-      "start": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "stop": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "dev": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "test:local": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "pretest": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "test": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "preci": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "ci": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "postci": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "lint": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "tsc": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "clean": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "export:openapi": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "migrate:to-sqlite": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "prepublishOnly": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "start": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "stop": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "dev": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "test:local": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "pretest": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "test": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "preci": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "ci": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "postci": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "lint": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "tsc": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "clean": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "export:openapi": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "migrate:to-sqlite": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "test:storage": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "prepublishOnly": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
     "dependencies": {
-      "@eggjs/scripts": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tegg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tegg-aop-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tegg-config": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tegg-controller-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tegg-eventbus-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tegg-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tegg-schedule-plugin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tracer": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "axios": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "better-sqlite3": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "egg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "egg-cors": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "egg-validate": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "md5": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "speakeasy": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "sqlite3": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "@eggjs/scripts": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tegg": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tegg-aop-plugin": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tegg-config": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tegg-controller-plugin": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tegg-eventbus-plugin": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tegg-plugin": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tegg-schedule-plugin": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tracer": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "axios": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "better-sqlite3": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "egg": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "egg-cors": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "egg-swagger-doc": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "egg-validate": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "md5": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "speakeasy": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "sqlite3": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
     "devDependencies": {
-      "@eggjs/bin": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/mock": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@eggjs/tsconfig": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@types/mocha": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "@types/node": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "eslint": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "eslint-config-egg": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "typescript": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "@eggjs/bin": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/mock": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@eggjs/tsconfig": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@types/better-sqlite3": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@types/mocha": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "@types/node": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "eslint": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "eslint-config-egg": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "typescript": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
     "engines": {
-      "node": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "node": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
     "repository": {
-      "type": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "url": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "type": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "url": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
-    "author": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "license": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "author": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "license": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   },
-  "baseDir": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "HOME": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "rundir": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "baseDir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "HOME": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "rundir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
   "dump": {
-    "ignore": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "ignore": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
     "timing": {
-      "slowBootActionMinDuration": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "slowBootActionMinDuration": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     }
   },
   "confusedConfigurations": {
-    "bodyparser": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "notFound": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "sitefile": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "middlewares": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "httpClient": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "bodyparser": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "notFound": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "sitefile": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "middlewares": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "httpClient": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   },
   "notfound": {
-    "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "pageUrl": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "pageUrl": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   },
   "siteFile": {
-    "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "/favicon.ico": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "cacheControl": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "/favicon.ico": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "cacheControl": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   },
   "bodyParser": {
-    "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "encoding": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "formLimit": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "jsonLimit": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "textLimit": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "strict": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "encoding": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "formLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "jsonLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "textLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "strict": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
     "queryString": {
-      "arrayLimit": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "depth": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "parameterLimit": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "arrayLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "depth": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "parameterLimit": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     },
-    "onProtoPoisoning": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "onerror": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "onProtoPoisoning": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "onerror": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   },
   "logger": {
-    "dir": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "encoding": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "env": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "level": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "consoleLevel": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "disableConsoleAfterReady": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "outputJSON": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "buffer": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "appLogName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "coreLogName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "agentLogName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "errorLogName": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "dir": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "encoding": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "env": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "level": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "consoleLevel": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "disableConsoleAfterReady": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "outputJSON": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "buffer": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "appLogName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "coreLogName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "agentLogName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "errorLogName": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
     "coreLogger": {
-      "consoleLevel": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.local.js"
+      "consoleLevel": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.local.js"
     },
-    "allowDebugAtProd": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "enableFastContextLogger": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "allowDebugAtProd": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "enableFastContextLogger": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   },
   "httpclient": {
     "request": {
-      "timeout": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "timeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     }
   },
   "meta": {
-    "enable": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "logging": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "enable": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "logging": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   },
-  "coreMiddleware": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "workerStartTimeout": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-  "serverTimeout": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "coreMiddleware": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "workerStartTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+  "serverTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
   "cluster": {
     "listen": {
-      "path": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "port": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-      "hostname": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+      "path": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "port": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+      "hostname": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
     }
   },
   "clusterClient": {
-    "maxWaitTime": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
-    "responseTimeout": "/Users/bt.cn/project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
+    "maxWaitTime": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js",
+    "responseTimeout": "/Users/chudong/Project/linglongos/node_modules/.pnpm/egg@4.0.10/node_modules/egg/dist/commonjs/config/config.default.js"
   }
 }

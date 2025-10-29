@@ -1,5 +1,21 @@
 {
-  "auth": {},
-  "sessions": {},
-  "panels": {}
+	"auth": {
+		"twofa_secret": "TEST_SECRET_1761731683443"
+	},
+	"sessions": {
+		"454f1820c2506ff272181543a14e6fa240a3bfa78da223e4cf10ef6e7dbbdad2": {
+			"expiresAt": 1761741220333,
+			"createdAt": 1761726820333
+		}
+	},
+	"panels": {
+		"bt": {
+			"url": "https://example.com",
+			"key": "key123"
+		},
+		"1panel": {
+			"url": "https://jsonplaceholder.typicode.com",
+			"key": "abc123"
+		}
+	}
 }

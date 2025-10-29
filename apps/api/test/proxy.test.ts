@@ -26,11 +26,11 @@ describe('Proxy Controller', () => {
     const cookie = await getSessionCookie();
     const resBind = await app
       .httpRequest()
-      .post('/api/v1/proxy/bind-panel-key')
+      .post('/api/v1/panels/set_proxy_panel')
       .set('Cookie', cookie)
       .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
-      .expect(200);
-    assert(resBind.body.code === 200);
+      .expect(201);
+    assert(resBind.body.code === 201);
 
     const resGet = await app
       .httpRequest()
@@ -46,11 +46,11 @@ describe('Proxy Controller', () => {
     const cookie = await getSessionCookie();
     const resBind = await app
       .httpRequest()
-      .post('/api/v1/proxy/bind-panel-key')
+      .post('/api/v1/panels/set_proxy_panel')
       .set('Cookie', cookie)
       .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
-      .expect(200);
-    assert(resBind.body.code === 200);
+      .expect(201);
+    assert(resBind.body.code === 201);
 
     await app
       .httpRequest()
@@ -65,11 +65,11 @@ describe('Proxy Controller', () => {
     const key = 'abc123';
     const resBind = await app
       .httpRequest()
-      .post('/api/v1/proxy/bind-panel-key')
+      .post('/api/v1/panels/set_proxy_panel')
       .set('Cookie', cookie)
       .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com', key })
-      .expect(200);
-    assert(resBind.body.code === 200);
+      .expect(201);
+    assert(resBind.body.code === 201);
 
     const resPost = await app
       .httpRequest()
@@ -90,11 +90,11 @@ describe('Proxy Controller', () => {
     const cookie = await getSessionCookie();
     const resBind = await app
       .httpRequest()
-      .post('/api/v1/proxy/bind-panel-key')
+      .post('/api/v1/panels/set_proxy_panel')
       .set('Cookie', cookie)
       .send({ type: '1panel', url: 'https://jsonplaceholder.typicode.com', key: 'abc123' })
-      .expect(200);
-    assert(resBind.body.code === 200);
+      .expect(201);
+    assert(resBind.body.code === 201);
 
     const resGet = await app
       .httpRequest()
@@ -110,10 +110,10 @@ describe('Proxy Controller', () => {
     const cookie = await getSessionCookie();
     await app
       .httpRequest()
-      .post('/api/v1/proxy/bind-panel-key')
+      .post('/api/v1/panels/set_proxy_panel')
       .set('Cookie', cookie)
       .send({ type: 'bt', url: 'https://jsonplaceholder.typicode.com/', key: 'abc123' })
-      .expect(200);
+      .expect(201);
     const resGet = await app
       .httpRequest()
       .get('/api/v1/proxy/request')
@@ -127,10 +127,10 @@ describe('Proxy Controller', () => {
     const cookie = await getSessionCookie();
     await app
       .httpRequest()
-      .post('/api/v1/proxy/bind-panel-key')
+      .post('/api/v1/panels/set_proxy_panel')
       .set('Cookie', cookie)
       .send({ type: 'bt', url: '', key: 'abc123' })
-      .expect(200);
+      .expect(201);
     const res = await app
       .httpRequest()
       .get('/api/v1/proxy/request')
